@@ -1,0 +1,15 @@
+<div class="row">
+    <div class="col">
+        <mat-form-field>
+            <input matInput [placeholder]="schema.title||schema.placeholder" [formControl]="control" [name]="name"
+                [type]="!this.schema.widget.id || this.schema.widget.id === 'string' ? 'text' : this.schema.widget.id"
+                [readonly]="(schema.widget.id!=='color') && schema.readOnly?true:null"
+                [required]="formProperty|isRequired" class="text-widget textline-widget" [attr.id]="id"
+                [attr.maxLength]="schema.maxLength || null" [attr.minLength]="schema.minLength || null"
+                [attr.disabled]="(schema.widget.id=='color' && schema.readOnly)?true:null" [disableControl]="schema.readOnly">
+            <mat-hint *ngIf="schema.description">{{schema.description}}</mat-hint>
+        </mat-form-field>
+
+        <input *ngIf="(schema.widget.id==='color' && schema.readOnly)" [attr.name]="name" type="hidden" [formControl]="control">
+    </div>
+</div>

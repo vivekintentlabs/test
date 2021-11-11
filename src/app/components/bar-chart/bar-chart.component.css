@@ -1,0 +1,20 @@
+.no-data{
+    position: absolute;
+    right: 45%;
+    top: 40%;
+}
+.text-info {stroke: #00bcd4}
+.text-danger {stroke: #f44336}
+.text-warning {stroke: #ff9800}
+.text-primary {stroke: #9c27b0}
+.text-success {stroke: #4caf50}
+.text-six {stroke: #337ab7}
+.text-seven {stroke: #add}
+.text-eight {stroke: #ad3}
+.text-nine {stroke: #2196F3}
+.text-ten {stroke: #ffeb3b}
+.text-eleven {stroke: #55acee}
+.text-twelve {stroke: #cc2127}
+.text-thirteen {stroke: #CDDC39 }
+.text-fourteen {stroke: #546E7A}
+.text-fifteen {stroke: #795548}

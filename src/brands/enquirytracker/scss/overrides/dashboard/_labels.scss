@@ -1,0 +1,13 @@
+.select-count {
+  padding: $select-label-padding-y $select-label-padding-x;
+  border-radius: $select-label-border-radius;
+  border-width: $select-label-border-width;
+  border-style: solid;
+  border-color: $brand-primary;
+  background-color: $brand-primary;
+  color: $white;
+  font-weight: $font-weight-bold;
+  font-size: $select-label-font-size;
+  text-transform: uppercase;
+  white-space: nowrap;
+}

@@ -1,0 +1,107 @@
+<div class="modal-header">
+    <h4 class="modal-title text-left" id="campusModalLabel">{{title}} - Campus</h4>
+    <button type="button" class="close" aria-label="Close" (click)="onCancel()">
+        <span aria-hidden="true">&times;</span>
+    </button>
+</div>
+<form [formGroup]="campusForm" novalidate class="m-0" *ngIf="campusForm">
+    <div class="modal-body">
+        <input type="text" hidden formControlName="id" readonly>
+
+        <mat-form-field>
+            <input matInput placeholder="Campus Name" type="text" formControlName="name" required>
+            <mat-error
+                *ngIf="!(campusForm.controls.name.valid || campusForm.controls.name.pristine)">
+                Name is required and should contain at least {{requiredTextFieldMinLength}} and at most {{requiredSchoolNameMaxLength}}
+                characters.
+            </mat-error>
+        </mat-form-field>
+
+        <mat-form-field>
+            <input matInput [placeholder]="synCodeTitle" type="text" formControlName="synCode">
+            <mat-error
+                *ngIf="!(campusForm.controls.synCode.valid || campusForm.controls.synCode.pristine)">
+                {{synCodeTitle}} should contain at least {{notRequiredTextFieldMinLength}} and at most
+                {{synCodeMaxLength}} characters.
+            </mat-error>
+        </mat-form-field>
+
+        <div class="my-3">
+            <mat-checkbox (change)="asBillingAddress($event.checked)">
+                Same address as the billing address?
+            </mat-checkbox>
+        </div>
+
+        <mat-form-field>
+            <input matInput placeholder="Address" type="text" formControlName="address" required>
+            <mat-error
+                *ngIf="!(campusForm.controls.address.valid || campusForm.controls.address.pristine)">
+                Address should contain at least {{requiredTextFieldMinLength}} and at most
+                {{addressFieldMaxLength}} characters.
+            </mat-error>
+        </mat-form-field>
+        <mat-form-field *ngIf="addressOptions.sublocality.isUsed">
+            <input matInput [placeholder]="addressOptions.sublocality.label" type="text" formControlName="sublocality">
+            <mat-error
+                *ngIf="!(campusForm.controls.sublocality.valid || campusForm.controls.sublocality.pristine)">
+                {{addressOptions.sublocality.label}} should contain at least {{notRequiredTextFieldMinLength}}
+                and at most {{citySuburbFieldMaxLength}} characters.
+            </mat-error>
+        </mat-form-field>
+        <mat-form-field *ngIf="addressOptions.city.isUsed">
+            <input matInput [placeholder]="addressOptions.city.label" type="text" formControlName="city" required>
+            <mat-error
+                *ngIf="!(campusForm.controls.city.valid || campusForm.controls.city.pristine)">
+                {{addressOptions.city.label}} should contain at least {{requiredTextFieldMinLength}} and at
+                most {{citySuburbFieldMaxLength}} characters.
+            </mat-error>
+        </mat-form-field>
+
+        <mat-form-field *ngIf="addressOptions.state.isUsed">
+            <mat-select [placeholder]="addressOptions.state.label" formControlName="administrativeAreaId">
+                <mat-option *ngIf="campusForm.controls.countryId.value === null" [value]="null">
+                    {{noCountrySelected}}</mat-option>
+                <mat-option *ngFor="let administrativeArea of administrativeAreas" [value]="administrativeArea.id">
+                    {{administrativeArea.name}}</mat-option>
+            </mat-select>
+        </mat-form-field>
+
+        <mat-form-field *ngIf="addressOptions.postCode.isUsed">
+            <input matInput [placeholder]="addressOptions.postCode.label" type="text" formControlName="postCode"
+                required>
+            <mat-error
+                *ngIf="!(campusForm.controls.postCode.valid || campusForm.controls.postCode.pristine)">
+                {{addressOptions.postCode.label}} should contain at least {{postCodeMinLength}} and at
+                most {{postCodeMaxLength}} characters.
+            </mat-error>
+        </mat-form-field>
+
+        <mat-form-field>
+            <mat-select placeholder="Country" formControlName="countryId" required
+                (selectionChange)="onCountryChange($event.value)">
+                <mat-option *ngFor="let country of countries" [value]="country.id">{{country.name}}
+                </mat-option>
+            </mat-select>
+        </mat-form-field>
+
+        <mat-form-field>
+            <mat-select placeholder="Time Zone" formControlName="timeZoneId" required>
+                <mat-option *ngIf="campusForm.controls.countryId.value === null" [value]="null">
+                    {{noCountrySelected}}</mat-option>
+                <mat-option *ngFor="let t of timeZones" [value]="t.id">{{t.name}}</mat-option>
+            </mat-select>
+        </mat-form-field>
+        <div class="row">
+            <div class="col-md-12">
+                <label>What is the gender of your campus?</label>
+                <app-checkbox-group [options]="genders" formControlName="genders">
+                </app-checkbox-group>
+            </div>
+        </div>
+    </div>
+    <div class="modal-footer">
+        <button type="button" mat-raised-button class="btn btn-cancel mx-1" (click)="onCancel()">Cancel</button>
+        <button type="button" mat-raised-button class="btn btn-success"
+            [disabled]="!campusForm.valid || campusForm.pristine" (click)="saveCampus()">Save</button>
+    </div>
+</form>

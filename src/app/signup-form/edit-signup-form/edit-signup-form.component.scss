@@ -1,0 +1,28 @@
+@import '~scss/theme/core/variables';
+
+
+.title-bordered {
+    border-bottom: 1px solid $gray-light;
+}
+
+.field-title {
+    font-size: 1.2em;
+}
+
+.p-header {
+    font-size: .875rem;
+}
+
+.sticky {
+    position: fixed;
+    top: 0px;
+    z-index: 9;
+}
+
+.h-row{
+    border-bottom: 2px solid rgb(0, 0, 0);
+}
+
+.fdl {
+    font-size: 1em;
+}

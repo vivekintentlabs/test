@@ -1,0 +1,13 @@
+@import "~bootstrap/scss/_functions.scss";
+@import "~bootstrap/scss/_variables.scss";
+@import "~bootstrap/scss/mixins/_breakpoints.scss";
+
+mat-drawer {
+    max-width: 375px;
+}
+
+@include media-breakpoint-down(xs) {
+    mat-drawer {
+        max-width: 200px;
+    }
+}

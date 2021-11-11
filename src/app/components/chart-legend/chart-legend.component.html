@@ -1,0 +1,16 @@
+<div class="row" *ngIf="legends && isLegendSectionVisible">
+    <div class="col-12">
+        <label class="col-form-label">
+            <h6>Legend</h6>
+        </label>
+        <div class="d-flex flex-wrap">
+            <div class="d-inherit padding-right-2" *ngFor="let legend of legends; let i = index">
+                <button mat-raised-button class="btn btn-legend btn-round btn-sm legend-chart padding-top-2"
+                    [ngClass]="{'selected-legend':!legend.isSelected}" (click)="hideShowLegend(legend)">
+                    <i class="material-icons mr-1 mtn-2" [ngClass]="legend.className">lens</i>
+                    {{legend.name}}
+                </button>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,666 @@
+@media (min-width: 992px) {
+    .typo-line {
+        padding-left: 140px;
+        margin-bottom: 40px;
+        position: relative;
+    }
+    .typo-line .category {
+        transform: translateY(-50%);
+        top: 50%;
+        left: 0px;
+        position: absolute;
+    }
+}
+
+.sebm-google-map-container {
+    height: 300px;
+}
+
+#map {
+    position: relative;
+    width: 100%;
+    height: calc(100% - 60px);
+    margin-top: 70px;
+}
+
+.places-buttons .btn {
+    margin-bottom: 30px
+}
+
+.space-70 {
+    height: 70px;
+    display: block;
+}
+
+.tim-row {
+    margin-bottom: 20px;
+}
+
+.tim-typo {
+    padding-left: 25%;
+    margin-bottom: 40px;
+    position: relative;
+}
+
+.tim-typo .tim-note {
+    bottom: 10px;
+    color: #c0c1c2;
+    display: block;
+    font-weight: 400;
+    font-size: 13px;
+    line-height: 13px;
+    left: 0;
+    margin-left: 20px;
+    position: absolute;
+    width: 260px;
+}
+
+.tim-row {
+    padding-top: 50px;
+}
+
+.tim-row h3 {
+    margin-top: 0;
+}
+
+.fs-large {
+    font-size: large;
+}
+
+@media (min-width: 992px) {
+    .typo-line {
+        padding-left: 140px;
+        margin-bottom: 40px;
+        position: relative;
+    }
+    .typo-line .category {
+        transform: translateY(-50%);
+        top: 50%;
+        left: 0px;
+        position: absolute;
+    }
+}
+
+/* Custom css frome here */
+
+div.mat-form-field-hint-spacer {
+    flex: 0 !important;
+}
+
+.dropdown-menu {
+    cursor: pointer;
+}
+
+.dropdown-menu li:hover, .dropdown-menu a:hover, .dropdown-menu a.text-success:hover {
+    color: #fff !important;
+}
+
+/* new class for compac table */
+
+@media (min-width: 725px) {
+    .ct-bar {
+        stroke-width: 30px;
+    }
+}
+
+table>caption {
+    font-size: 1em;
+    caption-side: top;
+}
+
+.table-sm>caption {
+    text-align: center;
+}
+
+.table-sm>thead>tr>th {
+    font-weight: bold;
+}
+
+.table-sm>thead>tr>th, .table-sm>tbody>tr>td {
+    padding: 0px 3px !important;
+    font-size: 0.8em;
+    text-align: left;
+}
+
+/* end: new class for compac table */
+
+/*table changes */
+
+.table-no-bordered>thead>tr>th {
+    min-width: 70px;
+}
+
+.table-no-bordered>tfoot>tr {
+    background: #777;
+    color: white;
+    font-size: 12px;
+}
+
+.table-no-bordered>tfoot {
+    visibility: hidden;
+    display: none !important;
+}
+
+.table-no-bordered tr {
+    height: 53px;
+}
+
+/* table th .checkbox input[type=checkbox]:not(:checked) + .checkbox-material .check { */
+
+table th .form-check .form-check-input:not(:checked)+.form-check-sign .check {
+    border-color: #fff;
+}
+
+.w25 {
+    width: 25px !important;
+}
+
+.w40 {
+    width: 40px !important;
+}
+
+.w65 {
+    width: 65px !important;
+}
+
+.min-w25 {
+    min-width: 25px !important;
+}
+
+.min-w40 {
+    min-width: 40px !important;
+}
+
+th .form-check, td .form-check {
+    margin: 0 0 0 10px !important;
+}
+
+/*end table changes */
+
+.checkbox-material:before {
+    top: -7px !important;
+}
+
+.form-group select {
+    -webkit-appearance: menulist-button;
+    -moz-appearance: menulist-button;
+    appearance: menulist-button;
+}
+
+/*mat-select changes */
+
+.mat-select-trigger {
+    margin: 0;
+    padding-bottom: 0;
+    font-size: 14px !important;
+}
+
+.mat-select-value-text {
+    font-size: 14px;
+}
+
+.mat-select-panel {
+    -webkit-overflow-scrolling: auto !important;
+}
+
+mat-select.mat-select-disabled .mat-select-trigger {
+    cursor: not-allowed !important;
+}
+
+.mat-select-disabled .mat-select-value {
+    color: #a1a1a1 !important;
+}
+
+.mat-option.mat-selected:not(.mat-option-disabled) {
+    color: black !important;
+}
+
+.mat-select-panel mat-option.mat-option {
+    height: unset;
+}
+
+.mat-option-text.mat-option-text {
+    white-space: normal;
+}
+
+/*end mat-select changes */
+
+.mat-form-field {
+    width: 100% !important;
+}
+
+.mat-form-field {
+    width: -moz-available !important;
+}
+
+.mat-form-field-required-marker {
+    color: red;
+}
+
+.red-text {
+    color: red;
+}
+
+.gold-text {
+    color: #ffc424
+}
+
+.silver-text {
+    color: #c0c0c0
+}
+
+.bronze-text {
+    color: #bb7762
+}
+
+.table-gold, .table-gold>td {
+    background-color: #fff6dd;
+}
+
+.table-silver, .table-silver>td {
+    background-color: #f4f4f4;
+}
+
+.table-bronze, .table-bronze>td {
+    background-color: #f6ebe7;
+}
+
+.custom-divider {
+    border-bottom: 1px solid #ccc;
+    height: 1px;
+    margin: 5px 0;
+}
+
+.mat-icon-button {
+    font-size: 1.3em !important;
+}
+
+.otherInterestCheckBox label {
+    margin-left: -25px !important;
+}
+
+.radio-inline+.radio-inline {
+    margin-top: 0;
+    margin-left: 0px
+}
+
+@media (max-width: 991px) {
+    .iyLabel {
+        margin-top: 50px;
+    }
+}
+
+#time-picker-wrapper {
+    z-index: 1055 !important;
+}
+
+.unlink[disabled] {
+    opacity: 0.40 !important;
+}
+
+.btn-legend {
+    color: black !important;
+    background-color: #ececec !important;
+    border-color: #ececec !important;
+    box-shadow: none !important;
+    line-height: normal !important;
+    padding: 0.40625rem 0.55rem !important;
+}
+
+.mtn-2 {
+    margin-top: -20px !important;
+}
+
+.mt-10 {
+    margin-top: 10px;
+}
+
+.btn-legend:hover {
+    background-color: #cdcdcd !important;
+}
+
+.btn-legend:active {
+    background-color: #aaaaaa !important;
+}
+
+.legend-chart {
+    font-family: Roboto, Helvetica, Arial, sans-serif;
+}
+
+.unClickableLegend i {
+    font-size: 18px!important;
+}
+
+.d-inherit {
+    display: inherit;
+}
+
+.btn-legend:disabled {
+    cursor: no-drop;
+}
+
+.ct-chart .ct-label {
+    fill: #fff !important;
+    dominant-baseline: central !important;
+    text-anchor: middle !important;
+}
+
+.pointer {
+    cursor: pointer;
+}
+
+.mat-option.mat-option-disabled {
+    color: rgba(0, 0, 0, .38) !important;
+    cursor: no-drop !important;
+}
+
+.btn {
+    white-space: normal !important;
+}
+/* radio buttons label moved closer to the circle it self */
+.form-check.form-check-radio .form-check-label {
+    padding-left: 20px !important;
+}
+
+.form-check.disabled>label {
+    cursor: not-allowed;
+}
+
+.mat-warning {
+    display: block;
+    color: #ff9800;
+}
+
+.cdk-overlay-connected-position-bounding-box {
+    z-index: 1031 !important;
+}
+
+.table-sm tr td {
+    padding: 0px;
+}
+
+/* Google material icons new */
+.material-icons-new {
+    display: inline-block;
+    width: 24px;
+    height: 24px;
+    background-repeat: no-repeat;
+    background-size: contain;
+}
+
+/* Rules for sizing the material new icon. */
+.material-icons-new.md-18 { width: 18px; height: 18px; }
+.material-icons-new.md-24 { width: 24px; height: 24px; }
+.material-icons-new.md-36 { width: 36px; height: 36px; }
+.material-icons-new.md-48 { width: 48px; height: 48px; }
+
+/* Rules for sizing the icon. */
+.material-icons.md-18 { font-size: 18px; }
+.material-icons.md-24 { font-size: 24px; }
+.material-icons-outlined.md-36,
+.material-icons.md-36 { font-size: 36px; }
+.material-icons.md-48 { font-size: 48px; }
+
+/* Rules for using icons as black on a light background. */
+.material-icons.md-dark { color: rgba(0, 0, 0, 0.54); }
+.material-icons.md-dark.md-inactive { color: rgba(0, 0, 0, 0.26); }
+
+/* Rules for using icons as white on a dark background. */
+.material-icons.md-light { color: rgba(255, 255, 255, 1); }
+.material-icons.md-light.md-inactive { color: rgba(255, 255, 255, 0.3); }
+
+/* START OF TEMP CSS FIX */
+.mat-paginator-container .mat-paginator-page-size-label {
+    white-space: nowrap;
+}
+.mat-paginator-container .mat-paginator-page-size-select {
+    width: 56px !important;
+}
+/* END OF TEMP CSS FIX */
+
+.rsvp {
+    padding-top: 12px;
+    padding-left: 23px !important;
+}
+
+.mat-error-radio {
+    font-weight: 400;
+    font-size: 75%;
+    margin-top: -1em;
+}
+
+.remove-filter {
+    cursor: pointer;
+    color: #999;
+}
+.remove-filter:hover {
+    color: #777;
+}
+
+/* mat-table */
+.mat-table th:not(:first-child):not(:last-child), .mat-table td:not(:first-child):not(:last-child) {
+    padding: 0 5px;
+}
+.mat-table th:first-child, .mat-table td:first-child {
+    padding-right: 5px;
+}
+.mat-table th:last-child, .mat-table td:last-child {
+    padding-left: 5px;
+}
+.mat-sort-header-arrow {
+    color: #a5a5a5 !important;
+}
+/* workaround fix for mat-sort bug */
+th.mat-header-cell .mat-sort-header-container.mat-sort-header-sorted .mat-sort-header-arrow {
+    opacity: 1 !important;
+    transform: translateY(0) !important;
+}
+/* end workaround fix for mat-sort bug */
+
+table {
+    width: 100%;
+}
+
+table tr td.td-actions {
+    min-width: 95px;
+}
+
+table tr td.td-actions button i.material-icons {
+    font-size: 1.3rem;
+}
+/* end mat-table */
+
+.light-grey {
+    background-color: #eeeeee !important;
+}
+
+/* start of comms module create message tinymce */
+.mc-block .mce-tinymce.mce-container.mce-panel {
+    border: 0;
+}
+
+.mc-block .mce-top-part {
+    position: relative;
+    transition: all 0.2s ease 0s;
+}
+
+.mc-block .mce-edit-area {
+    position: relative;
+    transition: all 0.2s ease 0s;
+}
+
+.mc-block.active .mce-top-part {
+    top: 0 !important;
+}
+
+.mc-block.active div.mce-edit-area {
+    top: 0 !important;
+}
+/* end of comms module create message tinymce */
+
+/* start promise buttons */
+button > span.spinner-border {
+    display: none;
+}
+button.is-loading > span.spinner-border {
+    display: inline-block;
+}
+/* end promise buttons */
+
+.mat-tooltip {
+    font-size: 0.8em !important;
+    line-height: 1.2em !important;
+}
+
+.pre-line {
+    white-space: pre-line;
+}
+
+/* adds indicator for required labels */
+label.required:after {
+    content: " *";
+    color: red;
+}
+mat-checkbox>label.mat-checkbox-layout {
+    white-space: normal;
+}
+mat-checkbox[required=true]>label.mat-checkbox-layout:after {
+    content: "\00a0*";
+    color: red;
+}
+/* end add indicator for required labels */
+
+/* start comms module schedule message page */
+.mat-column-contactInfo .mat-expansion-panel-body {
+    padding: 0 !important;
+    line-height: 20pt !important;
+    font-size: 14px !important;
+}
+.mat-column-contactInfo .mat-expansion-panel-body table td {
+    font-size: 11px;
+}
+.mat-column-contactInfo .mat-expansion-panel-header .mat-expansion-indicator {
+    position: absolute;
+    right: 5px;
+    margin-top: -4px;
+}
+.schedule-message-stats .count-block {
+    transition: box-shadow 0.2s cubic-bezier(0.4, 0, 1, 1), background-color 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    will-change: box-shadow, transform;
+}
+.schedule-message-stats .disabled-count .count-block {
+    opacity: 0.6;
+}
+.schedule-message-stats .disabled-count .count-block:hover {
+    box-shadow: none !important;
+}
+.schedule-message-stats .count-block:hover {
+    box-shadow: 0 14px 26px -12px rgba(153, 153, 153, 0.42), 0 4px 23px 0px rgba(0, 0, 0, 0.12), 0 8px 10px -5px rgba(153, 153, 153, 0.2);
+}
+/* end comms module schedule message page */
+
+
+/* Google recaptcha */
+.grecaptcha-badge {
+    visibility: hidden !important;
+}
+.grecaptcha-terms, .grecaptcha-terms a {
+    color: #ccc !important;
+    line-height: normal;
+}
+.grecaptcha-terms {
+    font-size: 0.85em !important;
+}
+/* end Google recaptcha */
+
+.online-reg {
+    background: #ddd !important;
+}
+
+.va-bottom {
+    vertical-align: bottom
+}
+
+label {
+    color: rgba(0,0,0,.6) !important;
+}
+
+.mat-radio-label,
+.mat-checkbox-layout,
+label.form-check-label {
+    color: #3c4858 !important;
+}
+
+.mat-primary .mat-pseudo-checkbox-checked,
+.mat-primary .mat-pseudo-checkbox-indeterminate {
+    border-color: transparent !important;
+}
+
+.mat-pseudo-checkbox-checked::after {
+    color: black !important;
+}
+
+.mat-pseudo-checkbox.mat-pseudo-checkbox-checked,
+.mat-pseudo-checkbox.mat-pseudo-checkbox-indeterminate {
+    background: transparent !important;
+}
+
+.mat-pseudo-checkbox {
+    border: none !important;
+}
+.flex-right{
+    justify-content: flex-end;
+}
+
+#iframeCode {
+    white-space: normal;
+    font-size: 0.7em;
+    display: block;
+    white-space: pre;
+    line-height: 1.5em;
+}
+
+/* Fix for ng-bootstrap modal */
+.cdk-overlay-container {
+    z-index: 1051 !important;
+}
+/* end Fix for ng-bootstrap modal */
+
+textarea.mat-input-element {
+    padding: 0 !important;
+}
+
+/* schema-form matwidgets */
+.formHelp {
+    font-size: smaller;
+}
+.nested-object legend {
+    font-size: large;
+    margin-top: 0 !important;
+}
+/* end schema-form matwidgets */
+
+/* app-stepper-widget */
+app-stepper-widget .mat-step-header .mat-step-icon-state-edit {
+    background-color: green !important;
+}
+
+.mat-step-disabled {
+    pointer-events: none;
+    opacity: 0.5;
+    color: #cccccc;
+}
+
+/* end app-stepper-widget */
+.dropdown-menu option:disabled {
+    color: #ccc;
+    cursor: not-allowed;
+}
+
+.mat-button-wrapper>* {
+    font-size: 1.3rem;
+}
+
+.err-msg-container {
+    height: 24px !important;
+}

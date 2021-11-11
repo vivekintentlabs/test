@@ -1,0 +1,21 @@
+<mat-form-field>
+    <mat-select [(ngModel)]="fieldConfig.value" [ngModelOptions]="{standalone: true}" [placeholder]="fieldConfig.name | translate"
+        [multiple]="fieldConfig.multiple" (selectionChange)="selectionChanged($event)">
+        <ng-container *ngIf="fieldConfig.multiple && fieldConfig.options.length > 0">
+            <mat-option [value]="'all'">Select All</mat-option>
+            <mat-option [value]="'clear'">Clear Filter</mat-option>
+            <mat-divider></mat-divider>
+        </ng-container>
+
+        <mat-option [ngSwitch]="fieldConfig.id" *ngFor="let option of fieldConfig.options" [value]="option.id">
+            <ng-container *ngSwitchCase="startingYear">{{option.value| startingYear: (startingMonth$ | async)}}</ng-container>
+            <ng-container *ngSwitchCase="studentStartingYear">{{option.value| startingYear: (startingMonth$ | async)}}</ng-container>
+            <ng-container *ngSwitchDefault>{{option.value | translate}}</ng-container>
+        </mat-option>
+    </mat-select>
+
+    <mat-icon *ngIf="!fieldConfig.mandatory" matSuffix class="remove-filter" matTooltip="Remove Filter"
+        matTooltipPosition="above" (click)="removeFilter()">
+        <i class="material-icons">highlight_off</i>
+    </mat-icon>
+</mat-form-field>

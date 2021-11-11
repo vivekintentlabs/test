@@ -1,0 +1,4 @@
+@import '~app/components/point-view/point-view-theme';
+
+@include point-view-color($concrete, $gray-dark);
+@include point-view-roundness($border-radius-large);

@@ -1,0 +1,45 @@
+<li class="nav-item dropdown"
+    *ngIf="!isMobileMenu() && userInfo.isSchoolEditorOrHigher() && capacityEvents && capacitySubTours">
+    <a class="nav-link" href="#navberNotifications" id="notificationsNavbar" data-toggle="dropdown" aria-haspopup="true"
+        aria-expanded="false">
+        <i class="material-icons">notifications</i>
+        <span *ngIf="capacityEvents.length>0 || capacitySubTours.length>0"
+            class="notification">{{capacityEvents.length + capacitySubTours.length}}</span>
+    </a>
+    <div class="dropdown-menu dropdown-menu-right capacity-drop" aria-labelledby="notificationsNavbarLabel">
+        <a class="dropdown-item pointer" *ngFor="let event of capacityEvents"
+            (click)="editEvent(event)">{{event.alert}}</a>
+        <a class="dropdown-item pointer" *ngFor="let st of capacitySubTours"
+            (click)="editSubTourEvent(st)">{{st.alert}}</a>
+        <a *ngIf="capacityEvents.length == 0 && capacitySubTours.length == 0"
+            class="dropdown-item text-success">Everything is OK</a>
+    </div>
+</li>
+
+<ul class="nav" *ngIf="isMobileMenu()">
+    <li class="nav-item" *ngIf="userInfo.isSchoolEditorOrHigher() && capacityEvents && capacitySubTours">
+        <a class="nav-link" data-toggle="collapse" href="#capacityEvents">
+            <i class="material-icons">notifications</i>
+            <p>
+                Notifications <span class="badge"
+                    *ngIf="capacityEvents.length>0 || capacitySubTours.length>0">{{capacityEvents.length + capacitySubTours.length}}</span>
+                <b class="caret"></b>
+            </p>
+        </a>
+        <div id="capacityEvents" class="collapse">
+            <ul class="nav">
+                <ng-container *ngIf="capacityEvents.length > 0 || capacitySubTours.length>0">
+                    <li class="nav-item" *ngFor="let event of capacityEvents">
+                        <a (click)="editEvent(event)" class="nav-link">{{ event.alert }}</a>
+                    </li>
+                    <li class="nav-item" *ngFor="let st of capacitySubTours">
+                        <a (click)="editSubTourEvent(st)" class="nav-link">{{ st.alert }}</a>
+                    </li>
+                </ng-container>
+                <li class="nav-item" *ngIf="capacityEvents.length == 0 && capacitySubTours.length == 0">
+                    <a class="text-success" class="nav-link">Everything is OK</a>
+                </li>
+            </ul>
+        </div>
+    </li>
+</ul>

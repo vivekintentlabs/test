@@ -1,0 +1,11 @@
+<div class="row text-center cards">
+    <div class="col-sm">
+        <point-view [label]="'Students'" [points]="students"></point-view>
+    </div>
+    <div class="col-sm">
+        <point-view [label]="'RSVP'" [points]="attending" [isYellow]="isYellow" [isRed]="isRed"></point-view>
+    </div>
+    <div class="col-sm">
+        <point-view [label]="'Checked In'" [points]="checkedIn"></point-view>
+    </div>
+</div>

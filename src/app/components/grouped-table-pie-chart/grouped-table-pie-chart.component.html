@@ -1,0 +1,30 @@
+<app-widget *ngIf="loaded" [params]="widgetParams" (callBack)="widgetCallBack($event)">
+    <div class="grouped-table-chart">
+        <div *ngFor="let groupedRow of groupedRows" class="row position-relative grouped-table-chart"
+            [ngClass]="{'grouped-single-row':(groupedRows.length > 1)}"
+            [ngStyle]="{'height': DEFAULT_ROW_HEIGHT*stages.length + 'px'}">
+            <div class="table-chart-legend-wrapper">
+                <div class="table-chart-legend" *ngFor="let legend of stages; index as j">
+                    <span class="table-chart-legend-text">{{ legend.name | translate }}</span>
+                    <span class="table-chart-legend-bg"><span class="{{ classNames[j]}}"></span></span>
+                </div>
+            </div>
+
+            <div class="pie-chart-col-empty" [ngStyle]="{'width': legendWidth + 'px'}"></div>
+
+            <div *ngFor="let pieChartData of groupedRow.pieChartDataSeries" class="pie-chart-col"
+                [ngStyle]="{'width': DEFAULT_COL_WIDTH + 'px'}">
+
+                <label class="pie-chart-title">{{ pieChartData.label }}</label>
+
+                <app-pie-chart [customWidth]="DEFAULT_HEIGHT" [customHeight]="DEFAULT_HEIGHT" [pieChartData]="pieChartData"
+                    [classNames]="classNames">
+                </app-pie-chart>
+
+                <div class="pie-chart-legend-wrapper">
+                    <div class="pie-chart-legend-item" *ngFor="let item of pieChartData.rawData">{{ item }}</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</app-widget>

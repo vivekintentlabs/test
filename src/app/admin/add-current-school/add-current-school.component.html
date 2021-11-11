@@ -1,0 +1,84 @@
+<div class="main-content">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="card">
+                    <div class="card-header card-header-icon card-header-primary">
+                        <div class="card-icon">
+                            <i class="material-icons">account_balance</i>
+                        </div>
+                        <h4 class="card-title">{{title}}
+                        </h4>
+                    </div>
+                    <div class="card-body">
+                        <form [formGroup]="formGroup" novalidate (ngSubmit)="onSubmit()" *ngIf="loaded">
+                            <div class="row">
+                                <div class="col-lg-7">
+                                    <div class="row">
+                                        <div class="col-lg-12">
+                                            <mat-form-field>
+                                                <input matInput placeholder="School Name" type="text" formControlName="schoolName" required>
+                                                <mat-error [hidden]="formGroup.controls.schoolName.valid || formGroup.controls.schoolName.pristine">
+                                                    School Name is required and should contain at least {{requiredTextFieldMinLength}} and at most {{requiredSchoolNameMaxLength}} characters.
+                                                </mat-error>
+                                            </mat-form-field>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-lg-6">
+                                            <mat-form-field>
+                                                <mat-select placeholder="Classification" formControlName="classificationId">
+                                                    <mat-option [value]="null">{{noItemSelected}} </mat-option>
+                                                    <mat-option *ngFor="let classification of classifications" [value]="classification.id">
+                                                        {{classification.name}}
+                                                    </mat-option>
+                                                </mat-select>
+                                            </mat-form-field>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-lg-6">
+                                            <mat-form-field>
+                                                <mat-select placeholder="Status" formControlName="statusId">
+                                                    <mat-option [value]="null">{{noItemSelected}} </mat-option>
+                                                    <mat-option *ngFor="let status of statuses" [value]="status.id">
+                                                        {{status.name}}
+                                                    </mat-option>
+                                                </mat-select>
+                                            </mat-form-field>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-lg-12">
+                                            <mat-form-field>
+                                                <input matInput [placeholder]="codeName" type="text"
+                                                    formControlName="synCode">
+                                                <mat-error [hidden]="formGroup.controls.synCode.valid || formGroup.controls.synCode.pristine">
+                                                    {{codeName}} should be no more than {{synCodeMaxLength}} characters.
+                                                </mat-error>
+                                            </mat-form-field>
+                                        </div>
+                                    </div>
+                                    <div class="row" *ngIf="school && school.currentSchoolDisplayOther && !currentSchoolId">
+                                        <div class="col-lg-12">
+                                            <div class="togglebutton">
+                                                <label>
+                                                    <input type="checkbox" formControlName="includeInList">
+                                                    <span class="toggle"></span>
+                                                    Include in this list
+                                                </label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <button type="submit" class="btn btn-success pull-right" [disabled]="!formGroup.valid || formGroup.pristine"
+                                [promiseBtn]="promiseForBtn">save</button>
+                            <button type="button" class="btn btn-cancel pull-right" (click)="onCancel()">Cancel</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,19 @@
+@import "~scss/theme/core/variables/colors";
+
+.logout {
+    a:hover {
+        color: $red !important;
+    }
+}
+
+.send {
+    a:hover {
+        color: $green-500 !important;
+    }
+}
+
+.dropdown-item {
+    &:hover {
+        color: $white !important;
+    }
+}

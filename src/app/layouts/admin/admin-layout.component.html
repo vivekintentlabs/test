@@ -1,0 +1,39 @@
+<div class="wrapper">
+    <div class="sidebar" data-color="orange" data-background-color="black" data-image="./assets/img/sidebar-1.jpg" [hidden]="userInfo.isSchoolRepresentative()">
+        <app-sidebar-cmp></app-sidebar-cmp>
+        <div class="sidebar-background" style="background-image: url(assets/img/sidebar-1.jpg)"></div>
+    </div>
+    <div class="main-panel">
+        <app-navbar-cmp [hidden]="userInfo.isSchoolRepresentative()"></app-navbar-cmp>
+        <router-outlet></router-outlet>
+    </div>
+
+    <div class="modal fade" id="modalET" tabindex="-1" role="dialog">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col text-center">
+                            <h5>
+                                {{brand.name}}<br /> 
+                                Version {{version}}<br />
+                                <a href="{{brand.whatsNewUrl}}" target="_blank">What’s new ?</a><br />
+                                (Frontend Build {{build}}, Backend Build {{backendBuild}}, Database Build {{dbBuild}})
+                            </h5>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col font-size-14">
+                            We are always working to make our products better and your feedback is critical to making
+                            them great. To give your valuable feedback, just click the Feedback button at the top right
+                            corner of the screen.
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-success mx-auto" data-dismiss="modal">Ok</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

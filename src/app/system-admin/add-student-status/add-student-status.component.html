@@ -1,0 +1,59 @@
+<div class="main-content">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="card">
+                    <div class="card-header card-header-icon card-header-primary">
+                        <div class="card-icon">
+                            <i class="material-icons">account_balance</i>
+                        </div>
+                        <h4 class="card-title">{{title}}
+                        </h4>
+                    </div>
+                    <div class="card-body">
+                        <form [formGroup]="formGroup" novalidate (ngSubmit)="onSubmit()" *ngIf="loaded">
+                            <div class="row">
+                                <div class="col-lg-7">
+                                    <label> {{description$ | async}} </label>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-lg-7">
+                                    <mat-form-field *ngIf="studentStatus.isModifiable !== false">
+                                        <mat-select placeholder="Stages" formControlName="stageId" required>
+                                            <mat-option [value]="null">{{noItemSelected}} </mat-option>
+                                            <mat-option *ngFor="let stage of stages" [value]="stage.id">
+                                                {{stage.name | translate}}
+                                            </mat-option>
+                                        </mat-select>
+                                        <mat-error *ngIf="!(formGroup.controls.stageId.valid || formGroup.controls.stageId.pristine)">
+                                            {{fieldRequired}}
+                                        </mat-error>
+                                    </mat-form-field>
+
+                                    <div *ngIf="studentStatus.isModifiable !== false">
+                                        <mat-form-field>
+                                            <input matInput placeholder="Status" type="text" formControlName="status" required>
+                                            <mat-error [hidden]="formGroup.controls.status.valid || formGroup.controls.status.pristine">
+                                                Status is required and should contain at least {{requiredTextFieldMinLength}} and at most {{nameMaxLength}} characters.
+                                            </mat-error>
+                                        </mat-form-field>
+                                    </div>
+                                    <mat-form-field>
+                                        <input matInput [placeholder]="codeName" type="text" formControlName="synCode">
+                                        <mat-error [hidden]="formGroup.controls.synCode.valid || formGroup.controls.synCode.pristine">
+                                            {{codeName}} should be no more than {{synCodeMaxLength}} characters.
+                                        </mat-error>
+                                    </mat-form-field>
+                                </div>
+                            </div>
+                            <button type="submit" class="btn btn-success pull-right" [disabled]="!formGroup.valid || formGroup.pristine"
+                                [promiseBtn]="promiseForBtn">save</button>
+                            <button type="button" class="btn btn-cancel pull-right" (click)="onCancel()">Cancel</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

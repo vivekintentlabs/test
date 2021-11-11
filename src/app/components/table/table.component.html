@@ -1,0 +1,136 @@
+<div class="row">
+    <div class="col-md-12">
+        <fieldset class="form-group" *ngIf="selectedCat">
+            <div class="table-responsive">
+                <table class="table table-no-bordered table-hover">
+                    <thead>
+                        <tr>
+                            <th *ngIf="selectedCat.canAddRemoveItems">
+                                <mat-checkbox (change)="selectAll($event.checked)" [checked]="isAllSelected()">
+                                </mat-checkbox>
+                            </th>
+                            <th>Name</th>
+                            <th>{{synCodeTitle}}</th>
+                            <th>Include in List</th>
+                            <th class="text-right">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <ng-container *ngFor="let item of items; let i = index">
+                            <tr>
+                                <td *ngIf="selectedCat.canAddRemoveItems">
+                                    <mat-checkbox (change)="select(item.id, $event.checked)" [(ngModel)]="item.check" [disabled]="!item.isDeletable">
+                                    </mat-checkbox>
+                                </td>
+                                <td>{{item.name}}</td>
+                                <td>{{item.synCode}}</td>
+                                <td>
+                                    <mat-checkbox [checked]="item.includeInList" (change)="changedIncludeInList($event.checked, item)">
+                                    </mat-checkbox>
+                                </td>
+                                <td class="td-actions text-right">
+                                    <button [disabled]="i === 0" mat-raised-button type="button"
+                                        class="btn btn-info btn-link" matTooltip="Up" matTooltipPosition="left"
+                                        (click)="changeSequence(item.id, item.sequence, true)">
+                                        <i class="material-icons">arrow_upward</i>
+                                    </button>
+                                    <button [disabled]="(items.length-1) === i" mat-raised-button type="button"
+                                        class="btn btn-info btn-link" matTooltip="Down" matTooltipPosition="left"
+                                        (click)="changeSequence(item.id, item.sequence, false)">
+                                        <i class="material-icons">arrow_downward</i>
+                                    </button>
+                                    <button mat-raised-button type="button" class="btn btn-success btn-link"
+                                        (click)="edit(item)" matTooltip="Edit" matTooltipPosition="left">
+                                        <i class="material-icons">edit</i>
+                                    </button>
+                                    <div *ngIf="selectedCat.canAddRemoveItems" class="d-inline"
+                                        matTooltip="{{ (!item.isDeletable)?reservedBySystem:'Delete'}}"
+                                        matTooltipPosition="left">
+                                        <button mat-raised-button type="button" class="btn btn-danger btn-link"
+                                            [disabled]="!item.isDeletable" (click)="remove(item)">
+                                            <i class="material-icons">delete_outline</i>
+                                        </button>
+                                    </div>
+                                </td>
+                            </tr>
+                        </ng-container>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="row" *ngIf="selectedCat.canAddRemoveItems">
+                <div class="col-md-12">
+                    <button type="button" mat-raised-button class="btn btn-primary pull-right" (click)="addItem()">
+                        <i class="material-icons">playlist_add</i> Add New
+                    </button>
+
+                    <label class="btn-bs-file btn btn-primary pull-right text-white">Import
+                        <input #fileInput type="file" accept="{{allowedFormats.join(', ')}}" (change)="import()" />
+                    </label>
+
+                    <button *ngIf="selectedIds.length > 1" class="btn btn-secondary pull-right"
+                        mat-raised-button type="button" (click)="merge()"> <i class="material-icons">call_merge</i> Merge
+                    </button>
+
+                    <button *ngIf="selectedIds.length > 0" type="button" mat-raised-button
+                        class="btn btn-delete pull-right" (click)="removeAll()">
+                        Delete Selected Item(s)
+                    </button>
+                </div>
+            </div>
+        </fieldset>
+    </div>
+</div>
+
+<div class="modal fade" id="listEditModal" tabindex="-1" role="dialog" aria-labelledby="listEditModalLabel">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title text-left" id="listEditModalLabel">{{ title }}</h4>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <form [formGroup]="listForm" novalidate *ngIf="listForm">
+                <div class="modal-body">
+                    <div class="row" *ngIf="description">
+                        <div class="col-lg-12">
+                            <label> {{description | translate}} </label>
+                        </div>
+                    </div>
+                    <div *ngIf="currentItem.isModifiable !== false">
+                        <mat-form-field>
+                            <input matInput placeholder="Name" type="text" formControlName="name" required>
+                            <mat-error
+                                [hidden]="listForm.controls.name.valid || listForm.controls.name.pristine">
+                                This field is required and max length is {{requiredListItemNameMaxLength}}.
+                            </mat-error>
+                        </mat-form-field>
+                    </div>
+                    <mat-form-field>
+                        <input matInput [placeholder]="synCodeTitle" type="text" formControlName="synCode">
+                        <mat-error
+                            [hidden]="listForm.controls.synCode.valid || listForm.controls.synCode.pristine">
+                            {{synCodeTitle}} should be no more than {{synCodeMaxLength}} characters.
+                        </mat-error>
+                    </mat-form-field>
+                    <div class="row"
+                        *ngIf="selectedCat.listSetting && selectedCat.listSetting.displayOther && currentItem.isModifiable !== false">
+                        <div class="col-sm-12">
+                            <mat-checkbox formControlName="includeInList">
+                                Include in List
+                            </mat-checkbox>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" mat-raised-button class="btn btn-cancel mx-1" data-dismiss="modal">Cancel
+                    </button>
+                    <button type="button" mat-raised-button class="btn btn-success" [promiseBtn]="promiseForBtn"
+                        [disabled]="!listForm.valid || listForm.pristine" (click)="onSubmit()">Save
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

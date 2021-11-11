@@ -1,0 +1,72 @@
+<div class="main-content">
+    <div class="container-fluid">
+
+        <div class="card">
+            <div class="card-header card-header-icon card-header-primary">
+                <div class="card-icon">
+                    <i class="material-icons">event_available</i>
+                </div>
+                <h4 class="card-title">Events/Personal Tours - All Schools</h4>
+            </div>
+
+            <div class="card-body">
+                <div class="toolbar">
+                    <div class="col-2 pl-0">
+                        <mat-form-field>
+                            <input matInput [matDatepicker]="picker" placeholder="Choose a date (UTC)" (dateChange)="dateChange($event)">
+                            <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+                            <mat-datepicker #picker></mat-datepicker>
+                        </mat-form-field>
+                    </div>
+                </div>
+                <hr>
+                <div class="row cards">
+                    <div class="col-6">
+                        <div class="table-responsive">
+                            <table class="table table-no-bordered table-hover" cellspacing="0" width="100%" style="width:100%">
+                                <thead>
+                                    <tr>
+                                        <th class="text-center">Events</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr *ngFor="let item of events">
+                                        <td class="text-center">
+                                            {{(item.school)?item.school.name:''}} - {{(item.schoolTour)?item.schoolTour.name:''}} - {{item.date + ' ' + item.time|date: 'dd/MM/yyyy HH:mm UTC'}} - {{item.date + ' ' + item.endTime|date: 'HH:mm UTC'}}
+                                        </td>
+                                    </tr>
+                                    <tr *ngIf="events.length === 0">
+                                        <td colspan="10" class="text-center">No data available in table</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <div class="col-6">
+                        <div class="table-responsive">
+                            <table class="table table-no-bordered table-hover" cellspacing="0" width="100%" style="width:100%">
+                                <thead>
+                                    <tr>
+                                        <th class="text-center">Personal Tours</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr *ngFor="let item of personalTours">
+                                        <td class="text-center">
+                                            {{(item.school)?item.school.name:''}} - {{item.date + ' ' + item.time|date: 'dd/MM/yyyy HH:mm UTC'}} - {{item.date + ' ' + item.endTime|date: 'HH:mm UTC'}}
+                                        </td>
+                                    </tr>
+                                    <tr *ngIf="personalTours.length === 0">
+                                        <td colspan="10" class="text-center">No data available in table</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+</div>

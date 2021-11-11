@@ -1,0 +1,10 @@
+@import '~scss/theme/core/variables/colors';
+@import '~scss/theme/core/variables/brand';
+
+.hidden {
+    display: none;
+}
+.green {
+    background-color: $brand-success;
+    color: $white;
+}

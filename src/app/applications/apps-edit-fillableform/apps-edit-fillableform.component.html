@@ -1,0 +1,43 @@
+<div class="main-content">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="card">
+                    <div class="card-header card-header-icon card-header-primary">
+                        <div class="card-icon">
+                            <i class="material-icons">assignment</i>
+                        </div>
+                        <h4 class="card-title">Submitted Application <sup [ngClass]="{'d-none': !formChanged}">*</sup></h4>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col">
+                                <div *ngIf="!appForm" class="w-100">
+                                    <mat-spinner class="mx-auto" [diameter]="45"></mat-spinner>
+                                </div>
+                                <apps-info-panel *ngIf="modelLoaded$ | async" [applicationStatus]="applicationStatus"
+                                    [studentStatus]="studentStatus" [dateSubmitted]="dateSubmitted" [exportDate]="exportDate">
+                                </apps-info-panel>
+                                <div class="row my-2">
+                                    <div class="col-md-8 text-left">
+                                        <button class="btn btn-secondary" mat-raised-button type="button" [disabled]="!appForm" (click)="sendEmail()">Send Email</button>
+                                        <button class="btn btn-primary" mat-raised-button type="button" [disabled]="!appForm" (click)="download()">Download Documents</button>
+                                    </div>
+                                    <div class="col-md-4 text-right">
+                                        <button class="btn btn-cancel mx-1" mat-raised-button type="button"
+                                                (click)="onCancel()">Cancel</button>
+                                        <button *ngIf="appForm" class="btn btn-success" mat-raised-button type="submit" [disabled]="appForm.applicationStatus === ApplicationStatusFinalized" (click)="onSubmit()">Save
+                                        </button>
+                                    </div>
+                                </div>
+                                <sf-form *ngIf="appForm" [schema]="appForm.form" [(ngModel)]="appForm.model" (isValid)="isValid($event)" (onChange)="onChange($event.value)"
+                                    [validators]="customValidators" [bindings]="customBindings">
+                                </sf-form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

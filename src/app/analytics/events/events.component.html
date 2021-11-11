@@ -1,0 +1,199 @@
+<div class="main-content">
+    <div class="container-fluid">
+        <form [formGroup]="eventAnalyticsForm" novalidate *ngIf="loaded">
+            <div class="row">
+                <div class="col">
+                    <div class="card">
+                        <div class="card-header card-header-icon card-header-primary">
+                            <div class="card-icon">
+                                <i class="material-icons-outlined">event</i>
+                            </div>
+                            <h4 class="card-title">Events & Tours</h4>
+                            <div class="row pt-2">
+                                <div class="col-md-2">
+                                    <mat-form-field>
+                                        <mat-select placeholder="Year" formControlName="eventYear" (selectionChange)="eventYearChanged($event.value)">
+                                            <mat-option *ngFor="let y of eventYears" [value]="y">{{y}}</mat-option>
+                                        </mat-select>
+                                    </mat-form-field>
+                                </div>
+                                <div class="col-md-2">
+                                    <mat-form-field>
+                                        <mat-select placeholder="Event Type" formControlName="schoolTourId"
+                                            (selectionChange)="eventTypeChanged($event.value)">
+                                            <mat-option value="all">All</mat-option>
+                                            <mat-option *ngFor="let et of eventTypeList" [value]="et.id">{{et.name}}</mat-option>
+                                        </mat-select>
+                                    </mat-form-field>
+                                </div>
+                                <div class="col-md-2"></div>
+                                <div class="col-md-5"></div>
+                            </div>
+                        </div>
+                        <div class="card-body">
+                            <div class="row" hidden>
+                                <div class="col-md-12">
+                                    <div class="card">
+                                        <div class="card-body">
+                                            <app-bar-chart [inputBarChart]="inputBarChart" [labels]="labels"></app-bar-chart>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md">
+                                    <app-events-attendee-statistics [events]="events"></app-events-attendee-statistics>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <app-events-summary [events]="events"></app-events-summary>
+                                </div>
+                            </div>
+                            <app-bar-chart-stacked-horizontal [title]="'Registered Attendee Statistics'" [offsetY]="offsetY"
+                                [inputBarChart]="inputStackedStatusBarChart"></app-bar-chart-stacked-horizontal>
+                            <div class="card">
+                                <div class="card-header card-header-icon card-header-primary">
+                                    <div class="card-icon">
+                                        <i class="material-icons-outlined">table_chart</i>
+                                    </div>
+                                    <h4 class="card-title">Student Statistics by Starting Year</h4>
+                                </div>
+                                <div class="card-body">
+                                    <div class="toolbar">
+                                        <div class="row" *ngIf="attendeesByStartingYear.length !== 0">
+                                            <div class="col-md-3" class="reg-margin">
+                                                <label class="registrants">Registrants&nbsp;&nbsp;</label>
+                                                <div class="form-check form-check-radio form-check-inline">
+                                                    <label class="form-check-label registrants">
+                                                        <input class="form-check-input" type="radio" value="all"
+                                                            formControlName="registrants" (change)="initEventAttendeesByStartingYear()">
+                                                        All
+                                                        <span class="circle">
+                                                            <span class="check"></span>
+                                                        </span>
+                                                    </label>
+                                                </div>
+                                                <div class="form-check form-check-radio form-check-inline">
+                                                    <label class="form-check-label registrants">
+                                                        <input class="form-check-input" type="radio" value="attended_only"
+                                                            formControlName="registrants" (change)="initEventAttendeesByStartingYear()">
+                                                        Attended only
+                                                        <span class="circle">
+                                                            <span class="check"></span>
+                                                        </span>
+                                                    </label>
+                                                </div>
+                                            </div>
+                                            <div *ngIf="isResponsive" class="col-md-4" (click)="scrollTableLeft()">
+                                                <h5 *ngIf="isResponsive && showScrollTableLeft" class="card-title pull-left pointer">
+                                                    <i class="fa fa-arrow-left pointer" aria-hidden="true"></i>
+                                                    Scroll to view more
+                                                </h5>
+                                            </div>
+                                            <div *ngIf="isResponsive" class="col-md-5" (click)="scrollTableRight()">
+                                                <h5 *ngIf="isResponsive && showScrollTableRight" class="card-title pull-right pointer">
+                                                    Scroll to view more
+                                                    <i class="fa fa-arrow-right pointer" aria-hidden="true"></i>
+                                                </h5>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div id="tableResponsiveAttendees" #tableResponsiveAttendees (window:resize)="onResize($event)">
+                                        <table class="table table-bordered" #tableaAttendees *ngIf="attendeesByStartingYear.length !== 0">
+                                            <thead>
+                                                <tr>
+                                                    <th class="headcol-1">Starting Year</th>
+                                                    <th class="headcol-2" style="height: 50px;"></th>
+                                                    <th class="headcol-3 brt-2" style="height: 50px;"></th>
+                                                    <th class="text-center" *ngFor="let y of intakeYears"
+                                                        [attr.colspan]="yearLevelNames.length">
+                                                        {{y | startingYear: (startingMonth$ | async) : false}}</th>
+                                                </tr>
+                                                <tr>
+                                                    <th [style.min-height.px]="headerHeight" class="headcol-1 header-vc">Event</th>
+                                                    <th [style.min-height.px]="headerHeight" class="headcol-2 header-vc">Date</th>
+                                                    <th [style.min-height.px]="headerHeight"class="headcol-3 header-vc brt-2">Total</th>
+                                                    <ng-container *ngFor="let y of intakeYears">
+                                                        <ng-container *ngFor="let sIY of yearLevelNames">
+                                                            <th #yearLevelHeader [matTooltip]="sIY">{{sIY | abbr}}</th>
+                                                        </ng-container>
+                                                    </ng-container>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr *ngFor="let e of attendeesByStartingYear; let i = index">
+                                                    <td class="headcol-1" [ngClass]="{'bbt-2':(i+1 === attendeesByStartingYear.length)}">
+                                                        <span matTooltip="{{ e.eventName.length > 26 ? e.eventName : '' }}"
+                                                            matTooltipPosition="above">{{ (e.eventName.length>26)?
+                                                            (e.eventName | slice:0:26) +
+                                                            '...':(e.eventName)}}</span>
+                                                    </td>
+                                                    <td class="headcol-2" [ngClass]="{'bbt-2':(i+1 === attendeesByStartingYear.length)}">{{e.date}}</td>
+                                                    <td class="headcol-3 brt-2" [ngClass]="{'bbt-2':(i+1 === attendeesByStartingYear.length)}">{{e.totalStudents}}</td>
+                                                    <ng-container *ngFor="let at of e.attendees">
+                                                        <td [ngClass]="{'bbt-2':(i+1 === attendeesByStartingYear.length)}">
+                                                            {{(at === 0) ? '-' : at}}</td>
+                                                    </ng-container>
+                                                </tr>
+                                                <tr>
+                                                    <td class="headcol-1 bbt-2">Total</td>
+                                                    <td class="headcol-2 bbt-2" style="height: 51px;"></td>
+                                                    <td class="headcol-3 bbt-2 brt-2">{{sumStudents}}</td>
+                                                    <ng-container *ngFor="let t of totalAttendees">
+                                                        <td class="bbt-2">{{(t === 0) ? '-' : t}}</td>
+                                                    </ng-container>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                    <div class="table-responsive" *ngIf="attendeesByStartingYear.length === 0">
+                                        <table class="table table-no-bordered table-hover w-100"
+                                            cellspacing="0" width="100%">
+                                            <tbody>
+                                                <tr>
+                                                    <td class="text-center">No data available in table</td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col">
+                    <div class="card">
+                        <div class="card-header card-header-icon card-header-primary">
+                            <div class="card-icon">
+                                <i class="material-icons-outlined">date_range</i>
+                            </div>
+                            <h4 class="card-title">Personal Tours</h4>
+                            <div class="row pt-2">
+                                <div class="col-md-2">
+                                    <mat-form-field>
+                                        <mat-select placeholder="Year" formControlName="ptYear" (selectionChange)="ptYearChanged($event.value)">
+                                            <mat-option *ngFor="let y of ptYears" [value]="y">{{y}}</mat-option>
+                                        </mat-select>
+                                    </mat-form-field>
+                                </div>
+                                <div class="col-md-2"></div>
+                                <div class="col-md-2"></div>
+                                <div class="col-md-5"></div>
+                            </div>
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <app-personal-tour-summary [allPersonalTours]="personalTours"></app-personal-tour-summary>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>

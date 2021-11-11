@@ -1,0 +1,95 @@
+$primary-teal-50: #e1f8fa !default;
+$primary-teal-100: #b3eef2 !default;
+$primary-teal-200: #82e3ea !default;
+$primary-teal-300: #50d7e2 !default;
+$primary-teal-400: #28cedc !default;
+$primary-teal-500: #00c5d7 !default;
+$primary-teal-600: #00b4c3 !default;
+$primary-teal-700: #009eaa !default;
+$primary-teal-800: #018a92 !default;
+$primary-teal-900: #016767 !default;
+$primary-teal-a100: #80f2ff !default;
+$primary-teal-a200: #42f9ff !default;
+$primary-teal-a400: #00f7ff !default;
+$primary-teal-a700: #00fff7 !default;
+
+$link-blue-50: #e4f2fa !default;
+$link-blue-100: #bedff5 !default;
+$link-blue-200: #96cbee !default;
+$link-blue-300: #70b7e7 !default;
+$link-blue-400: #55a8e3 !default;
+$link-blue-500: #3e99df !default;
+$link-blue-600: #368cd2 !default;
+$link-blue-700: #2d7ac0 !default;
+$link-blue-800: #256aae !default;
+$link-blue-900: #194d8f !default;
+$link-blue-a100: #80c1ff !default;
+$link-blue-a200: #42b0ff !default;
+$link-blue-a400: #0095ff !default;
+$link-blue-a700: #00b7ff !default;
+
+$mat-custom-primary: (
+  50: $primary-teal-50,
+  100: $primary-teal-100,
+  200: $primary-teal-200,
+  300: $primary-teal-300,
+  400: $primary-teal-400,
+  500: $primary-teal-500,
+  600: $primary-teal-600,
+  700: $primary-teal-700,
+  800: $primary-teal-800,
+  900: $primary-teal-900,
+  A100: $primary-teal-a100,
+  A200: $primary-teal-a200,
+  A400: $primary-teal-a400,
+  A700: $primary-teal-a700,
+  contrast: (
+    50: $dark-primary-text,
+    100: $dark-primary-text,
+    200: $dark-primary-text,
+    300: $light-primary-text,
+    400: $light-primary-text,
+    500: $light-primary-text,
+    600: $light-primary-text,
+    700: $light-primary-text,
+    800: $light-primary-text,
+    900: $light-primary-text,
+    A100: $dark-primary-text,
+    A200: $light-primary-text,
+    A400: $light-primary-text,
+    A700: $light-primary-text,
+  ),
+) !default;
+
+$mat-custom-accent: (
+  50: $link-blue-50,
+  100: $link-blue-100,
+  200: $link-blue-200,
+  300: $link-blue-300,
+  400: $link-blue-400,
+  500: $link-blue-500,
+  600: $link-blue-600,
+  700: $link-blue-700,
+  800: $link-blue-800,
+  900: $link-blue-900,
+  A100: $link-blue-a100,
+  A200: $link-blue-a200,
+  A400: $link-blue-a400,
+  A700: $link-blue-a700,
+  contrast: (
+    50: $dark-primary-text,
+    100: $dark-primary-text,
+    200: $dark-primary-text,
+    300: $dark-primary-text,
+    400: $dark-primary-text,
+    500: $light-primary-text,
+    600: $light-primary-text,
+    700: $light-primary-text,
+    800: $light-primary-text,
+    900: $light-primary-text,
+    A100: $dark-primary-text,
+    A200: $dark-primary-text,
+    A400: $dark-primary-text,
+    A700: $dark-primary-text,
+  )
+) !default;

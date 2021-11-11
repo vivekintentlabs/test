@@ -1,0 +1,258 @@
+<div class="main-content">
+    <div class="container-fluid" *ngIf="commService.isModuleActive">
+        <div class="row">
+            <div class="col-md-12">
+                <h4 class="mb-2">{{ title }}</h4>
+                <div class="card">
+                    <div class="card-body">
+                        <form [formGroup]="emailForm" *ngIf="emailForm">
+                            <div class="row">
+                                <div class="col-md-7">
+                                    <h3 class="mt-2">
+                                        Who should receive this message?
+                                    </h3>
+                                    <br /><br /><br /><br /><br />
+                                    <h4>Step 1. Select Audience</h4>
+                                </div>
+                                <div class="col-md-5">
+                                    <div class="row">
+                                        <div class="col">
+                                            <h4 class="mt-3">Audience Segment</h4>
+                                        </div>
+                                    </div>
+                                    <div class="row schedule-message-stats cards">
+                                        <div class="col-md-6">
+                                            <point-view [ngClass]="{'disabled-count': !subscribedContactsAmount}" (click)="showScheduledAudienceModal()" [isSpinner]="subscribedStudentsAmount < 0" [label]="'Total Students'" [points]="subscribedStudentsAmount"></point-view>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <point-view [ngClass]="{'disabled-count': !subscribedContactsAmount}" (click)="showScheduledAudienceModal()" [isSpinner]="subscribedContactsAmount < 0" [label]="'Subscribed Contacts'" [points]="subscribedContactsAmount"></point-view>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-4" *ngIf="campuses && campuses.length > 2">
+                                    <mat-form-field>
+                                        <mat-select placeholder="Campus" formControlName="campusId" required (selectionChange)="getContactsAndStudents()">
+                                            <mat-option value="all">All</mat-option>
+                                            <mat-option *ngFor="let campus of campuses" [value]="campus.id">
+                                                {{campus.name}}
+                                            </mat-option>
+                                        </mat-select>
+                                    </mat-form-field>
+                                </div>
+                                <div class="col-md-12">
+                                    <div class="row" *ngIf="subscribedContacts">
+                                        <div class="col">
+                                            <app-contact-filter [contacts]="subscribedContacts" [school]="school" [values]="filterValues"
+                                                (filteredValues)="filteredValues($event)" (filtered)="filterContacts($event)"
+                                                [useLocalStorage]="false">
+                                            </app-contact-filter>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-7">
+                                    <h4>Step 2. Specify Activity</h4>
+                                    <mat-checkbox [checked]="emailForm.controls.log.value" formControlName="log">
+                                        Record Activity log entry for each student when message is sent
+                                    </mat-checkbox>
+                                    <mat-form-field >
+                                        <input matInput type="text" placeholder="Activity Description" formControlName="activity" [attr.disabled]="(emailForm.controls.log.value) ? null : ''" [required]="emailForm.controls.log.value">
+                                        <mat-error [hidden]="!emailForm.controls.log.value || (emailForm.controls.log.value && emailForm.controls.activity.valid)">
+                                            This field is required and max length is {{ACTIVITY_DESCRIPTION_MAX_LENGTH}}.
+                                        </mat-error>
+                                    </mat-form-field>
+                                </div>
+                            </div><br />
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <h3>
+                                        When should this message be sent?
+                                    </h3>
+                                </div>
+                                <div class="col-md-12">
+                                    <div class="row">
+                                        <label class="col-1 my-2 required">Send</label>
+                                        <div class="col-11">
+                                            <div class="row">
+                                                <div class="col">
+                                                    <div class="form-check form-check-radio">
+                                                        <label class="form-check-label">
+                                                            <input class="form-check-input" value="0" [checked]="emailForm.controls.whenSend.value == 0" type="radio"
+                                                            formControlName="whenSend" (click)="sendChanged($event.target.value)"> Save as draft
+                                                            <span class="circle">
+                                                                <span class="check"></span>
+                                                            </span>
+                                                        </label>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col">
+                                                    <div class="form-check form-check-radio">
+                                                        <label class="form-check-label">
+                                                            <input class="form-check-input" value="1" [checked]="emailForm.controls.whenSend.value == 1" type="radio"
+                                                            formControlName="whenSend" (click)="sendChanged($event.target.value)"> Immediately
+                                                            <span class="circle">
+                                                                <span class="check"></span>
+                                                            </span>
+                                                        </label>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col">
+                                                    <div class="form-check form-check-radio">
+                                                        <label class="form-check-label">
+                                                            <input class="form-check-input" value="2" [checked]="emailForm.controls.whenSend.value == 2" type="radio" formControlName="whenSend" (click)="sendChanged($event.target.value)"> Schedule (Based on {{curCampus.timeZoneId}} timezone)
+                                                            <span class="circle">
+                                                                <span class="check"></span>
+                                                            </span>
+                                                        </label>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-md-1"></div>
+                                                <div class="col-md-3 mr-2">
+                                                    <label class="col-form-label required">Date</label>
+                                                    <mat-form-field>
+                                                        <input matInput (dateChange)="dateChanged($event.target.value)" [min]="todayDate" [matDatepicker]="date" placeholder="" formControlName="date" [disabled]="(emailForm.controls.whenSend.value != 2)">
+                                                        <mat-datepicker-toggle matSuffix [for]="date"></mat-datepicker-toggle>
+                                                        <mat-datepicker #date></mat-datepicker>
+                                                    </mat-form-field>
+                                                </div>
+                                                <div class="col-md-3">
+                                                    <label class="col-form-label required">Time (Hours only)</label>
+                                                    <mat-form-field>
+                                                        <input matInput atp-time-picker type="time" formControlName="time" readonly [disabled]="(emailForm.controls.whenSend.value != 2)" />
+                                                        <span matSuffix>
+                                                            <i [ngClass]="{'disabled':(emailForm.controls.whenSend.value != 2)}" class="material-icons clickable text-muted font-1-5em" (click)="timeChanged(emailForm.controls.time, '9:00')">access_time</i>
+                                                        </span>
+                                                    </mat-form-field>
+                                                </div>
+                                                <div class="col"></div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row mt-4">
+                                <div class="col text-right">
+                                    <button type="button" mat-raised-button class="btn btn-cancel mx-1" [disabled]="isSubmitted" (click)="onCancel()">Cancel</button>
+                                    <button type="button" mat-raised-button class="ml-2 mr-2 btn btn-success" [disabled]="(subscribedContactsAmount < 1 && emailForm.controls.whenSend.value != 0) || isSubmitted || !emailForm.valid || emailForm.pristine || (emailForm.controls.whenSend.value == 2 && (scheduledDate == '' || scheduledTime == ''))" (click)="onSubmit()">{{ saveBtnText }}</button>
+                                    <mat-spinner [ngClass]="{'d-none':!isSubmitted}" [diameter]="30"></mat-spinner>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal fade" id="scheduledContactsModal" role="dialog">
+        <div class="modal-dialog modal-xl" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title text-left">Scheduled audience</h4>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                    <p>For multiple contacts using the same email address, the information from the first contact listed will be used when inserting fields in your email.</p>
+                </div>
+                <div class="modal-body">
+                    <mat-form-field>
+                        <input matInput (keyup)="applyFilter($event.target.value)" placeholder="Filter">
+                    </mat-form-field>
+                    <table mat-table [dataSource]="scheduledAudienceDataSource" matSort>
+                        <ng-container matColumnDef="email">
+                            <th mat-header-cell *matHeaderCellDef mat-sort-header>Email</th>
+                            <td mat-cell *matCellDef="let element"> {{element.email}} </td>
+                        </ng-container>
+                        <ng-container matColumnDef="contactInfo">
+                            <th mat-header-cell *matHeaderCellDef>
+                                <table class="table table-in">
+                                    <thead>
+                                        <tr>
+                                            <th class="contact-info-col">
+                                                <table class="table table-in">
+                                                    <thead>
+                                                        <tr>
+                                                            <th colspan="2">Contact Info</th>
+                                                        </tr>
+                                                        <tr>
+                                                            <th>First Name</th>
+                                                            <th>Last Name</th>
+                                                        </tr>
+                                                    </thead>
+                                                </table>
+                                            </th>
+                                            <th class="contact-rel-col">
+                                                <table class="table table-in">
+                                                    <thead>
+                                                        <tr>
+                                                            <th colspan="6">Students & Contact Relationships</th>
+                                                        </tr>
+                                                        <tr class="custom-size-row-cols">
+                                                            <th>First Name</th>
+                                                            <th>Last Name</th>
+                                                            <th>Contact Type</th>
+                                                            <th>Relationship Type</th>
+                                                            <th>{{'et.year' | translate}} Level</th>
+                                                            <th>Year of Entry</th>
+                                                        </tr>
+                                                    </thead>
+                                                </table>
+                                            </th>
+                                        </tr>
+                                    </thead>
+                                </table>
+                            </th>
+                            <td mat-cell *matCellDef="let element">
+                                <table class="table">
+                                    <tbody>
+                                        <tr *ngFor="let contact of element.contacts">
+                                            <td class="mat-column-firstname">{{ contact.firstName }}</td>
+                                            <td class="mat-column-lastname">{{ contact.lastName }}</td>
+                                            <td class="mat-column-contacts">
+                                                <mat-expansion-panel [disabled]="contact.students.length < 2">
+                                                    <mat-expansion-panel-header>
+                                                        <table class="table table-sm">
+                                                            <tbody>
+                                                                <tr *ngFor="let student of contact.students | slice:0:1" class="custom-size-row-cols">
+                                                                    <td>{{ student.firstName }}</td>
+                                                                    <td>{{ student.lastName }}</td>
+                                                                    <td>{{ student.contactTypeName }}</td>
+                                                                    <td>{{ student.relationshipTypeName }}</td>
+                                                                    <td>{{ student.schoolIntakeYearName }}</td>
+                                                                    <td>{{ student.startingYear | startingYear: (startingMonth$ | async) : true}}</td>
+                                                                </tr>
+                                                            </tbody>
+                                                        </table>
+                                                    </mat-expansion-panel-header>
+                                                    <table class="table table-sm">
+                                                        <tbody>
+                                                            <tr *ngFor="let student of contact.students | slice:1" class="custom-size-row-cols">
+                                                                <td>{{ student.firstName }}</td>
+                                                                <td>{{ student.lastName }}</td>
+                                                                <td>{{ student.contactTypeName }}</td>
+                                                                <td>{{ student.relationshipTypeName }}</td>
+                                                                <td>{{ student.schoolIntakeYearName }}</td>
+                                                                <td>{{ student.startingYear | startingYear: (startingMonth$ | async) : true}}</td>
+                                                            </tr>
+                                                        </tbody>
+                                                    </table>
+                                                </mat-expansion-panel>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </td>
+                        </ng-container>
+                        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+                        <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+                    </table>
+                    <mat-paginator [pageSizeOptions]="[5, 10, 20]" showFirstLastButtons></mat-paginator>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

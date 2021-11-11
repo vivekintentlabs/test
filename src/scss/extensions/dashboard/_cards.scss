@@ -1,0 +1,20 @@
+.card-footer.view-link-area {
+  border-top: 1px solid $gray-lighter;
+  display: flex;
+  flex-direction: row-reverse;
+  margin: 0px;
+  padding: 0px 15px;
+}
+
+// for the sadly nested footer
+.card-body .card-footer {
+  width: calc(100% + 40px);
+  margin-left: -20px;
+  margin-bottom: -15px;
+}
+
+.widget {
+  form {
+    margin-bottom: 0px;
+  }
+}

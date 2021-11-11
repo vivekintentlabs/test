@@ -1,0 +1,5 @@
+<div id="contactFilterCmp" *ngIf="filters">
+    <app-filter-constellation [debugMode]="false" [filters]="filters" [filterValues]="values" [name]="filterName"
+        [useLocalStorage]="useLocalStorage" (filterChanged)="filterIsChanged($event)" (resetSearchText)="resetSearchText.emit()">
+    </app-filter-constellation>
+</div>

@@ -1,0 +1,147 @@
+<div class="main-content">
+    <div class="container-fluid">
+        <div class="card" *ngIf="specificCampusId">
+            <div class="card-header card-header-icon card-header-primary">
+                <div class="card-icon">
+                    <i class="material-icons-outlined">list</i>
+                </div>
+                <h4 class="card-title">{{ 'et.enrolment' | translate }} Target</h4>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <mat-form-field class="col-sm-3" *ngIf="campuses!=null && campuses.length > 1">
+                        <mat-select placeholder="Campus(es)" [(value)]="specificCampusId"
+                            (selectionChange)="campusChanged($event.value)">
+                            <mat-option *ngFor="let campus of campuses" [value]="campus.id">
+                                {{campus.name}}
+                            </mat-option>
+                        </mat-select>
+                    </mat-form-field>
+                </div>
+                <div class="table-responsive">
+                    <table class="table table-no-bordered table-hover">
+                        <thead>
+                            <tr>
+                                <th></th>
+                                <th></th>
+                                <th class="text-center" *ngFor="let intakeYearLevel of intakeYearLevels" colspan="2">
+                                    {{ intakeYearLevel.name }}
+                                </th>
+                                <th></th>
+                            </tr>
+                            <tr>
+                                <th>Starting Year</th>
+                                <th>{{ 'et.enrol' | translate }} Date</th>
+                                <ng-container *ngFor="let intakeYearLevel of intakeYearLevels">
+                                    <th>{{ 'et.year' | translate }} Level Max</th>
+                                    <th>Available Places</th>
+                                </ng-container>
+                                <th class="text-right">{{ 'Actions' }}</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr *ngFor="let intakeClassYear of intakeClassYears">
+                                <td>{{ intakeClassYear.intakeClass | startingYear: startingMonth : true }}</td>
+                                <td>{{ intakeClassYear.startDate | localeDate: dateDelimiter }}</td>
+
+                                <ng-container *ngFor="let enrolmentTarget of intakeClassYear.enrolmentTargets">
+                                    <td>{{ enrolmentTarget.yearLevelMax }}</td>
+                                    <td>{{ enrolmentTarget.availablePlaces }}</td>
+                                </ng-container>
+
+                                <td class="td-actions text-right">
+                                    <button mat-raised-button type="button" class="btn btn-success btn-link"
+                                        matTooltip="Edit" matTooltipPosition="left"
+                                        (click)="editIntakeClass(intakeClassYear.id)">
+                                        <i class="material-icons">edit</i>
+                                    </button>
+                                    <button mat-raised-button type="button" class="btn btn-danger btn-link"
+                                        matTooltip="Delete" matTooltipPosition="left"
+                                        (click)="deleteIntakeClass(intakeClassYear.id)">
+                                        <i class="material-icons">delete_outline</i>
+                                    </button>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <button type="button" mat-raised-button class="btn btn-primary float-right"
+                    (click)="editIntakeClass(null)">Add New</button>
+            </div>
+
+            <div class="modal fade" id="enrolmentTargetModal" tabindex="-1" role="dialog"
+                aria-labelledby="enrolmentTargetModalLabel">
+                <div class="modal-dialog modal-lg" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h4 class="modal-title text-left" id="enrolmentTargetModalLabel">
+                                {{title}} - {{'et.enrolment' | translate}} Targets
+                            </h4>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <form [formGroup]="enTargetForm" novalidate *ngIf="enTargetForm">
+                            <div class="modal-body">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <mat-form-field>
+                                            <mat-select placeholder="Starting Year" formControlName="intakeClass"
+                                                (selectionChange)="intakeClassChanged($event.value, enTargetForm.controls.id.value)" required>
+                                                <mat-option>{{noItemSelected}}</mat-option>
+                                                <mat-option *ngFor="let IntakeClass of IntakeClasses; let i = index"
+                                                    [value]="IntakeClass">{{ IntakeClass | startingYear: startingMonth }}</mat-option>
+                                            </mat-select>
+                                            <mat-error
+                                                [hidden]="enTargetForm.controls.intakeClass.valid || enTargetForm.controls.intakeClass.pristine"
+                                                class="text-danger">
+                                                This field should be unique.
+                                            </mat-error>
+                                        </mat-form-field>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <mat-form-field>
+                                            <input matInput [min]="minDate ? minDate : null"
+                                                [max]="maxDate ? maxDate : null" [matDatepicker]="startDate"
+                                                placeholder="{{ 'et.enrolment' | translate }} Start Date"
+                                                formControlName="startDate" (dateChange)="dateChanged($event.value)">
+                                            <mat-datepicker-toggle matSuffix [for]="startDate"></mat-datepicker-toggle>
+                                            <mat-datepicker #startDate></mat-datepicker>
+                                        </mat-form-field>
+                                    </div>
+                                </div>
+
+                                <ng-container *ngFor="let item of formStruct; let i = index">
+                                    <h5>{{item.classYear}}</h5>
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <mat-form-field class="example-full-width">
+                                                <input matInput type="number" [placeholder]="('et.year' | translate)+(' Level Max')"
+                                                    formControlName="{{item.yearLevelMax}}">
+                                            </mat-form-field>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <mat-form-field class="example-full-width">
+                                                <input matInput type="number" placeholder="Available Places"
+                                                    formControlName="{{item.availablePlaces}}">
+                                            </mat-form-field>
+                                        </div>
+                                    </div>
+                                </ng-container>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" mat-raised-button class="btn btn-cancel mx-1" data-dismiss="modal"
+                                    (click)="cancel()">Cancel
+                                </button>
+                                <button type="button" mat-raised-button class="btn btn-success"
+                                    [promiseBtn]="promiseForBtn"
+                                    [disabled]="!enTargetForm.valid || enTargetForm.pristine" (click)="onSubmit()">Save
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

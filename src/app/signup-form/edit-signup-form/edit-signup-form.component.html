@@ -1,0 +1,225 @@
+<div class="main-content">
+    <div class="container-fluid">
+        <form [formGroup]="formGroup" novalidate (ngSubmit)="onSubmit()" *ngIf="loaded">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="card">
+                        <div class="card-header card-header-icon card-header-primary">
+                            <div class="card-icon">
+                                <i class="material-icons">account_balance</i>
+                            </div>
+                            <h4 class="card-title">Edit Signup Form</h4>
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <mat-form-field>
+                                        <input matInput placeholder="Form Name" type="text" formControlName="name">
+                                        <mat-error
+                                            [hidden]="formGroup.controls.name.valid || formGroup.controls.name.pristine">
+                                            This field should contain at least {{requiredTextFieldMinLength}} and at most {{length50}} characters.
+                                        </mat-error>
+                                    </mat-form-field>
+                                </div>
+                            </div>
+
+                            <div class="row"
+                                *ngIf="signupForm && signupForm.school && signupForm.school.googleTrackingIsEnabled">
+                                <div class="col-md-12">
+                                    <mat-form-field>
+                                        <input matInput placeholder="Event Label for Google Analytics" type="text"
+                                            formControlName="googleTrackingEventName" required>
+                                        <mat-error
+                                            [hidden]="formGroup.controls.googleTrackingEventName.valid || formGroup.controls.googleTrackingEventName.pristine">
+                                            Event Label for Google Analytics should contain at least {{requiredTextFieldMinLength}} and at most {{length50}} characters.
+                                        </mat-error>
+                                    </mat-form-field>
+                                </div>
+                            </div>
+
+                            <h4 class="title-bordered text-center">Form Fields</h4>
+                            <p>The following FIELDS are included in this form. Please select appropriate values for
+                                those
+                                fields with available pick lists</p>
+
+                            <!-- <div class="table-responsive"> -->
+                            <form #translationForm="ngForm" novalidate>
+                                <table class="table table-bordered table-sm">
+                                    <thead [ngClass]="{'sticky' : isSticky}" style="margin-left: -1px;">
+                                        <tr class="h-row">
+                                            <th #cellh1 [style.width]="!isSticky? '10%':''">Include on form?</th>
+                                            <th #cellh2 [style.width]="!isSticky? '30%':''">Field Description</th>
+                                            <th #cellh3 [style.width]="!isSticky? '30%':''">Field Label<p
+                                                    class="p-header">Label changes will appear on all forms</p>
+                                            </th>
+                                            <th #cellh4 [style.width]="!isSticky? '20%':''">Specify Default Value</th>
+                                            <th #cellh5 [style.width]="!isSticky? '10%':''">Required</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="tbody">
+                                        <ng-container *ngFor="let setting of tempFieldSettings">
+                                            <tr>
+                                                <td colspan="5">
+                                                    <mat-checkbox [(ngModel)]="setting.isIncluded"
+                                                        [disabled]="!setting.isModifiable"
+                                                        [ngModelOptions]="{standalone: true}"
+                                                        (change)="formGroup.markAsDirty()">
+                                                    </mat-checkbox>
+                                                    <span class="text-primary field-title">&nbsp;<strong>
+                                                            {{ setting.title }}</strong></span>
+                                                </td>
+                                            </tr>
+                                            <tr *ngFor="let field of setting.settings">
+                                                <ng-container *ngIf="isVisible(field) && setting.isIncluded">
+                                                    <td #cell1 style="width: 10%;">
+                                                        <mat-checkbox [(ngModel)]="field.isIncluded"
+                                                            [ngModelOptions]="{standalone: true}"
+                                                            [disabled]="!field.isExcludable"
+                                                            (change)="onModelClick(field, setting.key)">
+                                                        </mat-checkbox>
+                                                    </td>
+                                                    <td #cell2 style="width: 30%;" class="fdl">
+                                                        {{ getFieldDescription(field, setting.sectionType) }}</td>
+                                                    <td #cell3 style="width: 30%;" class="fdl">
+                                                        <ng-container *ngIf="field.isFieldLabelModifiable">
+                                                            <mat-form-field>
+                                                                <input matInput
+                                                                    [name]="field.id + '_' + setting.sectionType"
+                                                                    ngModel
+                                                                    [ngModel]="getFieldLabel(field, setting.sectionType)"
+                                                                    type="text" [required]="field.isRequired"
+                                                                    (keyup)="formGroup.markAsDirty()">
+                                                            </mat-form-field>
+                                                        </ng-container>
+                                                        <ng-container *ngIf="!field.isFieldLabelModifiable">
+                                                            {{ getFieldLabel(field, setting.sectionType) }}
+                                                            <span *ngIf="field.isRequired && setting.sectionType !== 'hidden'" class="text-danger">*</span>
+                                                        </ng-container>
+                                                    </td>
+                                                    <td #cell4 style="width: 20%;">
+                                                        <mat-form-field *ngIf="field.id === 'leadSourceId'">
+                                                            <mat-select
+                                                                [placeholder]="getFieldDescription(field, setting.sectionType)"
+                                                                [(ngModel)]="field.defaultValue"
+                                                                [ngModelOptions]="{standalone: true}"
+                                                                (selectionChange)="formGroup.markAsDirty()">
+                                                                <mat-option *ngFor="let leadSource of leadSources"
+                                                                    [value]="leadSource.id">
+                                                                    {{ leadSource.name }}
+                                                                </mat-option>
+                                                            </mat-select>
+                                                        </mat-form-field>
+
+                                                        <mat-form-field *ngIf="field.id === 'boardingTypeId'">
+                                                            <mat-select
+                                                                [placeholder]="getFieldDescription(field, setting.sectionType)"
+                                                                [(ngModel)]="field.defaultValue"
+                                                                [ngModelOptions]="{standalone: true}"
+                                                                (selectionChange)="formGroup.markAsDirty()">
+                                                                <mat-option *ngFor="let boardingType of boardingTypes"
+                                                                    [value]="boardingType.id">
+                                                                    {{ boardingType.name }}
+                                                                </mat-option>
+                                                            </mat-select>
+                                                        </mat-form-field>
+
+                                                        <mat-form-field *ngIf="field.id === 'address'">
+                                                            <mat-select placeholder="Contact Country"
+                                                                [(ngModel)]="field.defaultValue.defaultContactCountryId"
+                                                                [ngModelOptions]="{standalone: true}"
+                                                                (selectionChange)="getCountryData($event.value); field.defaultValue.defaultContactAdministrativeAreaId = null">
+                                                                <mat-option [value]="null">{{ noItemSelected }}
+                                                                </mat-option>
+                                                                <ng-container *ngFor="let country of countries">
+                                                                    <div class="custom-divider"
+                                                                        *ngIf="country.id === 0"></div>
+                                                                    <mat-option [value]="country.id">
+                                                                        {{ country.name }}
+                                                                    </mat-option>
+                                                                </ng-container>
+                                                            </mat-select>
+                                                        </mat-form-field>
+
+                                                        <mat-form-field
+                                                            *ngIf="field.id === 'address' && addressOptions.state.isUsed">
+                                                            <mat-select [placeholder]="addressOptions.state.label"
+                                                                [(ngModel)]="field.defaultValue.defaultContactAdministrativeAreaId"
+                                                                [ngModelOptions]="{standalone: true}"
+                                                                (selectionChange)="formGroup.markAsDirty()">
+                                                                <mat-option
+                                                                    *ngIf="field.defaultValue.defaultContactCountryId === null"
+                                                                    [value]="null">{{noCountrySelected}}
+                                                                </mat-option>
+                                                                <mat-option
+                                                                    *ngFor="let administrativeArea of administrativeAreas"
+                                                                    [value]="administrativeArea.id">
+                                                                    {{administrativeArea.name}}</mat-option>
+                                                            </mat-select>
+                                                        </mat-form-field>
+
+                                                        <ng-container *ngIf="field.id === 'sendConfirmationContact2'">
+                                                            <mat-checkbox [(ngModel)]="field.defaultValue"
+                                                                [ngModelOptions]="{standalone: true}"
+                                                                (change)="formGroup.markAsDirty()"></mat-checkbox>
+                                                        </ng-container>
+
+                                                        <ng-container *ngIf="field.id === 'sendProspectusContact2'">
+                                                            <mat-checkbox [(ngModel)]="field.defaultValue"
+                                                                [ngModelOptions]="{standalone: true}"
+                                                                (change)="formGroup.markAsDirty()">
+                                                            </mat-checkbox>
+                                                        </ng-container>
+                                                        <ng-container *ngIf="field.id === 'sendProspectus'">
+                                                            <mat-checkbox [(ngModel)]="field.defaultValue"
+                                                                [ngModelOptions]="{standalone: true}"
+                                                                (change)="formGroup.markAsDirty()">
+                                                            </mat-checkbox>
+                                                        </ng-container>
+                                                        <ng-container *ngIf="field.id === 'isSpouse'">
+                                                            <mat-checkbox [(ngModel)]="field.defaultValue"
+                                                                [ngModelOptions]="{standalone: true}"
+                                                                (change)="formGroup.markAsDirty()">
+                                                            </mat-checkbox>
+                                                        </ng-container>
+                                                    </td>
+                                                    <td #cell5 style="width: 10%;">
+                                                        <ng-container
+                                                            *ngIf="field.id !== 'sendConfirmationContact2' && field.id !== 'sendProspectusContact2' && field.id !== 'sendProspectus' && field.id !== 'personalTourRequested' && field.id !== 'isSpouse'">
+                                                            <mat-checkbox [(ngModel)]="field.isRequired"
+                                                                [disabled]="!field.isModifiable || field.id === 'displayConduct' || field.id === 'leadSourceId' || !field.isIncluded"
+                                                                [ngModelOptions]="{standalone: true}"
+                                                                (change)="onModelClick(field, setting.key)">
+                                                            </mat-checkbox>
+                                                        </ng-container>
+                                                    </td>
+                                                </ng-container>
+                                            </tr>
+                                        </ng-container>
+                                    </tbody>
+                                </table>
+                            </form>
+                            <!-- </div> -->
+                            <h4 class="title-bordered">Form Code</h4>
+                            <p>Copy the form code for your website and send to your website designer</p>
+                            <pre id="iframeCode" class="rounded img-thumbnail"><code>{{ iframeCode }}</code></pre>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <button class="btn btn-primary" type="button" (click)="copyFormCode()">Copy Form
+                                        Code</button>
+                                </div>
+                                <div class="col-md-6 text-right">
+                                    <button class="btn btn-cancel mx-1" mat-raised-button type="button"
+                                        (click)="onCancel()">Cancel</button>
+                                    <button class="btn btn-success" mat-raised-button type="submit"
+                                        [promiseBtn]="promiseForBtn"
+                                        [disabled]="!formGroup.valid || formGroup.pristine">Save
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>

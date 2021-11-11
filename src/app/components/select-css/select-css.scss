@@ -1,0 +1,25 @@
+#contactModal {
+    top: 25px;
+    left: 25px;
+}
+
+#contactModalfromStudenttable {
+    &>thead {
+        display: none;
+    }
+}
+
+table {
+    .mat-row {
+        cursor: pointer !important;
+    }
+
+    tr {
+        height: 30px;
+    }
+}
+
+.scroll-container {
+    height: 400px;
+    overflow: auto;
+}

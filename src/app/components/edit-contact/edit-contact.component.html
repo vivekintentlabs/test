@@ -1,0 +1,262 @@
+<div *ngIf="loaded && relationshipsLoaded">
+    <div *ngIf="!hideRelationship">
+        <form [formGroup]="relationshipForm" class="m-0" novalidate>
+            <div class="row">
+                <div class="col-md-6">
+                    <app-other-list-item formControlName="relationshipTypeId" placeholder="Contact Relationship"
+                        [list]="relationships" [listId]="listId.contact_relationship" htmlId="contactRelationshipFormRelationshipTypeId"
+                        [isRequired]="true">
+                    </app-other-list-item>
+                </div>
+                <div class="col-md-6">
+                    <mat-form-field>
+                        <mat-select placeholder="Contact Type" formControlName="contactTypeId" required>
+                            <mat-option *ngFor="let contactType of contactTypes" [value]="contactType.id">
+                                {{contactType.name}}
+                            </mat-option>
+                        </mat-select>
+                    </mat-form-field>
+                </div>
+            </div>
+        </form>
+    </div>
+    <form [formGroup]="contactEditForm" class="m-0" novalidate (ngSubmit)="onSubmit()">
+        <div class="row">
+            <div class="col-md-2">
+                <app-other-list-item formControlName="salutationId" placeholder="Salutation"
+                    [list]="salutations" [listId]="listId.contact_salutation" htmlId="contactFormSalutationId">
+                </app-other-list-item>
+            </div>
+            <div class="col-md">
+                <mat-form-field>
+                    <input matInput placeholder="First Name" type="text" formControlName="firstName" required>
+                    <mat-error [hidden]="contactEditForm.controls.firstName.valid || contactEditForm.controls.firstName.pristine">
+                        First Name should contain at least {{requiredTextFieldMinLength}} and at most {{nameMaxLength}} characters.
+                    </mat-error>
+                </mat-form-field>
+            </div>
+            <div class="col-md">
+                <mat-form-field>
+                    <input matInput placeholder="Last Name" type="text" formControlName="lastName" required>
+                    <mat-error [hidden]="contactEditForm.controls.lastName.valid || contactEditForm.controls.lastName.pristine">
+                        Last Name should contain at least {{requiredTextFieldMinLength}} and at most {{nameMaxLength}} characters.
+                    </mat-error>
+                </mat-form-field>
+            </div>
+            <div class="col-md">
+                <mat-form-field>
+                    <mat-select placeholder="Gender" formControlName="genderId">
+                        <mat-option *ngFor="let gender of genders" [value]="gender.id">{{gender.name}}</mat-option>
+                    </mat-select>
+                </mat-form-field>
+            </div>
+        </div>
+        <div class="row" *ngIf="school.isSpouseEnabled">
+            <div class="col-md-12">
+                <app-select-search formControlName="spouseId" placeholder="Spouse" [hasAlternativeName]="true"
+                    [list]="unmarriedContactsOrdered">
+                </app-select-search>
+            </div>
+        </div>
+        <div *ngIf="currentRelatedContactId" class="row">
+            <div class="col-md-12">
+                <mat-checkbox (change)="sameAddress($event.checked)">
+                    Apply same address for related contact?
+                </mat-checkbox>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-12">
+                <mat-form-field>
+                    <input matInput placeholder="Address" type="text" formControlName="address" (change)="onAddressChange()">
+                    <mat-error [hidden]="contactEditForm.controls.address.valid || contactEditForm.controls.address.pristine">
+                        Address should contain at least {{addressFieldMinLength}} and at most
+                        {{addressFieldMaxLength}} characters.
+                    </mat-error>
+                </mat-form-field>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-4" *ngIf="addressOptions.sublocality.isUsed">
+                <mat-form-field>
+                    <input matInput [placeholder]="addressOptions.sublocality.label" type="text"
+                        formControlName="sublocality">
+                    <mat-error [hidden]="contactEditForm.controls.sublocality.valid || contactEditForm.controls.sublocality.pristine" class="text-danger">
+                        {{addressOptions.sublocality.label}} should contain at least {{addressFieldMinLength}}
+                        and at most
+                        {{citySuburbFieldMaxLength}} characters.
+                    </mat-error>
+                </mat-form-field>
+            </div>
+            <div class="col-md-4" *ngIf="addressOptions.city.isUsed">
+                <mat-form-field>
+                    <input matInput [placeholder]="addressOptions.city.label" type="text"
+                        formControlName="city">
+                    <mat-error
+                        [hidden]="contactEditForm.controls.city.valid || contactEditForm.controls.city.pristine"
+                        class="text-danger">
+                        {{addressOptions.city.label}} should contain at least {{addressFieldMinLength}} and at
+                        most
+                        {{citySuburbFieldMaxLength}} characters.
+                    </mat-error>
+                </mat-form-field>
+            </div>
+            <div class="col-md-4" *ngIf="addressOptions.state.isUsed">
+                <mat-form-field>
+                    <mat-select [placeholder]="addressOptions.state.label"
+                        formControlName="administrativeAreaId">
+                        <mat-option *ngIf="contactEditForm.controls.countryId.value === null" [value]="null">
+                            {{noCountrySelected}}</mat-option>
+                        <mat-option *ngFor="let administrativeArea of administrativeAreas"
+                            [value]="administrativeArea.id">{{administrativeArea.name}}</mat-option>
+                    </mat-select>
+                </mat-form-field>
+            </div>
+            <div class="col-md-4" *ngIf="addressOptions.postCode.isUsed">
+                <mat-form-field>
+                    <input matInput [placeholder]="addressOptions.postCode.label" type="text"
+                        formControlName="postCode">
+                    <mat-error
+                        [hidden]="contactEditForm.controls.postCode.valid || contactEditForm.controls.postCode.pristine">
+                        {{addressOptions.postCode.label}} should contain at least {{postCodeMinLength}} and at
+                        most
+                        {{postCodeMaxLength}} characters.
+                    </mat-error>
+                </mat-form-field>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-6">
+                <div class="row">
+                    <div class="col-md-7">
+                        <app-select-search formControlName="countryId" placeholder="Country"
+                            [list]="countries" (outputData)="onCountryChange($event.value)" >
+                        </app-select-search>
+                    </div>
+                    <div class="col-md-5">
+                        <div class="togglebutton mt-2">
+                            <label class="toggle-label">
+                                <input type="checkbox" formControlName="receiveMailUpdates">
+                                <span class="toggle"></span>
+                                <span class="label-text">
+                                    Receive Updates by Mail
+                                </span>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-7">
+                        <mat-form-field class="w-100">
+                            <input matInput required placeholder="Email" type="email" formControlName="email">
+                            <mat-error
+                                [hidden]="contactEditForm.controls.email.valid || contactEditForm.controls.email.pristine">
+                                Email format should be
+                                <i>john@doe.com</i> and contain at most {{emailMaxLength}} characters.
+                            </mat-error>
+                        </mat-form-field>
+                    </div>
+                    <div class="col-md-5">
+                        <div class="togglebutton mt-2">
+                            <label class="toggle-label">
+                                <input type="checkbox" formControlName="receiveUpdateEmail">
+                                <span class="toggle"></span>
+                                <span class="label-text">
+                                    Receive Updates by Email
+                                </span>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-7">
+                        <mat-form-field>
+                            <input matInput placeholder="Mobile" type="text" formControlName="mobile">
+                            <mat-error
+                                [hidden]="contactEditForm.controls.mobile.valid || contactEditForm.controls.mobile.pristine">
+                                {{phoneErrorText}}
+                            </mat-error>
+                        </mat-form-field>
+                    </div>
+                    <div class="col-md-5">
+                        <div class="togglebutton mt-2">
+                            <label class="toggle-label">
+                                <input type="checkbox" formControlName="receiveUpdatePhone">
+                                <span class="toggle"></span>
+                                <span class="label-text">
+                                    Receive Updates by Phone
+                                </span>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-7">
+                        <mat-form-field>
+                            <input matInput placeholder="Home Phone" type="text" formControlName="homePhone">
+                            <mat-error
+                                [hidden]="contactEditForm.controls.homePhone.valid || contactEditForm.controls.homePhone.pristine">
+                                {{phoneErrorText}}
+                            </mat-error>
+                        </mat-form-field>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-7">
+                        <mat-form-field>
+                            <input matInput placeholder="Work Phone" type="text" formControlName="workPhone">
+                            <mat-error
+                                [hidden]="contactEditForm.controls.workPhone.valid || contactEditForm.controls.workPhone.pristine">
+                                {{phoneErrorText}}
+                            </mat-error>
+                        </mat-form-field>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                    <div class="row card mt-0 ml-0 light-grey">
+                        <div class="col-md-12">
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <label>Alumni of the School?</label>
+                                </div>
+                                <div class="col-md-12">
+                                    <app-radio-group [options]="alumni" [value]="contact.alumniId" formControlName="alumniId" (changed)="alumniChanged()"></app-radio-group>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row ml-0 mr-0">
+                            <div class="col-md-6">
+                                <mat-form-field>
+                                    <mat-select placeholder="Please select your graduation year" [disabled]="contactEditForm.controls.alumniId.value !== yesAlumniId" formControlName="graduationYear">
+                                        <mat-option [value]="null">{{noItemSelected}} </mat-option>
+                                        <mat-option md-select-on-focus *ngFor="let graduationYear of graduationYears; let i = index" [value]="graduationYear">
+                                            {{graduationYear}}
+                                        </mat-option>
+                                    </mat-select>
+                                </mat-form-field>
+                            </div>
+                            <div class="col-md-6">
+                                <mat-form-field>
+                                    <input matInput placeholder="Name when at School" type="text" formControlName="nameAtSchool">
+                                    <mat-error [hidden]="contactEditForm.controls.nameAtSchool.valid || contactEditForm.controls.nameAtSchool.pristine">
+                                        Name when at School should contain at least {{notRequiredTextFieldMinLength}} and at most {{nameMaxLength}} characters.
+                                    </mat-error>
+                                </mat-form-field>
+                            </div>
+                        </div>
+                    </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-12 text-right">
+                <button type="button" mat-raised-button class="btn btn-cancel mx-1" (click)="onCancel()">Cancel</button>
+                <button type="submit" mat-raised-button class="btn btn-success" [promiseBtn]="promiseForBtn"
+                    [disabled]="!contactEditForm.valid || (contactEditForm.pristine && relationshipForm.pristine) ||
+                        (!hideRelationship ? !relationshipForm.valid : false)">save
+                </button>
+            </div>
+        </div>
+    </form>
+</div>

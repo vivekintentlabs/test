@@ -1,0 +1,159 @@
+<div class="main-content">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="card">
+                    <div class="card-body">
+                        <div class="toolbar" *ngIf="!userInfo.isSchoolRepresentative() && dataSource">
+                            <app-event-filter [filterData]="filterData" (filterVals)="outputFilter($event)" (resetSearchText)="resetSearchText()"></app-event-filter>
+                        </div>
+                        <div class="row">
+                            <div class="col-sm-6"></div>
+                            <div class="col-sm-6">
+                                <button class="btn btn-primary float-right" mat-raised-button type="button" (click)="addEvent()">
+                                    <i class="material-icons">playlist_add</i> Add Event</button>
+                                <div class="float-right mx-2">
+                                    <mat-form-field>
+                                        <input matInput [disabled]="!dataSource" [value]="tableState.searchText"
+                                            (keyup)="applyFilter($event.target.value)" placeholder="Search results">
+                                    </mat-form-field>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="table-responsive">
+                            <table [id]="tableId" mat-table [dataSource]="dataSource" matSort (matSortChange)="onSortChange($event)">
+                                <!-- Checkbox Column -->
+                                <ng-container matColumnDef="select">
+                                    <th mat-header-cell *matHeaderCellDef class="pr-3">
+                                        <mat-checkbox (change)="$event ? masterToggle() : null"
+                                            [checked]="selection.hasValue() && isAllSelected()"
+                                            [indeterminate]="selection.hasValue() && isPartiallySelected()">
+                                        </mat-checkbox>
+                                    </th>
+                                    <td mat-cell *matCellDef="let row">
+                                        <mat-checkbox (click)="$event.stopPropagation()" (change)="$event ? selection.toggle(row) : null"
+                                            [checked]="selection.isSelected(row)">
+                                        </mat-checkbox>
+                                    </td>
+                                </ng-container>
+
+                                <!-- Date Time Column -->
+                                <ng-container matColumnDef="dateTime">
+                                    <th mat-header-cell *matHeaderCellDef mat-sort-header>
+                                        Date and Time
+                                    </th>
+                                    <td mat-cell *matCellDef="let element" (click)="editEvent(element)">
+                                        {{element.date | localeDate: dateDelimiter}}&nbsp;&nbsp;&nbsp;{{element.time}}
+                                    </td>
+                                </ng-container>
+
+                                <!-- Event Type Column -->
+                                <ng-container matColumnDef="schoolTour.name">
+                                    <th mat-header-cell *matHeaderCellDef mat-sort-header>Event Type</th>
+                                    <td mat-cell *matCellDef="let element" (click)="editEvent(element)">{{(element.schoolTour)?element.schoolTour.name:''}}</td>
+                                </ng-container>
+
+                                <!-- Subtours Column -->
+                                <ng-container matColumnDef="subTours.length">
+                                    <th mat-header-cell *matHeaderCellDef mat-sort-header>Subtours</th>
+                                    <td mat-cell *matCellDef="let element" (click)="editEvent(element)">{{element.subTours.length || '-'}}</td>
+                                </ng-container>
+
+                                <!-- Campus Column -->
+                                <ng-container matColumnDef="campus.name">
+                                    <th mat-header-cell *matHeaderCellDef mat-sort-header>Campus</th>
+                                    <td mat-cell *matCellDef="let element" (click)="editEvent(element)">{{(element.campus)?element.campus.name:''}}</td>
+                                </ng-container>
+
+                                <!-- Max Column -->
+                                <ng-container matColumnDef="maxNumber">
+                                    <th mat-header-cell *matHeaderCellDef mat-sort-header>Max</th>
+                                    <td mat-cell *matCellDef="let element" (click)="editEvent(element)">{{element.maxNumber}}</td>
+                                </ng-container>
+
+                                <!-- Students Column -->
+                                <ng-container matColumnDef="studentsCount">
+                                    <th mat-header-cell *matHeaderCellDef mat-sort-header>Students</th>
+                                    <td mat-cell *matCellDef="let element" (click)="editEvent(element)">{{element.studentsCount || '-'}}</td>
+                                </ng-container>
+
+                                <!-- Families Column -->
+                                <ng-container matColumnDef="families">
+                                    <th mat-header-cell *matHeaderCellDef mat-sort-header>Families</th>
+                                    <td mat-cell *matCellDef="let element" (click)="editEvent(element)">{{element.families}}</td>
+                                </ng-container>
+
+                                <!-- Total RSVP Column -->
+                                <ng-container matColumnDef="attending">
+                                    <th mat-header-cell *matHeaderCellDef mat-sort-header>Total RSVP</th>
+                                    <td mat-cell *matCellDef="let element" [ngClass]="{'red': element.attending >= element.maxNumber, 'yellow': element.attending >= (element.maxNumber *0.9)}" (click)="editEvent(element)">{{element.attending || '-'}}</td>
+                                </ng-container>
+
+                                <!-- Registration Column -->
+                                <ng-container matColumnDef="registration">
+                                    <th mat-header-cell *matHeaderCellDef mat-sort-header>Registration</th>
+                                    <td mat-cell *matCellDef="let element" (click)="editEvent(element)">
+                                        {{element.isFuture ? element.isRegistrationDisabled ? 'Disabled' : 'Enabled' : '-'}}
+                                        <i *ngIf="element.isRegistrationDisabledAutoManaged"
+                                            matTooltip="When this event is filled, online registration will be disabled"
+                                            class="material-icons va-bottom text-muted font-1-5em">av_timer</i>
+                                    </td>
+                                </ng-container>
+
+                                <!-- Actions Column -->
+                                <ng-container matColumnDef="actions">
+                                    <th mat-header-cell *matHeaderCellDef> <span class="float-right">Actions</span></th>
+                                    <td class="td-actions text-right" mat-cell *matCellDef="let element">
+                                        <button mat-raised-button type="button" class="btn btn-success btn-link" matTooltip="Edit"
+                                            matTooltipPosition="left" (click)="$event.stopPropagation(); editEvent(element)">
+                                            <i class="material-icons">edit</i>
+                                        </button>
+                                        <button mat-raised-button *ngIf="!userInfo.isSchoolRepresentative()" type="button" class="btn btn-light btn-link"
+                                            matTooltip="Duplicate" matTooltipPosition="left" (click)="$event.stopPropagation(); duplicateEvent(element.id)">
+                                            <i class="material-icons">file_copy</i>
+                                        </button>
+                                        <button mat-raised-button  *ngIf="!userInfo.isSchoolRepresentative()" type="button" class="btn btn-danger btn-link" matTooltip="Delete"
+                                            matTooltipPosition="left" (click)="$event.stopPropagation(); deleteEvent(element.id)">
+                                            <i class="material-icons">delete_outline</i>
+                                        </button>
+                                    </td>
+                                </ng-container>
+
+                                <!-- No Data -->
+                                <ng-container matColumnDef="noData">
+                                    <td [hidden]="!dataSource || (dataSource && dataSource.filteredData && dataSource.filteredData.length > 0)"
+                                        mat-footer-cell *matFooterCellDef colspan="11">
+                                        {{noDataInTable}}
+                                    </td>
+                                </ng-container>
+
+                                <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+                                <tr mat-row *matRowDef="let row; columns: displayedColumns;" (click)="selection.toggle(row)"></tr>
+                                <tr mat-footer-row *matFooterRowDef="['noData']" class="text-center"></tr> <!-- No Data-->
+
+                            </table>
+                            <app-spinner [tableIsLoading]="tableIsLoading"></app-spinner>
+                            <mat-paginator (page)="onPaginatorChange($event)"></mat-paginator>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-12 text-right">
+                                <button *ngIf="visibleSelectedCount > 0" type="button" class="btn btn-delete" (click)="removeSelected()">
+                                    Delete Selected Item(s)</button>
+                                <button *ngIf="userInfo && (userInfo.isSchoolEditorOrHigher())" class="btn btn-primary pull-right"
+                                    (click)="addEvent()">
+                                    <i class="material-icons">playlist_add</i> Add Event
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- end content-->
+                </div>
+                <!--  end card  -->
+            </div>
+            <!-- end col-md-12 -->
+        </div>
+        <!-- end row -->
+    </div>
+</div>

@@ -1,0 +1,55 @@
+.statistic-panel {
+    margin: 5px 0;
+    min-width: 360px;
+    max-width: 360px;
+    .count-block {
+        border-radius: 6px;
+        padding: 15px 0px;
+    }
+}
+
+.table>tbody>tr>td {
+    padding: 2px 0px !important;
+    vertical-align: middle;
+    border-top-color: white;
+    border-top-width: 13.5px;
+}
+
+.table {
+    width: 221px !important;
+    margin-left: -35px !important;
+    margin-top: -12.5px !important;
+}
+
+// .table-gold-gradient {
+//     background: linear-gradient(to top right, white 25%, #fff6dd 25%, #fff6dd 25%, #fff6dd 25%);
+// }
+
+// .table-silver-gradient {
+//     background: linear-gradient(to right, white 50%, white 75%, white 50%, #f4f4f4 50%);
+// }
+
+// .table-bronze-gradient {
+//     background: linear-gradient(to bottom right, white 25%, #f6ebe7 25%, #f6ebe7 25%, #f6ebe7 25%);
+// }
+
+.chart-col {
+    position: absolute;
+    margin: -16px 0px 0px -110px !important;
+    padding-left: 28px;
+}
+
+.table-col {
+    position: absolute;
+    padding-left: 70px;
+    margin-top: 2px;
+    max-width: 256px !important;
+    table {
+        border-spacing: 0px !important;
+        border-collapse: inherit !important;
+    }
+}
+
+.point-col {
+    max-width: 100px !important;
+}

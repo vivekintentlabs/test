@@ -1,0 +1,45 @@
+<div class="main-content">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-6">
+                <div class="card">
+                    <div class="card-header card-header-icon card-header-primary">
+                        <div class="card-icon">
+                            <i class="material-icons-outlined">view_quilt</i>
+                        </div>
+                        <h4 class="card-title text-left">Dashboard Configuration</h4>
+                    </div>
+                    <div class="card-body">
+                        <div cdkDropList class="list" cdkDropListDisabled (cdkDropListDropped)="dropWidget($event)">
+                            <div class="row head">
+                                <div class="col-8">Description</div><div class="col-4 st-4">Status</div>
+                            </div>
+                            <div *ngFor="let widget of widgets; let i = index" cdkDrag>
+                                <div class="widget">
+                                    {{widget.name}}
+                                    <mat-slide-toggle class="status mat-primary" [(ngModel)]="widget.status" [checked]="widget.status" (change)="statusChanged()"></mat-slide-toggle>
+                                </div>
+                                <div cdkDropList cdkDropListDisabled class="sub-list" (cdkDropListDropped)="dropSubWidget($event, widget)">
+                                    <div *ngFor="let w of widget.subWidgets" cdkDrag>
+                                        <div class="box" *ngIf="isVisible(w)">
+                                            &nbsp;&nbsp;{{w.name}}
+                                            <mat-slide-toggle class="mat-primary mr-2" [(ngModel)]="w.status" [disabled]="!widget.status" [checked]="w.status" (change)="statusSubWChanged(widget)"></mat-slide-toggle>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-12 text-right">
+                                <!-- <button class="btn btn-danger mx-1" mat-raised-button type="button" (click)="onCancel()">Cancel</button> -->
+                                <button type="button" mat-raised-button class="btn btn-success" [disabled]="pristine"
+                                    [promiseBtn]="promiseForBtn" (click)="doSubmit()">Save
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

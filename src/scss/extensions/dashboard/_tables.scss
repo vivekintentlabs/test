@@ -1,0 +1,67 @@
+table tr td.td-actions, mat-table mat-cell.td-actions {
+  white-space: nowrap;
+  .mat-button.btn,.mat-raised-button.btn,.mat-raised-button.btn:not([class*=mat-elevation-z]),
+  .btn {
+    &.btn-link {
+      margin: $btn-link-margin-spacer-x $btn-link-margin-spacer-y;
+      padding: $btn-link-padding-spacer-x $btn-link-padding-spacer-y;
+    }
+  }
+}
+
+.table > thead, // For HTML table header
+.mat-header-row, // Override Angular Material theme
+.head, // For dashboard config
+th[class*="headcol-"] // For sticky column headers in event analytics table (offset from <thead>, so it does not get a color by default)
+{
+  background: $table-header-bg;
+}
+
+.table > thead > tr > th, // Override Creative Tim theme
+.mat-header-cell, // Override Angular Material theme
+.head // For dashboard config
+{
+  color: $table-header-color;
+  font-size: $table-header-font-size;
+  font-weight: $table-header-font-weight;
+}
+
+#tableResponsiveAttendees thead > tr > th {
+ border: 1px solid lighten($gray-base, 53.5%);
+}
+
+.table-stats {
+  display: flex;
+  align-items: center;
+  gap: $table-stats-gap;
+}
+
+#tableResponsiveAttendees table, .table-responsive table {
+  td, th {
+    &:first-of-type {
+      padding-left: 10px;
+    }
+  }
+
+  tbody {
+    tr {
+      &:nth-child(even), &:nth-child(even) td[class*="headcol-"] {
+        background-color: $table-even-row-bg;
+      }
+      &:hover, &:hover td[class*="headcol-"] {
+        background-color: $table-row-hover-bg;
+      }
+    }
+  }
+}
+
+mat-table {
+  mat-row {
+    &:nth-child(odd) { // use odd because offset by mat-header-row as the first child
+      background-color: $table-even-row-bg;
+    }
+    &:hover {
+      background-color: $table-row-hover-bg;
+    }
+  }
+}

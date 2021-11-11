@@ -1,0 +1,46 @@
+<app-display-form-header-footer>
+    <div class="main-content">
+        <div class="container-fluid" *ngIf="appForm; else loading">
+            <div class="row">
+                <div class="col text-right text-with-icon" *ngIf="isPristine; else saving">
+                    Saved
+                    <mat-icon class="material-icons-outlined">cloud_done</mat-icon>
+                </div>
+                <ng-template #saving>
+                    <div class="col text-right text-with-icon">
+                        Not saved
+                        <mat-icon>sync</mat-icon>
+                    </div>
+                </ng-template>
+            </div>
+            <div class="row">
+                <div class="col">
+                    <sf-form [schema]="appForm.form" [(ngModel)]="appForm.model"
+                        [validators]="customValidators" [bindings]="customBindings" (isValid)="isValid($event)"
+                        (onErrorChange)="onErrorsChange($event)" (onChange)="formOutputChanged($event.value)">
+                    </sf-form>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col text-right">
+                    <button *ngIf="isAllowedInvalidAppSubmission" mat-button class="btn btn-success"
+                        [promiseBtn]="promiseForBtn" [disabled]="!!promiseForBtn" (click)="onSubmit(false)">
+                        DEV Submit(No Validation)
+                    </button>
+                    <div class="d-inline"
+                        matTooltip="{{ isValidForm ? '' : incompleteFormText }}"
+                        matTooltipPosition="above">
+                        <button mat-button class="btn btn-success" [promiseBtn]="promiseForBtn"
+                            [disabled]="!isValidForm || !!promiseForBtn" (click)="onSubmit()">Submit
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <ng-template #loading>
+            <div class="w-100">
+                <mat-spinner class="mx-auto mt-5" [diameter]="45"></mat-spinner>
+            </div>
+        </ng-template>
+    </div>
+</app-display-form-header-footer>

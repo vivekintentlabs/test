@@ -1,0 +1,28 @@
+{
+  "hosting": {
+    "target": "et-spa",
+    "public": "angular2",
+    "ignore": [
+      "firebase.json",
+      "**/.*",
+      "**/node_modules/**"
+    ],
+    "headers": [
+      {
+        "source": "**",
+        "headers": [
+          {
+            "key": "Cache-Control",
+            "value": "no-cache, no-store"
+          }
+        ]
+      }
+    ],
+    "rewrites": [
+      {
+        "source": "**",
+        "destination": "/maintenance.html"
+      }
+    ]
+  }
+}

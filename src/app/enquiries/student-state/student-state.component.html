@@ -1,0 +1,111 @@
+<div class="modal fade" id="stateModal" tabindex="-1" role="dialog" aria-labelledby="stateModalLabel">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title text-left" id="stateModalLabel">Update State</h4>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <form [formGroup]="stateForm" novalidate *ngIf="stateForm" class="form-horizontal m-0">
+                <div class="modal-body">
+                    <h4>Use this option when a student is declined or is deferred.</h4>
+                    <div class="row">
+                        <label class="col-lg-4 col-form-label">Student Name</label>
+                        <div class="col-lg-8 pt-2">{{data.student.lastName}} {{data.student.firstName}}</div>
+                    </div>
+                    <div class="row">
+                        <label class="col-lg-4 col-form-label">Current {{'et.intakeYear' | translate}}</label>
+                        <div class="col-lg-8 pt-2">{{schoolIntakeYearLabel}}{{data.student.startingYear| startingYear: (startingMonth$ | async) : true}}</div>
+                    </div>
+                    <div class="row">
+                        <label class="col-lg-4 col-form-label">Current Status</label>
+                        <div class="col-lg-8 pt-2">{{studentStage.name | translate}}</div>
+                    </div>
+                    <div class="row" *ngIf="studentStates">
+                        <label class="col-lg-4 col-form-label">Student State</label>
+                        <div class="col-lg-8">
+                            <mat-form-field>
+                                <mat-select required placeholder="State" formControlName="stateId"
+                                    (selectionChange)="stateChanged($event.value)">
+                                    <mat-option [value]="null">{{noItemSelected}} </mat-option>
+                                    <mat-option *ngFor="let studentState of studentStates"
+                                        [value]="studentState.id">
+                                        {{studentState.name}}
+                                    </mat-option>
+                                </mat-select>
+                            </mat-form-field>
+                        </div>
+                    </div>
+                    <div class="row" *ngIf="stateReasons">
+                        <label class="col-lg-4 col-form-label">Specify Reason</label>
+                        <div class="col-lg-8">
+                            <mat-form-field>
+                                <mat-select required placeholder="Reason" formControlName="reasonId">
+                                    <mat-option *ngFor="let reason of stateReasons" [value]="reason.id">
+                                        {{reason.name}}
+                                    </mat-option>
+                                </mat-select>
+                            </mat-form-field>
+                        </div>
+                    </div>
+                    <div class="row" *ngIf="studentStage && studentStageDeclined">
+                        <label class="col-lg-4 col-form-label">New Status</label>
+                        <div class="col-lg-8" *ngIf="studentStage.id !== studentStageDeclined.id">
+                            <mat-form-field>
+                                <mat-select placeholder="Status" formControlName="studentStatusId" required>
+                                    <mat-option *ngFor="let status of studentStatuses" [value]="status.id">
+                                        {{status.status}}
+                                    </mat-option>
+                                </mat-select>
+                            </mat-form-field>
+                        </div>
+                        <div class="col-lg-8" *ngIf="studentStage.id === studentStageDeclined.id">
+                            <mat-form-field>
+                                <mat-select placeholder="Status" formControlName="studentStatusId" required>
+                                    <mat-option *ngFor="let status of declinedStatuses" [value]="status.id">
+                                        {{status.status}}
+                                    </mat-option>
+                                </mat-select>
+                            </mat-form-field>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <label class="col-lg-4 col-form-label">New {{'et.year' | translate}} Level</label>
+                        <div class="col-lg-8">
+                            <mat-form-field>
+                                <mat-select [placeholder]="'et.intakeYear' | translate" formControlName="schoolIntakeYearId" required>
+                                    <mat-option [value]="null">{{noItemSelected}} </mat-option>
+                                    <mat-option *ngFor="let yearLevel of data.yearLevels"
+                                        [value]="yearLevel.id">
+                                        {{yearLevel.name}}
+                                    </mat-option>
+                                </mat-select>
+                            </mat-form-field>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <label class="col-lg-4 col-form-label">New Starting Year</label>
+                        <div class="col-lg-8">
+                            <mat-form-field>
+                                <mat-select placeholder="Starting Year" formControlName="startingYear" required>
+                                    <mat-option [value]="null">{{noItemSelected}} </mat-option>
+                                    <mat-option md-select-on-focus *ngFor="let startingYear of startingYears" [value]="startingYear">
+                                        {{startingYear| startingYear: (startingMonth$ | async)}}
+                                    </mat-option>
+                                </mat-select>
+                            </mat-form-field>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" mat-raised-button class="btn btn-cancel mx-1" data-dismiss="modal"
+                        (click)="cancelStateForm()">Cancel</button>
+                    <button type="button" mat-raised-button class="btn btn-success"
+                        [disabled]="!stateForm.valid || stateForm.pristine" (click)="saveState()">Save
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,37 @@
+<div class="row">
+    <div class="col-md-12">
+        <div class="card">
+            <div class="card-header card-header-icon card-header-primary">
+                <div class="card-icon">
+                    <i class="material-icons-outlined">credit_card</i>
+                </div>
+                <h4 class="card-title">Stripe</h4>
+            </div>
+            <div class="card-body" *ngIf="formGroup" id="readonly-inputs-form">
+                <p>Please retrieve your Stripe API keys from your Stripe dashboard</p>
+                <div class="row">
+                    <div class="col-md-12">
+                        <mat-form-field>
+                            <input readonly matInput placeholder="Publishable Key" type="text" [(ngModel)]="formGroup.controls.stripePublicKey.value">
+                            <span class="error" [hidden]="isValidStripePublicKey">Invalid public key</span>
+                        </mat-form-field>
+                    </div>
+                    <div class="col-md-12">
+                        <mat-form-field>
+                            <input readonly matInput placeholder="Restricted Key" type="password" [(ngModel)]="fakeStripeSecretKey">
+                            <span class="error" [hidden]="isValidStripePrivateKey">Invalid restricted key</span>
+                        </mat-form-field>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-12 text-left" id="gatewayStatus">
+                        Gateway Status <span [ngClass]="gatewayStatusCSS" class="text-white">{{gatewayStatusText}}</span>
+                    </div>
+                    <div class="col text-right">
+                        <button (click)="enterApiKeys()" class="btn btn-primary pull-right">ENTER API KEYS</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

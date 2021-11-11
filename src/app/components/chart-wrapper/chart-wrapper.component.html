@@ -1,0 +1,4 @@
+<app-chart-button-group *ngIf="chartWrapperService?.chartType"></app-chart-button-group>
+<ng-content></ng-content>
+<app-chart-legend></app-chart-legend>
+<app-chart-action-section *ngIf="chartWrapperService?.chartType"></app-chart-action-section>

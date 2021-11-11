@@ -1,0 +1,78 @@
+.sidebar {
+  .nav {
+    font-weight: $font-weight-extra-bold;
+    li a {
+      // smaller subnav
+      font-size: $font-size-navbar - 1;
+    }
+    p {
+      font-size: $font-size-navbar;
+    }
+  }
+
+  &[data-background-color="black"] {
+    .nav .nav-item {
+      i {
+        color: rgba($icon-color-on-dark, .8);
+      }
+
+      &.active,
+      &:hover {
+        [data-toggle="collapse"] {
+          background: rgba($white, .06);
+          i {
+            color: rgba($icon-color-on-dark, .8);
+          }
+        }
+      }
+    }
+
+    .nav li.active > a > i {
+      color: transparent;
+      @include background-gradient-primary;
+      background-clip: text;
+      -webkit-background-clip: text;
+    }
+
+    .nav li:hover:not(.active) > a {
+      background: rgba($white, .06);
+    }
+
+    .logo {
+      &:after {
+        right: 0;
+        width: 100%;
+      }
+      height: 98px;
+      background: $navy;
+      a.logo-mini{
+        img {
+            height: 30px;
+        }
+      }
+      a.logo-normal{
+        img {
+            height: 18px;
+        }
+      }
+    }
+
+    .sidebar-background::after {
+      background: $marine;
+      opacity: 1;
+    }
+  }
+
+  &[data-color="orange"] {
+    li.active > a {
+      @include background-gradient-primary(.2);
+      box-shadow: none;
+    }
+    li.active {
+      li.active > a {
+        @include background-gradient-primary(.2);
+      }
+    }
+  }
+}
+

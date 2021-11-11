@@ -1,0 +1,22 @@
+<div class="wrapper wrapper-full-page">
+    <div class="page-header unsubscribe-page header-filter" filter-color="black" style="background-image: url('../assets/img/register.jpeg'); background-size: cover; background-position: top center;">
+        <!--   you can change the color of the filter page using: data-color="blue | purple | green | orange | red | rose " -->
+        <div class="container">
+            <div class="card">
+                <div class="card-body">
+                    <h3 class="card-title">Unsubscribe</h3>
+                    <div *ngIf="contact && hasSubscribtion">
+                        <h4>Are you sure you, <b>{{email}}</b>, want to unsubscribe from emails from <b>{{schoolName}}</b></h4>
+
+                        <div class="text-right">
+                            <button mat-raised-button type="submit" class="btn btn-link btn-dribbble" (click)="submit()">Confirm</button>
+                        </div>
+                    </div>
+                    <h4 *ngIf="contact && !hasSubscribtion">You have been successfully unsubscribed</h4>
+                    <h4 *ngIf="!contact">The contact was not found!</h4>
+                </div>
+            </div>
+        </div>
+    </div>
+    <app-footer-cmp></app-footer-cmp>
+</div>

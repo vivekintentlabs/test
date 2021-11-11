@@ -1,0 +1,35 @@
+<app-display-form-header-footer>
+    <div class="main-content">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col">
+                    <div *ngIf="!snapshotData && !hasError" class="w-100 mt-2 mb-2">
+                        <mat-spinner class="mx-auto" [diameter]="45"></mat-spinner>
+                    </div>
+                    <div class="row">
+                        <div class="col text-center" *ngIf="!snapshotData && hasError">
+                            <button (click)="getFillableForm();" class="try-again-btn btn btn-primary my-2" data-pausetext="Try again" data-resumetext="Try again">
+                                <mat-icon>refresh</mat-icon>Try again
+                            </button>
+                        </div>
+                    </div>
+                    <div *ngIf="snapshotData && !hasError">
+                        <h3 class="float-left">{{ snapshotData.metaData.schoolName }} {{ snapshotData.metaData.formName }}</h3>
+                        <button onclick="window.print();" class="btn btn-secondary toggle float-right mt-3" data-pausetext="Print" data-resumetext="Print">
+                            <mat-icon>print</mat-icon>Print
+                        </button>
+                        <button *ngIf="!isSchoolContact" class="btn btn-primary toggle float-right mt-3" (click)="download()">Download Documents</button>
+                        <div class="clearfix"></div>
+                        <h4>{{ applicationDateText }}: {{applicationDateValue._seconds * 1000 | localDate: snapshotData.metaData.schoolTimezoneId : dateFormat}}</h4>
+                        <h4>Application ID: {{ docId }}</h4>
+                        <h4>Application Status: {{ snapshotData.applicationStatus }}</h4><br />
+                        <sf-form *ngIf="snapshotData" [schema]="snapshotData.fillableAppFormDoc.form" [(ngModel)]="snapshotData.fillableAppFormDoc.model"></sf-form>
+                        <button onclick="window.print();" class="btn btn-secondary toggle float-right mt-3" data-pausetext="Print" data-resumetext="Print">
+                            <mat-icon>print</mat-icon>Print
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</app-display-form-header-footer>

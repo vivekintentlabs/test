@@ -1,0 +1,97 @@
+<div class="modal fade" id="editActivityLogModal" tabindex="-1" role="dialog" aria-labelledby="editActivityLogModalLabel"
+    data-backdrop="static" data-keyboard="false">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title text-left" id="exampleModalLabel">{{title}}
+                </h4>
+                <button type="button" class="close" aria-label="Close" (click)="onCancel()">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form [formGroup]="activityLogForm" class="m-0" novalidate *ngIf="loaded">
+                    <div class="row">
+                        <div class="col-md-7">
+                            <div *ngIf="students.length > 1" class="row">
+                                <div class="col-md-12">
+                                    <mat-form-field>
+                                        <mat-select placeholder="Student" formControlName="studentId" required disabled={{actionEdit}}>
+                                            <mat-option *ngFor="let student of students" [value]="student.id">
+                                                {{student.lastName + ', ' + student.firstName}}
+                                            </mat-option>
+                                        </mat-select>
+                                    </mat-form-field>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <mat-form-field>
+                                        <input matInput [matDatepicker]="date" placeholder="Date" formControlName="date">
+                                        <mat-datepicker-toggle matSuffix [for]="date"></mat-datepicker-toggle>
+                                        <mat-datepicker #date [touchUi]="touch" [startView]="'month'"></mat-datepicker>
+                                    </mat-form-field>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <mat-form-field>
+                                <mat-select placeholder="Activity" formControlName="activityId" required (selectionChange)="activityChange($event.value)">
+                                    <ng-container *ngFor="let activity of activities" >
+                                        <mat-option [value]="activity.id">
+                                            {{activity.name}}
+                                        </mat-option>
+                                    </ng-container>
+                                </mat-select>
+                            </mat-form-field>
+                        </div>
+                    </div>
+                    <div class="row" *ngIf="isMessageVisible">
+                        <div class="col-sm-12">
+                            <mat-form-field>
+                                <mat-label>Message/Notes</mat-label>
+                                <textarea matInput maxlength="messageMaxLength" mat-autosize matAutosizeMaxRows="3"
+                                    placeholder="Please add any additional information here" formControlName="message"
+                                    [readonly]="!messageIsEditable">
+                                </textarea>
+                                <mat-hint class="text-warning" *ngIf="!messageIsEditable">
+                                    This is not editable since it was entered via a form or a system updated entry
+                                </mat-hint>
+                                <mat-hint class="text-warning" *ngIf="activityLogForm.controls.message.value && activityLogForm.controls.message.value.length > almostFullMessageField">
+                                    Max length is {{messageMaxLength}} characters
+                                </mat-hint>
+                            </mat-form-field>
+                        </div>
+                    </div>
+                    <div class="row" *ngIf="isSendProspectus || isRecordOfConversation">
+                        <div class="col-md-12">
+                            <mat-form-field>
+                                <mat-select placeholder="Source" formControlName="leadSourceId" required>
+                                    <ng-container>
+                                        <mat-option *ngFor="let leadSource of leadSources" [value]="leadSource.id">
+                                            {{leadSource.name}}
+                                        </mat-option>
+                                    </ng-container>
+                                </mat-select>
+                            </mat-form-field>
+                        </div>
+                    </div>
+                    <div *ngIf="isSendProspectus && !activityLogId">
+                        <mat-checkbox formControlName="sendProspectus" [attr.disabled]="(schoolProspectus.activated)?null:true">
+                            Send Prospectus email notification
+                        </mat-checkbox>
+                    </div>
+                    <div class="row">
+                        <div class="col-12 text-right">
+                            <button type="button" mat-raised-button class="btn btn-cancel mx-1" (click)="onCancel()">Cancel</button>
+                            <button type="button" mat-raised-button class="btn btn-success" (click)="onSubmit()"
+                                [disabled]="!activityLogForm.valid || activityLogForm.pristine" [promiseBtn]="promiseForBtn">Save</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

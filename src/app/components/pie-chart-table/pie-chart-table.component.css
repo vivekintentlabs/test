@@ -1,0 +1,42 @@
+.no-data {
+    position: absolute;
+    right: 45%;
+    top: 40%;
+}
+
+.table-chart .total-pie {
+    text-align: center;
+    font-size: 32px;
+    padding-top: 52px;
+}
+
+.ct-chart-donut .ct-fill-donut .ct-slice-donut {
+    stroke: white;
+    opacity: 1;
+}
+
+.ct-chart {
+    min-width: 100px;
+    z-index: 999;
+    margin-top: 7px;
+}
+
+.table-chart.ct-chart .ct-fill-donut-label {
+    width: 130px;
+    height: 130px;
+    background-color: #dddddd;
+    z-index: -1;
+    border-radius: 50%;
+}
+
+.text-gold {
+    stroke: #ffc424
+}
+
+.text-silver {
+    stroke: #c0c0c0
+}
+
+.text-bronze {
+    stroke: #bb7762
+}

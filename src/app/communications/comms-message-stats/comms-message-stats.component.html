@@ -1,0 +1,164 @@
+<div class="main-content">
+    <div class="container-fluid" *ngIf="commService.isModuleActive && commsMessage">
+        <div class="card">
+            <div class="card-body">
+                <div class="row">
+                    <div class="col col-md-9">
+                        <h3 class="mt-2">{{ commsMessage.subject }}</h3>
+                    </div>
+                    <div class="col text-right">
+                        <div class="p-2 pl-3 pr-3 border border-secondary rounded d-flex flex-row"
+                            [ngClass]="{visible: previewModal.message}" (click)="previewMessage()">
+                            <div class="mr-2"><i class="text-info material-icons">mail_outline</i></div>
+                            <div class="">
+                                <span class="d-block"><strong>Review Sent Message</strong></span>
+                                <small class="text-muted">See what the message looks like</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row mt-3">
+                    <div class="col-md-6">
+                        <div class="float-left mr-2"><i class="material-icons">alarm</i></div>
+                        <div class="float-left">
+                            <span>Sent: {{ sentDateTime }}</span><br />
+                            <span>Activity Description: {{ commsMessage.activity }}</span><br />
+                            <span>Activity Log: {{ (commsMessage.log) ? 'Recorded' : 'Not Recorded' }}</span>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <span class="d-inline-block bg-secondary mb-1 mr-2 pl-3 pr-3 text-white rounded"
+                            *ngFor="let tag of filterTags">{{tag}}</span>
+                    </div>
+                </div>
+                <div class="row mt-3 cards">
+                    <div class="col">
+                        <point-view [label]="'Total Sent'" [points]="totalSentStat" [isGreen]="true"></point-view>
+                    </div>
+                    <div class="col">
+                        <point-view [label]="'Opens'" [points]="opensStat" [isGreen]="true"></point-view>
+                    </div>
+                    <div class="col">
+                        <point-view [label]="'Clicks'" [points]="clicksStat" [isGreen]="true"></point-view>
+                    </div>
+                    <div class="col">
+                        <point-view [label]="'Bounces'" [points]="bouncesStat" [isYellow]="true"></point-view>
+                    </div>
+                    <div class="col">
+                        <point-view [label]="'Complaints'" [points]="complaintsStat" [isRed]="true"></point-view>
+                    </div>
+                </div>
+                <div class="row mt-3">
+                    <div class="col" *ngIf="inputLineZingChart">
+                        <h3 class="text-center">{{chartTitle}}</h3>
+                        <app-line-zing-chart [inputLineZingChart]="inputLineZingChart"></app-line-zing-chart>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col">
+                        <p>Opens</p>
+                        <div *ngIf="commService.school" class="table-responsive">
+                            <table mat-table [dataSource]="dataSource">
+                                <ng-container matColumnDef="name">
+                                    <th class="w-30" mat-header-cell *matHeaderCellDef>Name</th>
+                                    <td mat-cell *matCellDef="let element">{{element.merge_fields.FNAME}} {{element.merge_fields.LNAME}}</td>
+                                </ng-container>
+
+                                <ng-container matColumnDef="email">
+                                    <th class="w-30" mat-header-cell *matHeaderCellDef>Email</th>
+                                    <td mat-cell *matCellDef="let element">{{element.email_address}}</td>
+                                </ng-container>
+
+                                <ng-container matColumnDef="status">
+                                    <th class="w-25" mat-header-cell *matHeaderCellDef>Status</th>
+                                    <td mat-cell *matCellDef="let element">{{element.opens_count}} Opens</td>
+                                </ng-container>
+
+                                <ng-container matColumnDef="clicks">
+                                    <th mat-header-cell *matHeaderCellDef>Clicks</th>
+                                    <td mat-cell *matCellDef="let element">{{element.clicks}} Clicks</td>
+                                </ng-container>
+
+                                <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+                                <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+                            </table>
+
+                            <mat-paginator #paginatorOpens [pageSizeOptions]="[5, 10, 20]" showFirstLastButtons></mat-paginator>
+                        </div>
+                    </div>
+                </div>
+                <div class="row" *ngIf="bouncesStat">
+                    <div class="col">
+                        <p>Bounces</p>
+                        <div *ngIf="commService.school" class="table-responsive">
+                            <div [class.d-none]="dataSourceBounces" class="preloader-block w-100 justify-content-center align-items-center">
+                                <mat-spinner [diameter]="45"></mat-spinner>
+                            </div>
+                            <table [class.d-none]="!dataSourceBounces" mat-table [dataSource]="dataSourceBounces">
+                                <ng-container matColumnDef="name">
+                                    <th class="w-40" mat-header-cell *matHeaderCellDef>Name</th>
+                                    <td mat-cell *matCellDef="let element">{{element.name}}</td>
+                                </ng-container>
+
+                                <ng-container matColumnDef="email">
+                                    <th class="w-40" mat-header-cell *matHeaderCellDef>Email</th>
+                                    <td mat-cell *matCellDef="let element">{{element.email}}</td>
+                                </ng-container>
+
+                                <ng-container matColumnDef="bounces">
+                                    <th mat-header-cell *matHeaderCellDef>Bounce Type <br /><a target="_blank" class="text-light" href="https://mailchimp.com/help/soft-vs-hard-bounces"><u>What's this?</u></a></th>
+                                    <td mat-cell *matCellDef="let element">{{element.bounce}}</td>
+                                </ng-container>
+
+                                <tr mat-header-row *matHeaderRowDef="displayedBounceColumns"></tr>
+                                <tr mat-row *matRowDef="let row; columns: displayedBounceColumns;"></tr>
+                            </table>
+
+                            <mat-paginator #paginatorBounces [pageSizeOptions]="[5, 10, 20]" showFirstLastButtons></mat-paginator>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col text-right">
+                        <button type="button" mat-raised-button class="btn btn-cancel mx-1"
+                            (click)="onCancel()">Back</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal fade" id="previewModal" tabindex="-1" role="dialog" aria-labelledby="previewModalLabel">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title text-left">Preview Message</h4>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <label class="col-sm-2 label-on-left">Subject</label>
+                        <div class="col-sm-10">
+                            {{previewModal.subject}}
+                        </div>
+                    </div>
+                    <br />
+                    <div class="row">
+                        <label class="col-sm-2 label-on-left">From</label>
+                        <div class="col-sm-10">
+                            {{previewModal.from}}
+                        </div>
+                    </div>
+                    <br />
+                    <div class="row">
+                        <div class="col-sm-12">
+                            <div [innerHTML]="previewModal.message | safeHtml"></div>
+                        </div>
+                    </div>
+                    <br />
+                </div>
+                <div class="modal-footer">
+                    <button mat-raised-button type="button" class="btn btn-success" data-dismiss="modal">Ok</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

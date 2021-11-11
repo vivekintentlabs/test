@@ -1,0 +1,35 @@
+// Make outlined icons nice for buttons too
+.btn .material-icons-outlined {
+  @extend .material-icons;
+}
+
+.mat-button.btn,.mat-raised-button.btn,.mat-raised-button.btn:not([class*=mat-elevation-z]),
+.btn {
+  &.btn-delete {
+    @include bmd-raised-button-variant($btn-delete-color, $btn-delete-bg, $btn-delete-border-color);
+  }
+
+  &.btn-cancel {
+    @include button-ghost-variant(
+      $btn-cancel-color,
+      $btn-cancel-border-color,
+      $focus-bg: mix($btn-cancel-color, $bmd-btn-bg, 16%),
+      $active-bg: mix($btn-cancel-color, $bmd-btn-bg, 32%),
+      $addBorder: true
+    )
+  }
+
+  &.btn-reset {
+    @include bmd-raised-button-variant($btn-reset-color, $btn-reset-bg, $btn-reset-border-color);
+    padding: 0.5rem;
+  }
+
+  @include restyle-bmd-outline-buttons();
+}
+
+.btn-toolbar {
+  // Add better default spacing for toggle buttons
+  .togglebutton {
+    margin-right: $spacer * .5;
+  }
+}

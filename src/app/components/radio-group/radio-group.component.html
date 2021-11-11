@@ -1,0 +1,8 @@
+<ng-container *ngIf="options">
+    <mat-radio-group [name]="name" (change)="clicked($event.value)">
+        <mat-radio-button *ngFor="let option of options" [value]="option.id" [checked]="option.id === _value"
+            class="mr-3">
+            {{option.name}}
+        </mat-radio-button>
+    </mat-radio-group>
+</ng-container>

@@ -1,0 +1,102 @@
+<div class="card">
+    <div class="card-header card-header-icon card-header-primary">
+        <div class="card-icon">
+            <i class="material-icons-outlined">people</i>
+        </div>
+        <h4 class="card-title">Related Contacts
+            <small class="text-danger">
+                <span *ngIf="!hasPrimary && studentId">* at least one primary contact required</span>
+            </small>
+        </h4>
+    </div>
+    <div class="card-body">
+        <div class="table-responsive">
+            <table [id]="tableId" mat-table [dataSource]="dataSource" matSort (matSortChange)="onSortChange($event)">
+
+                <!-- Alumni Column -->
+                <ng-container matColumnDef="alumni">
+                    <th mat-header-cell *matHeaderCellDef></th>
+                    <td mat-cell *matCellDef="let element" class="pr-0 alumni">
+                        <ng-container *ngIf="element.alumniId === alumniIdYes">
+                            <i class="material-icons">school</i>
+                        </ng-container>
+                    </td>
+                </ng-container>
+
+                <!-- Name Column -->
+                <ng-container matColumnDef="name">
+                    <th mat-header-cell *matHeaderCellDef mat-sort-header>Name</th>
+                    <td class="l-cs" (click)="editContact(element.id)" mat-cell *matCellDef="let element">
+                        {{element.name}}
+                    </td>
+                </ng-container>
+
+                <!-- Address Column -->
+                <ng-container matColumnDef="address" *ngIf="showAddressData">
+                    <th mat-header-cell *matHeaderCellDef mat-sort-header>Address</th>
+                    <td mat-cell *matCellDef="let element">{{element.address}}</td>
+                </ng-container>
+
+                <!-- Location Column -->
+                <ng-container matColumnDef="location" *ngIf="showAddressData">
+                    <th mat-header-cell *matHeaderCellDef mat-sort-header>Location</th>
+                    <td mat-cell *matCellDef="let element">{{element | address}}</td>
+                </ng-container>
+
+                <!-- Email Column -->
+                <ng-container matColumnDef="email">
+                    <th mat-header-cell *matHeaderCellDef mat-sort-header>Email</th>
+                    <td mat-cell *matCellDef="let element"> {{element.email}} </td>
+                </ng-container>
+
+                <!-- Mobile Column -->
+                <ng-container matColumnDef="mobile">
+                    <th mat-header-cell *matHeaderCellDef mat-sort-header>Mobile</th>
+                    <td mat-cell *matCellDef="let element">{{element.mobile}}</td>
+                </ng-container>
+
+                <!-- Relationship Column -->
+                <ng-container matColumnDef="relationship">
+                    <th mat-header-cell *matHeaderCellDef mat-sort-header>Relationship</th>
+                    <td mat-cell *matCellDef="let element">{{element.relationship}}</td>
+                </ng-container>
+
+                <!-- Actions Column -->
+                <ng-container matColumnDef="actions">
+                    <th mat-header-cell *matHeaderCellDef> <span class="float-right">Actions</span></th>
+                    <td class="td-actions text-right" mat-cell *matCellDef="let element">
+                        <button [hidden]="(element.isPrimary && !moreThanOnePrimary) || !studentId" mat-raised-button
+                            type="button" class="btn btn-danger btn-link" matTooltip="Remove" matTooltipPosition="left"
+                            (click)="unlinkContact(element.id)">
+                            <i class="material-icons">close</i>
+                        </button>
+                        <button mat-raised-button type="button" class="btn btn-success btn-link" matTooltip="Edit"
+                            matTooltipPosition="left" (click)="editContactModal(element.id)">
+                            <i class="material-icons">edit</i>
+                        </button>
+                    </td>
+                </ng-container>
+
+                <!-- No Data -->
+                <ng-container matColumnDef="noData">
+                    <td [hidden]="!dataSource || (dataSource && dataSource.filteredData && dataSource.filteredData.length > 0)"
+                        mat-footer-cell *matFooterCellDef colspan="11">
+                        {{noDataInTable}}
+                    </td>
+                </ng-container>
+
+                <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+                <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+                <tr mat-footer-row *matFooterRowDef="['noData']" class="text-center"></tr> <!-- No Data-->
+            </table>
+        </div>
+        <app-spinner [tableIsLoading]="tableIsLoading"></app-spinner>
+        <div class="row">
+            <div class="col-md-12 text-right">
+                <button *ngIf="showAddContactButton" type="button" mat-raised-button class="btn btn-primary"
+                    (click)="selectContact()"> Add Contact
+                </button>
+            </div>
+        </div>
+    </div>
+</div>

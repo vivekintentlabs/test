@@ -1,0 +1,13 @@
+<div class="modal-header">
+    <h4 class="modal-title text-left" id="stateModalLabel">{{ title }}</h4>
+    <button type="button" class="close" aria-label="Close" (click)="onCancel()">
+        <span aria-hidden="true">&times;</span>
+    </button>
+</div>
+<div class="modal-body">
+    <app-edit-contact [currentRelatedContactId]="currentRelatedContactId" [studentId]="studentId"
+        [contactId]="contactId" [isModal]="true" [idName]="'idName'" [relatedContacts]="relatedContacts"
+        [isNewStudent]="isNewStudent" [hideRelationship]="hideRelationship" (newContact)="addNewContact()"
+        (contactChanged)="contactIsChanged($event)" (contactDataForNewStudent)="contactForNewStudent($event)">
+    </app-edit-contact>
+</div>

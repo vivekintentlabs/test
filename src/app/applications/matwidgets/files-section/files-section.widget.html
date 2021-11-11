@@ -1,0 +1,24 @@
+<mat-card class="widget mt-4">
+    <mat-card-content>
+        <fieldset *ngFor="let fieldset of formProperty.schema.fieldsets" class="mt-3 {{fieldset?.htmlClass}}">
+            <div class="row">
+                <div class="col-6">
+                    <legend *ngIf="formProperty.schema.title" class="h3 text-dark">
+                        {{formProperty.schema.title}}
+                    </legend>
+                    <div *ngIf="formProperty.schema.description">
+                        {{formProperty.schema.description}}
+                    </div>
+                </div>
+                <ng-container *ngFor="let fieldId of fieldset.fields">
+                    <ng-container *ngIf="!(fieldId === 'li_documentSectionStatus' && !showDocSectionStatus)">
+                        <div *ngIf="inNewLine(fieldId)" class="w-100"></div>
+                        <div *ngIf="isVisible(fieldId)" [class]="getHtmlClass(fieldId) + ' d-flex flex-column-reverse'">
+                            <sf-form-element [formProperty]="getProperty(fieldId)"></sf-form-element>
+                        </div>
+                    </ng-container>
+                </ng-container>
+            </div>
+        </fieldset>
+    </mat-card-content>
+</mat-card>

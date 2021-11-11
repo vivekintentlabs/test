@@ -1,0 +1,70 @@
+<div class="row">
+    <div class="col-md-12">
+        <div class="card">
+            <div class="card-header card-header-icon card-header-primary">
+                <div class="card-icon">
+                    <i class="material-icons">paid</i>
+                </div>
+                <h4 class="card-title font-weight-bolder">Fees & Discounts</h4>
+            </div>
+            <div class="card-body">
+                <form [formGroup]="formGroup" novalidate (ngSubmit)="onSubmit()" *ngIf="loaded">
+                    <div class="row">
+                        <div class="col-6">
+                            <h4>Fees</h4>
+                            <p>Specify the amount and currency for any fees associated with this form</p>
+                            <div class="row">
+                                <div class="col-6">
+                                    <mat-form-field>
+                                        <input matInput placeholder="Amount" type="number" min="1"
+                                            formControlName="amount">
+                                        <mat-error
+                                            [hidden]="formGroup.controls.amount.valid || formGroup.controls.amount.pristine">
+                                            Amount is required and should min 1.
+                                        </mat-error>
+                                    </mat-form-field>
+                                </div>
+                                <div class="col-6">
+                                    <mat-form-field>
+                                        <mat-select placeholder="Currency" formControlName="currency">
+                                            <mat-option value="AUD">$AUD</mat-option>
+                                            <mat-option value="NZD">$NZ</mat-option>
+                                            <mat-option value="USD">$USD</mat-option>
+                                            <mat-option value="CAD">$CAD</mat-option>
+                                        </mat-select>
+                                    </mat-form-field>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-12">
+                                    <h4>Payment Type</h4>
+                                    <p>Select the payment type that will be used for receiving payments</p>
+                                    <div class="row">
+                                        <div class="col-12">
+                                            <mat-radio-group formControlName="paymentType">
+                                                <mat-radio-button *ngFor="let paymentType of paymentTypes | keyvalue"
+                                                    [value]="paymentType.value" class="mr-3">
+                                                    {{paymentType.value}}
+                                                </mat-radio-button>
+                                            </mat-radio-group>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-6">
+
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col text-right">
+                            <button type="submit" class="btn btn-success"
+                            [disabled]="!formGroup.valid || formGroup.pristine"
+                            [promiseBtn]="promiseForBtn">save</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,34 @@
+<div class="card">
+    <div class="card-header card-header-icon card-header-primary">
+        <div class="card-icon">
+            <i class="material-icons-outlined">school</i>
+        </div>
+        <h4 class="card-title">School Logo</h4>
+    </div>
+    <div class="card-body">
+        <p>{{message}}</p>
+        <div class="row">
+            <div class="col-md-6">
+                <div ngfDrop multiple="1" selectable="1" [(files)]="files" accept="image/*" [maxSize]="constants.maxLogoSize" class="well my-drop-zone"
+                    (filesChange)="filesChange($event)">
+                    <img src="../../../assets/img/upload-to-cloud-icon.png" style="width: 70%; height: auto;"><br>
+                    <p>Drop <strong>image</strong> to attach, or browse.</p>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <p *ngIf="currentLogoURI">Current Logo:</p>
+                <img *ngIf="currentLogoURI && !uploading" [src]="currentLogoURI" style="width: 50%; height: auto;">
+                <p [hidden]="!uploading">Uploading... </p>
+            </div>
+        </div>
+        <div *ngIf="files[0] != null">
+            <div class="previewIcon" [ngfBackground]="files[0]"></div>
+        </div>
+        <ngfFormData [files]="files" postName="file" [(FormData)]="sendableFormData"></ngfFormData>
+        <!-- <ngfUploadStatus [(percent)]="progress" [httpEvent]="httpEvent"></ngfUploadStatus> -->
+        <div *ngIf="files.length && !uploading">
+            <button type="button" class="btn btn-cancel btn-s" (click)="cancel()" [disabled]="!files.length || uploading">cancel</button>
+            <button type="button" class="btn btn-success btn-s" (click)="uploadFiles()" [disabled]="uploading">upload to server</button>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,69 @@
+:host ::ng-deep {
+    .font-control {
+        display: inline-block;
+    }
+    .stepperWrap {
+        max-width: 800px;
+        margin: 50px auto 30px;
+    }
+    .footer-btns {
+        margin: 20px 0;
+    }
+    .mat-stepper-horizontal {
+        margin-top: 15px;
+    }
+    .mat-horizontal-stepper-header{
+        pointer-events: none !important;
+    }
+    .mat-horizontal-stepper-header-container {
+        display: none !important;
+    }
+    .subheader {
+        margin-top: 33px;
+    }
+    .table-student-select tbody {
+        td.cdk-column-name {
+            width: 30%;
+        }
+        td.cdk-column-updated {
+            width: 23%;
+        }
+        td.cdk-column-status {
+            width: 21%;
+        }
+        td.cdk-column-actions {
+            width: 26%;
+            padding: 0;
+            button {
+                padding: 10px 10px;
+                width: 100%;
+                margin-left: 0;
+                margin-right: 0;
+            }
+        }
+    }
+    .student-new-fill {
+        > div {
+            &:last-child {
+                padding: 0 7px 0;
+            }
+        }
+        #st-firstName,
+        #st-lastName {
+            width: 35%;
+            float: left;
+            margin-right: 2%;
+        }
+        #st-startApp {
+            width: 26%;
+            float: right;
+            padding: 0;
+            button {
+                width: 100%;
+                padding: 10px 10px;
+                margin-left: 0;
+                margin-right: 0;
+            }
+        }
+    }
+}

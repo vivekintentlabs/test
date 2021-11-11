@@ -1,0 +1,24 @@
+<app-merge-item [items]="items" [displayedColumns]="displayedColumns" [title]="title" [headerText]="headerText" (merge)="merge()" (cancel)="onCancel()">
+    <tbody>
+        <tr *ngFor="let item of items">
+            <td>
+                <div class="form-check">
+                    <label class="form-check-label">
+                        <input class="form-check-input" type="radio" [checked]="item.id === targetId" [value]="item.id"
+                            (change)="targetId = item.id;">
+                        <span class="circle">
+                            <span class="check"></span>
+                        </span>
+                    </label>
+                </div>
+            </td>
+            <td>{{item.schoolName}}</td>
+            <td>{{item.classificationName}}</td>
+            <td>{{item.statusName}}</td>
+            <td>
+                <mat-checkbox [disabled]="true" [checked]="item.includeInList"></mat-checkbox>
+            </td>
+            <td>{{item.code}}</td>
+        </tr>
+    </tbody>
+</app-merge-item>

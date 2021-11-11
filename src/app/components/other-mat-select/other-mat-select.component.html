@@ -1,0 +1,19 @@
+<form [formGroup]="otherForm" novalidate>
+    <mat-form-field>
+        <mat-select [placeholder]="placeholder" formControlName="val" [required]="isRequired" [multiple]="multiple"
+            (selectionChange)="onSelectListChange($event, $event.value)">
+
+            <mat-option *ngIf="allowSearchOption">
+                <ngx-mat-select-search [formControl]="listFilterCtrl" placeholderLabel="Search"
+                    noEntriesFoundLabel="No matching item found">
+                </ngx-mat-select-search>
+            </mat-option>
+
+            <mat-option *ngIf="!(isRequired || multiple)" [value]="null">{{noItemSelected}} </mat-option>
+            <ng-container *ngFor="let item of filteredList | async">
+                <div class="custom-divider" *ngIf="item.id === 0"></div>
+                <mat-option [value]="item.id">{{item.name || item.schoolName}}</mat-option>
+            </ng-container>
+        </mat-select>
+    </mat-form-field>
+</form>

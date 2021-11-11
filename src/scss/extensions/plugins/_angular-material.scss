@@ -1,0 +1,17 @@
+// Reference link https://v9.material.angular.io/guide/theming#defining-a-theme
+
+@import '~@angular/material/theming';
+
+// This includes all common styles that are used by multiple components.
+// This should only be included once in your application. If this mixin is
+// included multiple times, your application will end up with multiple copies
+// of these common styles.
+@include mat-core();
+
+$custom-primary: mat-palette($mat-custom-primary);
+$custom-accent: mat-palette($mat-custom-accent);
+$custom-warn: mat-palette($mat-custom-warn);
+
+$custom-theme: mat-light-theme($custom-primary, $custom-accent, $custom-warn);
+
+@include angular-material-theme($custom-theme);

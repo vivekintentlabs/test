@@ -1,0 +1,29 @@
+<li class="nav-item dropdown" *ngIf="!isMobileMenu() && campuses != null && campuses.length > 2 && showCampusSwitcher">
+    <mat-form-field>
+        <mat-select placeholder="selected campus" [value]="campus.id" [disabled]="disabled" (selectionChange)="campusChanged($event.value)">
+            <mat-option value="all">All</mat-option>
+            <mat-option *ngFor="let myCampus of campuses" [value]="myCampus.id" [ngClass]="{'disable':(myCampus.name==='Undecided' && !showUndecided)}">
+                {{ myCampus.name }}
+            </mat-option>
+        </mat-select>
+    </mat-form-field>
+</li>
+<div *ngIf="isMobileMenu() && showCampusSwitcher">
+    <ul class="nav" *ngIf="campuses != null && campuses.length > 2" [ngClass]="{'disable':disabled}">
+        <li routerLinkActive="active" class="nav-item">
+            <a data-toggle="collapse" href="#campusSelector" class="nav-link">
+                <p>{{ campus.name }} <b class="caret"></b></p>
+            </a>
+            <div id="campusSelector" class="collapse" [ngClass]="{'disable':disabled}">
+                <ul class="nav">
+                    <li routerLinkActive="active" class="nav-item">
+                        <a (click)="campusChanged('all')" class="nav-link">All</a>
+                    </li>
+                    <li routerLinkActive="active" class="nav-item" *ngFor="let myCampus of campuses" [ngClass]="{'disable':(myCampus.name==='Undecided' && !showUndecided)}">
+                        <a (click)="campusChanged(myCampus.id)" class="nav-link">{{ myCampus.name }}</a>
+                    </li>
+                </ul>
+            </div>
+        </li>
+    </ul>
+</div>

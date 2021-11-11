@@ -1,0 +1,31 @@
+<section *ngIf="fieldSchema.templateMetaData.isDefaultModifiable && fieldSchema.type !== 'array'">
+    <mat-form-field>
+        <mat-label>Default Value</mat-label>
+        <mat-select *ngIf="fieldSchema.oneOf as options; else inputDefault" [(ngModel)]="fieldSchema.default">
+            <mat-option>No default</mat-option>
+            <mat-option *ngFor="let option of options" [value]="option.enum[0]">
+                {{option.description}}
+            </mat-option>
+        </mat-select>
+        <ng-template #inputDefault>
+            <!-- Binding on input [type] does not work https://github.com/angular/angular/issues/13243 -->
+            <ng-container [ngSwitch]="fieldSchema.type">
+                <ng-container *ngSwitchCase="'integer'">
+                    <ng-container *ngTemplateOutlet="numberTypeInput"></ng-container>
+                </ng-container>
+                <ng-container *ngSwitchCase="'number'">
+                    <ng-container *ngTemplateOutlet="numberTypeInput"></ng-container>
+                </ng-container>
+                <mat-select *ngSwitchCase="'boolean'" [(ngModel)]="fieldSchema.default">
+                    <mat-option>No default</mat-option>
+                    <mat-option [value]="true">Yes</mat-option>
+                    <mat-option [value]="false">No</mat-option>
+                </mat-select>
+                <input *ngSwitchDefault matInput placeholder="Enter a default value" [(ngModel)]="fieldSchema.default">
+                <ng-template #numberTypeInput>
+                    <input matInput type="number" placeholder="Enter a default value" [(ngModel)]="fieldSchema.default">
+                </ng-template>
+            </ng-container>
+        </ng-template>
+    </mat-form-field>
+</section>

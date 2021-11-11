@@ -1,0 +1,40 @@
+<div class="row">
+    <div class="col-md-12">
+        <div class="filter-box">
+            <form [formGroup]="filterForm" novalidate *ngIf="loaded">
+                <div class="row">
+                    <div class="col-sm-10">
+                        <div class="row align-items-center">
+                            <div class="col-sm-2">
+                                <mat-form-field>
+                                    <mat-select placeholder="Year" formControlName="year" (selectionChange)="onSubmit()">
+                                        <mat-option [value]="'all'">{{filterAll}}</mat-option>
+                                        <mat-option *ngFor="let year of filterData.years" [value]="year">{{year}}</mat-option>
+                                    </mat-select>
+                                </mat-form-field>
+                            </div>
+
+                            <div class="col-sm-6">
+                                <mat-checkbox formControlName="hidePastEvents" (change)="onSubmit()">
+                                    Hide Past {{filterData.componentName}}
+                                </mat-checkbox>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-sm-2 text-right">
+                        <!-- <button class="btn btn-just-icon btn-info" type="submit" rel="tooltip" title="Filter" data-placement="left">
+                            <i class="glyphicon glyphicon-filter fs-for-bs-icon"></i>
+                        </button> -->
+                        <!-- <button class="btn btn-just-icon btn-danger" rel="tooltip" title="Reset Filter" data-placement="left" (click)="resetFilter()">
+                            <i class="material-icons">refresh</i>
+                        </button> -->
+                        <button mat-raised-button class="btn btn-just-icon btn-reset" matTooltip="Reset Filter" matTooltipPosition="above" (click)="resetFilter()">
+                            <i class="material-icons">refresh</i>
+                        </button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

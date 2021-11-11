@@ -1,0 +1,282 @@
+<div class="main-content">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-12">
+                <button *ngIf="!userInfo.isSchoolRepresentative() && eventId"
+                    class="btn btn-secondary pull-right enable-check-in mt-4" (click)="enableCheckIn()">ENABLE CHECK IN
+                    MODE</button>
+                <button *ngIf="userInfo.isSchoolRepresentative()" mat-raised-button
+                    class="btn btn-danger pull-right top-button" (click)="logout()">
+                    <i class="material-icons">power_settings_new</i>Logout
+                </button>
+                <button *ngIf="userInfo.isSchoolRepresentative()" mat-raised-button
+                    class="btn btn-secondary pull-right top-button" (click)="refreshPage()">
+                    <i class="material-icons">refresh</i>Reload
+                </button>
+                <div class="card">
+                    <div class="card-header card-header-icon card-header-primary">
+                        <div class="card-icon">
+                            <i class="material-icons-outlined">event</i>
+                        </div>
+                        <h4 class="card-title" *ngIf="!userInfo.isSchoolRepresentative()">{{title}}
+                        </h4>
+                    </div>
+                    <div class="card-body" *ngIf="userInfo.isSchoolRepresentative() && loaded">
+                        <div class="row">
+                            <div class="col-md-5">
+                                <dl class="row">
+                                    <dt class="col-4 text-right">Event Type:</dt>
+                                    <dd class="col-8">{{event.schoolTour.name}}</dd>
+
+                                    <dt class="col-4 text-right">Date:</dt>
+                                    <dd class="col-8">{{eventDate}}</dd>
+
+                                    <dt class="col-4 text-right">Start Time - End Time:</dt>
+                                    <dd class="col-8">{{eventTime}} - {{eventEndTime == 'Invalid date' ? 'Unknown':
+                                        eventEndTime}}</dd>
+
+                                    <dt class="col-4 text-right">Max Number:</dt>
+                                    <dd class="col-8">{{event.maxNumber}}</dd>
+                                </dl>
+                            </div>
+                            <div class="col-md-7" *ngIf="event && event.isSubToursEnabled">
+                                <div class="table-responsive">
+                                    <table class="table">
+                                        <thead>
+                                            <tr class="fw-5">
+                                                <th>Subtours</th>
+                                                <th>Time</th>
+                                                <th>Max Number</th>
+                                                <th>RSVP</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr *ngFor="let item of event.subTours">
+                                                <td>{{item.name}}</td>
+                                                <td>{{item.startTime | time: 'short' }} -
+                                                    {{item.endTime | time: 'short' }}</td>
+                                                <td>{{item.maxNumber}}</td>
+                                                <td>{{item.rsvp || '-'}}</td>
+                                            </tr>
+                                            <tr *ngIf="event.subTours.length == 0">
+                                                <td colspan="4" class="text-center">No Data Available</td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card-body" *ngIf="!userInfo.isSchoolRepresentative()">
+                        <form [formGroup]="formGroup" class="form-horizontal" id="addNewEventForm" novalidate
+                            (ngSubmit)="onSubmit()" *ngIf="loaded">
+                            <fieldset class="form-group">
+                                <div class="row">
+                                    <div class="col-md-6 col-sm-12">
+                                        <div class="row">
+                                            <label class="col-2 col-form-label required">Event Type</label>
+                                            <div class="col-10">
+                                                <mat-form-field>
+                                                    <mat-select placeholder="" formControlName="schoolTourId">
+                                                        <mat-option *ngFor="let item of eventTypes" [value]="item.id">
+                                                            {{item.name}}
+                                                        </mat-option>
+                                                    </mat-select>
+                                                </mat-form-field>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <ng-container *ngIf="campuses !== null && campuses.length > 1">
+                                                <label class="col-2 col-form-label required">Campus</label>
+                                                <div class="col-10">
+                                                    <mat-form-field>
+                                                        <mat-select placeholder="" formControlName="campusId" required
+                                                            (selectionChange)="campusChanged($event.value)">
+                                                            <mat-option *ngFor="let item of campuses" [value]="item.id">
+                                                                {{item.name}}
+                                                            </mat-option>
+                                                        </mat-select>
+                                                    </mat-form-field>
+                                                </div>
+                                            </ng-container>
+                                        </div>
+                                        <div class="row">
+                                            <label class="col-2 col-form-label required">Location</label>
+                                            <div class="col-10">
+                                                <mat-form-field>
+                                                    <textarea matInput mat-autosize matAutosizeMaxRows="3"
+                                                        formControlName="location" required>
+                                                    </textarea>
+                                                    <mat-error
+                                                        [hidden]="formGroup.controls.location.valid || formGroup.controls.location.pristine">
+                                                        Location should contain at least {{requiredTextFieldMinLength}} and at most {{requiredStringFieldMaxLength}} characters.
+                                                    </mat-error>
+                                                </mat-form-field>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <label class="col-2 col-form-label required">Date</label>
+                                            <div class="col-10">
+                                                <mat-form-field>
+                                                    <input matInput [matDatepicker]="date" formControlName="date">
+                                                    <mat-datepicker-toggle matSuffix [for]="date">
+                                                    </mat-datepicker-toggle>
+                                                    <mat-datepicker #date></mat-datepicker>
+                                                </mat-form-field>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <label class="col-2 col-form-label required">Start Time</label>
+                                            <div class="col-4">
+                                                <mat-form-field>
+                                                    <input matInput type="time" formControlName="time" readonly
+                                                        (click)="timeChanged(formGroup.controls.time, '9:00', 'startTime')" />
+                                                    <span matSuffix>
+                                                        <i class="material-icons clickable text-muted font-1-5em"
+                                                            (click)="timeChanged(formGroup.controls.time, '9:00', 'startTime')">access_time</i>
+                                                    </span>
+                                                </mat-form-field>
+                                            </div>
+                                            <label class="col-2 col-form-label required">End Time</label>
+                                            <div class="col-4">
+                                                <mat-form-field>
+                                                    <input matInput type="time" formControlName="endTime" readonly
+                                                        (click)="timeChanged(formGroup.controls.endTime, '9:00', 'endTime')" />
+                                                    <span matSuffix>
+                                                        <i class="material-icons clickable text-muted font-1-5em"
+                                                            (click)="timeChanged(formGroup.controls.endTime, '9:00', 'endTime')">access_time</i>
+                                                    </span>
+                                                </mat-form-field>
+                                                <mat-error *ngIf="!validEndTime">The end time should be after the start
+                                                    time</mat-error>
+                                            </div>
+                                        </div>
+
+
+                                        <div class="row">
+                                            <label class="col-2 col-form-label required">Max Number</label>
+                                            <div class="col-10">
+                                                <mat-form-field>
+                                                    <input matInput type="number" min="0" formControlName="maxNumber"
+                                                        required autocomplete="off">
+                                                    <mat-error
+                                                        [hidden]="formGroup.controls.maxNumber.valid || formGroup.controls.maxNumber.pristine">
+                                                        Max number should be less than 11 characters.
+                                                    </mat-error>
+                                                </mat-form-field>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <label class="col-2 col-form-label">Description</label>
+                                            <div class="col-10">
+                                                <mat-form-field>
+                                                    <textarea matInput mat-autosize matAutosizeMinRows="3" matAutosizeMaxRows="3"
+                                                        formControlName="description">
+                                                    </textarea>
+                                                    <mat-error
+                                                        [hidden]="formGroup.controls.description.valid || formGroup.controls.description.pristine">
+                                                        Description should contain at least {{requiredTextFieldMinLength}} and at most {{descriptionTextFieldMaxLength}}
+                                                        characters.
+                                                    </mat-error>
+                                                </mat-form-field>
+                                            </div>
+                                        </div>
+
+                                    </div>
+
+                                    <div class="col-md-6 col-sm-12">
+                                        <div class="row">
+                                            <div class="card online-reg m-3 p-2">
+                                                <h4 class="card-title">Online Registrations</h4>
+                                                <small class="category">When online registrations are disabled, this
+                                                    event will appear as fully booked</small>
+                                                <div>
+                                                    <div class="togglebutton">
+                                                        <label class="font-weight-light text-dark">
+                                                            <input type="checkbox"
+                                                                formControlName="isRegistrationDisabled"
+                                                                (change)="disableRegistration($event.target.checked)">
+                                                            <span class="toggle"></span>
+                                                            No longer accept online registrations for this event
+                                                        </label>
+                                                    </div>
+                                                </div>
+                                                <div>
+                                                    <div class="togglebutton">
+                                                        <label class="font-weight-light text-dark">
+                                                            <input type="checkbox"
+                                                                formControlName="isRegistrationDisabledAutoManaged"
+                                                                (change)="disableRegistrationAutoManaged($event.target.checked)">
+                                                            <span class="toggle"></span>
+                                                            Automatically disable online registrations when capacity is
+                                                            met
+                                                        </label>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="card online-reg m-3 p-2">
+                                                <h4 class="card-title">Subtours</h4>
+                                                <div class="card-body">
+                                                    <div>
+                                                        <div class="togglebutton">
+                                                            <label class="font-weight-light text-dark">
+                                                                <input type="checkbox" formControlName="isSubToursEnabled">
+                                                                <span class="toggle"></span>
+                                                                Enable subtours for this event
+                                                            </label>
+                                                        </div>
+                                                    </div>
+                                                    <div>
+                                                        <div *ngIf="formGroup.controls.isSubToursEnabled.value">
+                                                            <div>
+                                                                <label class="font-weight-light text-dark">Can a family sign
+                                                                    up for multiple subtours?&nbsp;&nbsp;
+                                                                    <app-radio-group [options]="subTourListType"
+                                                                        [value]="event.isMultipleSubtours"
+                                                                        formControlName="isMultipleSubtours"
+                                                                        (change)="isMultipleSubtoursChanged($event.target.value)">
+                                                                    </app-radio-group>
+                                                                </label>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                
+                                            </div>
+                                        </div>
+                                        <div class="row" *ngIf="!userInfo.isSchoolRepresentative()">
+                                            <div class="col text-right">
+                                                <button type="button" mat-raised-button class="btn btn-cancel mx-1"
+                                                    (click)="onCancel()">Cancel</button>
+                                                <button type="submit" class="btn btn-success"
+                                                    [disabled]="!formGroup.valid || formGroup.pristine"
+                                                    [promiseBtn]="promiseForBtn">save
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </fieldset>
+
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Representative needs the info from app-sub-tours for a different component, but should not see the app-sub-tours component. Therefore hide it -->
+        <app-sub-tours [hidden]="userInfo.isSchoolRepresentative()" *ngIf="!isAdd && !isDuplicate && event && event.isSubToursEnabled"
+            [event]="event" (updateSubTours)="updateSubTours($event)"></app-sub-tours>
+
+        <app-rsvp-list *ngIf="event && event.id" [event]="event" (bookingsUpdated)="bookingsUpdated($event)">
+        </app-rsvp-list>
+
+    </div>
+
+    <app-event-email *ngIf="!isAdd && !isDuplicate && showIfNoRepresentative && campus" [id]="eventId"
+        [campusTimezoneId]="campus.timeZoneId">
+    </app-event-email>
+
+</div>

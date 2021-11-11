@@ -1,0 +1,23 @@
+<div *ngIf="schema.widget.displayTitle || schema.widget.displayDescription" class="row">
+    <div class="col-12 mt-4">
+        <h4 *ngIf="schema.widget.displayTitle && schema.title" class="lead" [class.required]="formProperty|isRequired">
+            {{schema.title}}
+        </h4>
+        <div *ngIf="schema.widget.displayDescription && schema.description" class="pre-line"
+            [class.required]="!schema.title && formProperty|isRequired">
+            {{schema.description}}
+        </div>
+    </div>
+</div>
+<fieldset *ngFor="let fieldset of formProperty.schema.fieldsets" [attr.id]="fieldset.id" class="mt-3 {{fieldset.htmlClass || ''}}">
+    <legend *ngIf="fieldset.title" class="h3 text-dark">{{fieldset.title}}</legend>
+    <div *ngIf="fieldset.description">{{fieldset.description}}</div>
+    <div class="row">
+        <ng-container *ngFor="let fieldId of fieldset.fields">
+            <div *ngIf="inNewLine(fieldId)" class="w-100"></div>
+            <div *ngIf="isVisible(fieldId)" [class]="getHtmlClass(fieldId) + ' d-flex flex-column-reverse'">
+                <sf-form-element [formProperty]="getProperty(fieldId)"></sf-form-element>
+            </div>
+        </ng-container>
+    </div>
+</fieldset>

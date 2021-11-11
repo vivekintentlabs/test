@@ -1,0 +1,115 @@
+.grouped-table-chart {
+    margin: 50px 0 0 0;
+    .pie-chart-col {
+        display: inline-block;
+        padding: 11px 30px 11px 10px;
+        position: relative;
+        .pie-chart-title {
+            position: absolute;
+            top: -30px;
+            right: 20%;
+            color: #3C4858 !important;
+        }
+    }
+
+    &.grouped-single-row {
+        margin-top: 41px;
+        &:first-child {
+            margin-top: 6px;
+        }
+        .pie-chart-col .pie-chart-title {
+            top: -24px;
+        }
+        .pie-chart-legend-wrapper {
+            right: 5% !important;
+        }
+    }
+
+    .table-chart-legend-wrapper {
+        position: absolute;
+        left: 0;
+        right: 0;
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        .table-chart-legend {
+            position: relative;
+            .table-chart-legend-text {
+                display: inline-block;
+                color: #3C4858 !important;
+                padding: 11px 10px;
+                position: relative;
+                z-index: 2;
+            }
+            .table-chart-legend-bg {
+                position: absolute;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                display: block;
+                span {
+                    display: block;
+                    width: 100%;
+                    height: 100%;
+                    opacity: 0.27;
+                }
+                .text-info {background: #00bcd4}
+                .text-danger {background: #f44336}
+                .text-warning {background: #ff9800}
+                .text-primary {background: #9c27b0}
+                .text-success {background: #4caf50}
+                .text-six {background: #337ab7}
+                .text-seven {background: #add}
+                .text-eight {background: #ad3}
+                .text-nine {background: #2196F3}
+                .text-ten {background: #ffeb3b}
+                .text-eleven {background: #55acee}
+                .text-twelve {background: #cc2127}
+                .text-thirteen {background: #CDDC39}
+                .text-fourteen {background: #546E7A}
+                .text-fifteen {background: #795548}
+            }
+        }
+    }
+
+    .pie-chart-legend-wrapper {
+        position: absolute;
+        top: 0;
+        right: 0;
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        text-align: center;
+        .pie-chart-legend-item {
+            padding: 8px 10px;
+        }
+    }
+}
+
+@media (max-width: 540px) {
+    .grouped-table-chart {
+        .pie-chart-col {
+            width: 280px !important;
+            padding: 11px 10px 11px 0px;
+        }
+    }
+}
+
+@media (max-width: 500px) {
+    .grouped-table-chart {
+        .pie-chart-col {
+            width: 280px !important;
+            padding: 11px 0 11px 20px;
+        }
+        .table-chart-legend-text {
+            font-size: 10px !important;
+            padding: 11px 3px !important
+        }
+        .pie-chart-legend-item {
+            padding: 8px 0 !important;
+        }
+    }
+}

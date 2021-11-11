@@ -1,0 +1,335 @@
+<div class="main-content">
+    <div class="container-fluid">
+        <form [formGroup]="formGroup" class="mb-0" novalidate (ngSubmit)="onSubmit()" *ngIf="loaded">
+            <div class="row cards">
+                <div class="col-lg-7">
+                    <div class="card">
+                        <div class="card-header card-header-icon card-header-primary">
+                            <div class="card-icon">
+                                <i class="material-icons-outlined">account_balance</i>
+                            </div>
+                            <h4 class="card-title">{{title}}
+                            </h4>
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <mat-form-field>
+                                        <input matInput placeholder="School Name" type="text" formControlName="name" required>
+                                        <mat-error [hidden]="formGroup.controls.name.valid || formGroup.controls.name.pristine">
+                                            Name is required and should contain at least {{requiredTextFieldMinLength}} and at most {{requiredSchoolNameMaxLength}} characters.
+                                        </mat-error>
+                                    </mat-form-field>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <mat-form-field>
+                                        <input matInput placeholder="Address" type="text" formControlName="address">
+                                        <mat-error [hidden]="formGroup.controls.address.valid || formGroup.controls.address.pristine">
+                                            Address should contain at least {{notRequiredTextFieldMinLength}} and at most {{addressFieldMaxLength}} characters.
+                                        </mat-error>
+                                    </mat-form-field>
+                                </div>
+                                <div class="col-md-6" *ngIf="addressOptions.sublocality.isUsed">
+                                    <mat-form-field>
+                                        <input matInput [placeholder]="addressOptions.sublocality.label" type="text" formControlName="sublocality">
+                                        <mat-error [hidden]="formGroup.controls.sublocality.valid || formGroup.controls.sublocality.pristine"
+                                            class="text-danger">
+                                            {{addressOptions.sublocality.label}} should contain at least {{notRequiredTextFieldMinLength}} and at most {{citySuburbFieldMaxLength}} characters.
+                                        </mat-error>
+                                    </mat-form-field>
+                                </div>
+                                <div class="col-md-6" *ngIf="addressOptions.city.isUsed">
+                                    <mat-form-field>
+                                        <input matInput [placeholder]="addressOptions.city.label" type="text" formControlName="city">
+                                        <mat-error [hidden]="formGroup.controls.city.valid || formGroup.controls.city.pristine"
+                                            class="text-danger">
+                                            {{addressOptions.city.label}} should contain at least {{notRequiredTextFieldMinLength}} and at most {{citySuburbFieldMaxLength}} characters.
+                                        </mat-error>
+                                    </mat-form-field>
+                                </div>
+                                <div class="col-md-6" *ngIf="addressOptions.state.isUsed">
+                                    <mat-form-field>
+                                        <mat-select [placeholder]="addressOptions.state.label" formControlName="administrativeAreaId">
+                                            <mat-option *ngIf="formGroup.controls.countryId.value === null" [value]="null">{{noCountrySelected}}</mat-option>
+                                            <mat-option *ngFor="let administrativeArea of administrativeAreas" [value]="administrativeArea.id">{{administrativeArea.name}}</mat-option>
+                                        </mat-select>
+                                    </mat-form-field>
+                                </div>
+                                <div class="col-md-6" *ngIf="addressOptions.postCode.isUsed">
+                                    <mat-form-field>
+                                        <input matInput [placeholder]="addressOptions.postCode.label" type="text" formControlName="postCode">
+                                        <mat-error [hidden]="formGroup.controls.postCode.valid || formGroup.controls.postCode.pristine">
+                                            {{addressOptions.postCode.label}} should contain at least {{postCodeMinLength}} and at most {{postCodeMaxLength}} characters.
+                                        </mat-error>
+                                    </mat-form-field>
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <mat-form-field>
+                                        <mat-select placeholder="Country" formControlName="countryId" (selectionChange)="onCountryChange($event.value)" required [disabled]="!userInfo.isSysAdmin()">
+                                            <mat-option *ngFor="let country of countries" [value]="country.id">{{country.name}}</mat-option>
+                                        </mat-select>
+                                        <mat-error [hidden]="formGroup.controls.countryId.valid || formGroup.controls.countryId.pristine"
+                                            class="text-danger">
+                                            Country should be selected.
+                                        </mat-error>
+                                    </mat-form-field>
+                                </div>
+                                <div class="col-md-6 d-inline-flex align-self-end">
+                                    <p>Default date display format: {{schoolFormat}}</p>
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <mat-form-field>
+                                        <mat-select placeholder="Time Zone" formControlName="timeZoneId" required>
+                                            <mat-option *ngIf="formGroup.controls.countryId.value === null" [value]="null">{{noCountrySelected}}</mat-option>
+                                            <mat-option *ngFor="let t of timeZones" [value]="t.id">{{t.name}}</mat-option>
+                                        </mat-select>
+                                    </mat-form-field>
+                                </div>
+                                <div class="col-md-6">
+                                    <mat-form-field>
+                                        <mat-select placeholder="School Year" formControlName="startingMonth" required>
+                                            <mat-option *ngFor="let month of monthList; let i = index " [value]="i">{{month}}</mat-option>
+                                        </mat-select>
+                                        <mat-hint>First month of school year</mat-hint>
+                                    </mat-form-field>
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <label *ngIf="formGroup.controls.id.value">What is the gender of your school?</label>
+                                    <app-checkbox-group [options]="genders" formControlName="genders">
+                                    </app-checkbox-group>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <div class="card-header card-header-icon card-header-primary">
+                            <div class="card-icon">
+                                <i class="material-icons-outlined">settings</i>
+                            </div>
+                            <h4 class="card-title">Optional Fields -
+                                <small class="category">Once enabled these will appear in {{brand.name}}</small>
+                            </h4>
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                <label class="pl-3 col-form-label">Does your school accept international students?</label>
+                                <div class="pl-2">
+                                    <div class="form-check form-check-inline">
+                                        <label class="form-check-label">
+                                            <input class="form-check-input" type="radio" [value]="true" formControlName="hasInternationals">Yes
+                                            <span class="circle">
+                                                <span class="check"></span>
+                                            </span>
+                                        </label>
+                                    </div>
+                                </div>
+                                <div class="pl-2">
+                                    <div class="form-check form-check-inline">
+                                        <label class="form-check-label">
+                                            <input class="form-check-input" type="radio" [value]="false" formControlName="hasInternationals">No
+                                            <span class="circle">
+                                                <span class="check"></span>
+                                            </span>
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <label class="pl-3 col-form-label"> Does your school offer Boarding or Homestay?</label>
+                                <div class="pl-2">
+                                    <div class="form-check form-check-inline">
+                                        <label class="form-check-label">
+                                            <input class="form-check-input" type="radio" [value]="true" formControlName="isBoardingEnabled">Yes
+                                            <span class="circle">
+                                                <span class="check"></span>
+                                            </span>
+                                        </label>
+                                    </div>
+                                </div>
+                                <div class="pl-2">
+                                    <div class="form-check form-check-inline">
+                                        <label class="form-check-label">
+                                            <input class="form-check-input" type="radio" [value]="false" formControlName="isBoardingEnabled">No
+                                            <span class="circle">
+                                                <span class="check"></span>
+                                            </span>
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <label class="pl-3 col-form-label"> Add ability to specify a Contact’s spouse?</label>
+                                <div class="pl-2">
+                                    <div class="form-check form-check-inline">
+                                        <label class="form-check-label">
+                                            <input class="form-check-input" type="radio" [value]="true" formControlName="isSpouseEnabled">Yes
+                                            <span class="circle">
+                                                <span class="check"></span>
+                                            </span>
+                                        </label>
+                                    </div>
+                                </div>
+                                <div class="pl-2">
+                                    <div class="form-check form-check-inline">
+                                        <label class="form-check-label">
+                                            <input class="form-check-input" type="radio" [value]="false" formControlName="isSpouseEnabled">No
+                                            <span class="circle">
+                                                <span class="check"></span>
+                                            </span>
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <div class="card-header card-header-icon card-header-primary">
+                            <div class="card-icon">
+                                <i class="material-icons-outlined">storage</i>
+                            </div>
+                            <h4 class="card-title">Student Information System</h4>
+                        </div>
+                        <div class="card-body">
+                            <mat-form-field>
+                                <mat-select placeholder="Which Student Information System are you using?" formControlName="managementSystemId" required>
+                                    <mat-option *ngFor="let item of managementSystems" [value]="item.id">
+                                        {{item.name}}
+                                    </mat-option>
+                                </mat-select>
+                                <mat-error *ngIf="!(formGroup.controls.managementSystemId.valid || formGroup.controls.managementSystemId.pristine)">
+                                    Information System should be selected.
+                                </mat-error>
+                            </mat-form-field>
+                        </div>
+                    </div>
+                    <app-school-logo *ngIf="schoolId !== 0 && school"></app-school-logo>
+                </div>
+                <div class="col-lg-5">
+                    <div class="card">
+                        <div class="card-header card-header-icon card-header-primary">
+                            <div class="card-icon">
+                                <i class="material-icons-outlined">person</i>
+                            </div>
+                            <h4 class="card-title">School Contact -
+                                <small class="category">{{brand.name}} Administration</small>
+                            </h4>
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <mat-form-field>
+                                        <input matInput placeholder="Administrator Name" type="text" formControlName="adminName">
+                                        <mat-error [hidden]="formGroup.controls.adminName.valid || formGroup.controls.adminName.pristine">
+                                            Admin Name should contain at least {{notRequiredTextFieldMinLength}} and at most {{length50}} characters.
+                                        </mat-error>
+                                    </mat-form-field>
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <mat-form-field>
+                                        <input matInput placeholder="Administrator Phone" type="text" formControlName="phone">
+                                        <mat-error [hidden]="formGroup.controls.phone.valid || formGroup.controls.phone.pristine">
+                                            {{phoneErrorText}}
+                                        </mat-error>
+                                    </mat-form-field>
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <mat-form-field>
+                                        <input matInput placeholder="Administrator Email" type="email" formControlName="email">
+                                        <mat-error [hidden]="formGroup.controls.email.valid || formGroup.controls.email.pristine">
+                                            Email format should be
+                                            <i>john@doe.com</i> and contain at most {{emailMaxLength}} characters.
+                                        </mat-error>
+                                    </mat-form-field>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card" *ngIf="userInfo.isSysAdmin()">
+                        <div class="card-header card-header-icon card-header-primary">
+                            <div class="card-icon">
+                                <i class="material-icons-outlined">account_circle</i>
+                            </div>
+                            <h4 class="card-title">Account Status
+                                <small class="category"></small>
+                            </h4>
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-check form-check-radio">
+                                        <label class="form-check-label">
+                                            <input class="form-check-input" value="pending" type="radio" formControlName="status"> Pending
+                                            <span class="circle">
+                                                <span class="check"></span>
+                                            </span>
+                                        </label>
+                                    </div>
+                                    <div class="form-check form-check-radio">
+                                        <label class="form-check-label">
+                                            <input class="form-check-input" value="active" type="radio" formControlName="status"> Active
+                                            <span class="circle">
+                                                <span class="check"></span>
+                                            </span>
+                                        </label>
+                                    </div>
+                                    <div class="form-check form-check-radio">
+                                        <label class="form-check-label">
+                                            <input class="form-check-input" value="expired" type="radio" formControlName="status"> Expired
+                                            <span class="circle">
+                                                <span class="check"></span>
+                                            </span>
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <mat-form-field>
+                                        <input matInput [matDatepicker]="expirationDate" placeholder="Account Expiration Date" formControlName="expirationDate">
+                                        <mat-datepicker-toggle matSuffix [for]="expirationDate"></mat-datepicker-toggle>
+                                        <mat-datepicker #expirationDate></mat-datepicker>
+                                    </mat-form-field>
+                                </div>
+                            </div>
+
+                            <app-school-modules *ngIf="userInfo.isSysAdmin() && school"
+                                [modules]="school.modules" (modulesChanged)="onModulesChange($event)">
+                            </app-school-modules>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col">
+                            <button type="submit" mat-raised-button class="btn btn-success pull-right"
+                                [disabled]="!formGroup.valid || formGroup.pristine" [promiseBtn]="promiseForBtn">save
+                            </button>
+                            <button type="button" mat-raised-button class="btn btn-cancel pull-right" *ngIf="userInfo.isSysAdmin()" (click)="onCancel()">Cancel</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </form>
+        <app-campuses-cmp *ngIf="schoolId !== 0 && school" [school]="school"></app-campuses-cmp>
+    </div>
+</div>

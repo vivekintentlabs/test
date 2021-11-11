@@ -1,0 +1,34 @@
+@mixin point-view-color($background, $color,
+  $success-background: $brand-success, $warning-background: $brand-warning, $danger-background: $brand-danger,
+  $success-color: $white, $warning-color: $white, $danger-color: $white) {
+  .point {
+    .count-block {
+      color: $color;
+      background: $background;
+      &.green {
+        color: $success-color;
+        background: $success-background;
+      }
+      &.yellow {
+        color: $warning-color;
+        background: $warning-background;
+      }
+      &.red {
+        color: $danger-color;
+        background: $danger-background;
+      }
+    }
+  }
+}
+
+@mixin point-view-roundness($border-radius) {
+  .point {
+    .count-block {
+      border-radius: $border-radius;
+    }
+  }
+
+  .card .point {
+    border-radius: $border-radius;
+  }
+}

@@ -1,0 +1,9 @@
+<div [ngClass]="{'main-content':(!isDashboard)}">
+    <div [ngClass]="{'container-fluid':(!isDashboard)}">
+        <app-widget *ngIf="loaded" [params]="widgetParams" [noPadding]="true" (callBack)="widgetCallBack($event)">
+            <app-google-map *ngIf="isSubWidgetOnDashBoard('map')" [locations]="locations"
+                [selectedYearLevels]="selectedYearLevels" [campuses]="campuses" [startingYears]="startingYears">
+            </app-google-map>
+        </app-widget>
+    </div>
+</div>

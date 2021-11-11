@@ -1,0 +1,31 @@
+<!--
+    Only show property if it had existed before. Need to do a loose inequality
+    check with null because if checking only for truthy, once the user deletes
+    the label/description, the value becomes an empty string, which is falsey
+    and can never be edited again if the ngIf only shows input fields for
+    truthy values.
+-->
+<mat-form-field *ngIf="fieldSchema.title != null">
+    <mat-label>Label</mat-label>
+    <input matInput placeholder="What is this field called?" [(ngModel)]="fieldSchema.title">
+</mat-form-field>
+<mat-form-field *ngIf="fieldSchema.description != null">
+    <mat-label>Description</mat-label>
+    <textarea matInput placeholder="Enter in any text that you want to appear below the field label"
+        [(ngModel)]="fieldSchema.description"></textarea>
+</mat-form-field>
+<ng-container *ngFor="let fieldset of fieldSchema.fieldsets; index as index">
+    <!-- If there is no field set for the object, ngx-schema-form creates one called 'fieldset-default'. Skip it. -->
+    <div *ngIf="fieldset.id !== 'fieldset-default' && (fieldset.title != null || fieldset.description != null)">
+        <h4>Section {{index + 1}}</h4>
+        <mat-form-field *ngIf="fieldset.title != null">
+            <mat-label>Label</mat-label>
+            <input matInput placeholder="What is this section called?" [(ngModel)]="fieldset.title">
+        </mat-form-field>
+        <mat-form-field *ngIf="fieldset.description != null">
+            <mat-label>Description</mat-label>
+            <textarea matInput placeholder="Enter in any description for this section"
+                [(ngModel)]="fieldset.description"></textarea>
+        </mat-form-field>
+    </div>
+</ng-container>

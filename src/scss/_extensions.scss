@@ -1,0 +1,22 @@
+@import 'extensions/core/variables';
+@import 'extensions/core/misc';
+@import 'extensions/core/mixins';
+@import 'extensions/core/buttons';
+@import 'extensions/core/select';
+@import 'extensions/core/slider';
+@import 'extensions/core/cards';
+@import 'extensions/core/footer';
+@import 'extensions/core/forms';
+
+@import 'extensions/dashboard/buttons';
+@import 'extensions/dashboard/cards';
+@import 'extensions/dashboard/sidebar-and-main-panel';
+@import 'extensions/dashboard/tables';
+@import 'extensions/dashboard/filter-box';
+@import 'extensions/dashboard/charts';
+
+@import 'extensions/components';
+
+@import 'extensions/plugins/sweetalert2';
+@import 'extensions/plugins/amazing-time-picker';
+@import 'extensions/plugins/date-range-picker';

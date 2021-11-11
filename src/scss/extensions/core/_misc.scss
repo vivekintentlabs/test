@@ -1,0 +1,20 @@
+// Styling for a "fake" link
+// TODO we should be using real `<a>` or `<button>` instead of restyling other HTML elements
+// Making fake links is a serious accessibility problem https://a11y-101.com/design/button-vs-link
+.l-cs {
+  cursor: pointer;
+  color: $link-color;
+  font-weight: inherit;
+}
+
+.sticky-button-bar {
+  background-color: $bg-light;
+}
+
+body {
+  background-color: $bg-light;
+}
+
+.chart-button-group-dropdown .dropdown-item:hover {
+  background-color: rgba($brand-primary, 0.35);
+}

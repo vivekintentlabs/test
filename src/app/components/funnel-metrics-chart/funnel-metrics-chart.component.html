@@ -1,0 +1,5 @@
+<app-widget *ngIf="loaded" [params]="widgetParams" (callBack)="widgetCallBack($event)">
+    <app-chart-wrapper>
+        <app-funnel-chart [inputFunnelData]="inputFunnelData"></app-funnel-chart>
+    </app-chart-wrapper>
+</app-widget>

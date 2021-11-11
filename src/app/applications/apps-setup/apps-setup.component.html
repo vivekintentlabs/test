@@ -1,0 +1,84 @@
+<div class="main-content">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-12"> 
+                <div class="card">
+                    <div class="card-header card-header-icon card-header-primary">
+                        <div class="card-icon">
+                            <i class="material-icons">code</i>
+                        </div>
+                        <h4 class="card-title font-weight-bolder">Embed Code</h4>
+                    </div>
+                    <div *ngIf="iframeAppCode" class="card-body">
+                        <h4>Form Code</h4>
+                        <p>Copy the form code for your website and send to your website designer</p>
+                        <pre id="iframeCode" class="rounded img-thumbnail"><code>{{ iframeAppCode }}</code></pre>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <button class="btn btn-primary" type="button" (click)="copyApplicationCode()">COPY
+                                    FORM CODE </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-12"> 
+                <div class="card">
+                    <div class="card-header card-header-icon card-header-primary">
+                        <div class="card-icon">
+                            <i class="material-icons">link</i>
+                        </div>
+                        <h4 class="card-title font-weight-bolder">Form Permalink</h4>
+                    </div>
+                    <div *ngIf="iframeAppCode" class="card-body">
+                        <h4>URL</h4>
+                        <p>Use the link to share this form publicly on the web.</p>
+                        <pre id="iframeCode" class="rounded img-thumbnail"><code>{{ formPermalink }}</code></pre>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <button class="btn btn-primary" type="button" (click)="copyFormPermalink()">Copy URL</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-12"> 
+                <div class="card">
+                    <div class="card-header card-header-icon card-header-primary">
+                        <div class="card-icon">
+                            <i class="material-icons">assignment</i>
+                        </div>
+                        <h4 class="card-title font-weight-bolder">Welcome</h4>
+                    </div>
+                    <div class="card-body">
+                        <p>Enter the welcome text you would like to appear once a user has decided to start the application process.</p>
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div [ngClass]="{'d-none': isTinyMceLoaded}"
+                                    class="preloader-block w-100 justify-content-center align-items-center">
+                                    <mat-spinner [diameter]="45"></mat-spinner>
+                                </div>
+                                <div [ngClass]="{'invisible': !isTinyMceLoaded}"
+                                    class="editor-block w-100 justify-content-center align-items-center">
+                                    <div id="emailTemplateMessage"></div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row mt-3" [ngClass]="{'d-none': !isTinyMceLoaded}">
+                            <div class="col text-right">
+                                <button type="button" mat-raised-button class="ml-2 mr-2 btn btn-success"
+                                    [disabled]="content.length < 1"
+                                    (click)="saveAppRequestIntroduction()">Save</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <app-fee-discount [formId]="formId"></app-fee-discount>
+    </div>
+</div>

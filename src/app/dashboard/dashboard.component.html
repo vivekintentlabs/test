@@ -1,0 +1,27 @@
+<div class="main-content widget" *ngIf="widgets">
+    <div class="container-fluid">
+        <div class="row" *ngIf="isWidgetOnDashBoard('enquiries')">
+            <div class="col-md-12">
+                <div class="row">
+                    <app-funnel-metrics-chart class="col-12" *ngIf="isSubWidgetOnDashBoard('enquiries', 'funnel_metrics_chart')"></app-funnel-metrics-chart>
+                    <app-grouped-table-pie-chart class="col-12" *ngIf="isSubWidgetOnDashBoard('enquiries', 'total_by_stage')"></app-grouped-table-pie-chart>
+                    <app-prospectuses-widget class="col-12" *ngIf="isSubWidgetOnDashBoard('enquiries', 'information_packs_sent')"></app-prospectuses-widget>
+                    <app-enquiries-students class="col-12" [widget]="getWidget('enquiries')" [isDashboard]="true"></app-enquiries-students>
+                </div>
+            </div>
+        </div>
+        <div class="row" *ngIf="isWidgetOnDashBoard('events')">
+            <div class="col-md-12">
+                <div class="row cards">
+                    <app-event-status class="col-6" *ngIf="isSubWidgetOnDashBoard('events', 'events_summary')"></app-event-status>
+                    <app-personal-tour-widget class="col-6" *ngIf="isSubWidgetOnDashBoard('events', 'PT_summary')"></app-personal-tour-widget>
+                </div>
+            </div>
+        </div>
+        <app-demographic *ngIf="isWidgetOnDashBoard('demographics')" [widget]="getWidget('demographics')" [isDashboard]="true"></app-demographic>
+        <app-research *ngIf="isWidgetOnDashBoard('research')" [widget]="getWidget('research')" [isDashboard]="true"></app-research>
+        <app-geographic *ngIf="isWidgetOnDashBoard('geographic')" [widget]="getWidget('geographic')" [isDashboard]="true"></app-geographic>
+        <app-analytics-school *ngIf="isWidgetOnDashBoard('school')" [widget]="getWidget('school')" [isDashboard]="true"></app-analytics-school>
+    </div>
+<div>
+<div class="clearfix"></div>

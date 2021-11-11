@@ -1,0 +1,6 @@
+// Default is gray, so need to explicitly recolor it
+.mat-select-panel {
+  .mat-option.mat-selected:not(.mat-option-multiple) {
+    background: rgba($brand-primary, .35);
+  }
+}

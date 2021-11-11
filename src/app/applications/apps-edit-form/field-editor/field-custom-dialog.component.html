@@ -1,0 +1,73 @@
+<div class="modal-header">
+    <h4 class="modal-title text-left">Custom Field</h4>
+    <button type="button" class="close" aria-label="Close" (click)="onCancel()">
+        <span aria-hidden="true">&times;</span>
+    </button>
+</div>
+<div class="modal-body" *ngIf="customFields.length > 0">
+    <mat-form-field>
+        <mat-label>Label</mat-label>
+        <input matInput [(ngModel)]="fieldSchema.title">
+    </mat-form-field>
+    <mat-form-field>
+        <mat-label>Description</mat-label>
+        <textarea matInput [(ngModel)]="fieldSchema.description"></textarea>
+    </mat-form-field>
+    <mat-form-field>
+        <mat-select placeholder="Type" [(ngModel)]="fieldSchemaId" [ngModelOptions]="{standalone: true}" (selectionChange)="typeChanged($event.value)">
+            <ng-container *ngFor="let field of customFields">
+                <mat-option [value]="field.id">{{field.name}}</mat-option>
+            </ng-container>
+        </mat-select>
+    </mat-form-field>
+    <ng-container *ngIf="fieldSchema.templateMetaData as templateMetaData">
+        <section>
+            <ng-container *ngIf="fieldSchema.hasOwnProperty('oneOf') || fieldSchema?.items?.hasOwnProperty('oneOf')">
+                <!-- <div class="togglebutton">
+                    <label>
+                        <input type="checkbox" [checked]="displayOtherOption"
+                            (change)="displayOtherChanged($event.target.checked)">
+                        <span class="toggle"></span>
+                        {{displayOtherLabel}}
+                    </label>
+                </div> -->
+                <mat-form-field appearance="fill">
+                    <mat-label>Enter in each value then press enter or return to add more items.</mat-label>
+                    <mat-chip-list #chipList>
+                        <mat-chip *ngFor="let item of fieldSchema.oneOf || fieldSchema.items.oneOf" [selectable]="true" [removable]="true" (removed)="removeValue(item.enum[0])">
+                            {{item.description}}
+                            <mat-icon class="text-danger" matChipRemove>cancel</mat-icon>
+                        </mat-chip>
+                        <input placeholder="New value..." [matChipInputFor]="chipList"
+                            [matChipInputSeparatorKeyCodes]="separatorKeysCodes" [matChipInputAddOnBlur]="addOnBlur"
+                            (matChipInputTokenEnd)="addValue($event)" (blur)="addValue($event)">
+                    </mat-chip-list>
+                </mat-form-field>
+            </ng-container>
+        </section>
+        <sf-field-editor-default-value [fieldSchema]="fieldSchema"></sf-field-editor-default-value>
+        <section>
+            <h4>Validation</h4>
+            <mat-form-field *ngIf="templateMetaData.isMinItemsModifiable">
+                <mat-label>Minimum items (set to 0 if this is optional)</mat-label>
+                <input matInput type="number" min="0" placeholder="Minimum items required" [ngModel]="fieldSchema.minItems"
+                    (ngModelChange)="fieldSchema.minItems = +$event">
+            </mat-form-field>
+            <mat-checkbox *ngIf="!templateMetaData.isMinItemsModifiable" [(ngModel)]="templateMetaData.isRequired"
+                [disabled]="!templateMetaData.isRequiredModifiable" matTooltip="This can not be modified"
+                [matTooltipDisabled]="templateMetaData.isRequiredModifiable">Mandatory
+            </mat-checkbox>
+        </section>
+        <section>
+            <h4>Visibility</h4>
+            <mat-checkbox [(ngModel)]="templateMetaData.isVisible" [disabled]="!templateMetaData.isVisibleModifiable"
+                matTooltip="This can not be modified" [matTooltipDisabled]="templateMetaData.isVisibleModifiable">Include on
+                Form</mat-checkbox>
+        </section>
+    </ng-container>
+
+</div>
+<div class="modal-footer">
+    <button type="button" mat-raised-button class="btn btn-cancel mx-1 pull-right" (click)="onCancel()">Cancel</button>
+    <button mat-raised-button type="button" (click)="onUpdate()" class="btn btn-secondary pull-right">Update</button>
+</div>

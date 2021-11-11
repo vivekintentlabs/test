@@ -1,0 +1,27 @@
+.card {
+    .card-text {
+        span {
+            display: block;
+            visibility: hidden;
+            margin: 13px 0 0;
+            font-weight: bold;
+            font-size: 13pt;
+            color: #000000;
+        }
+    }
+    &.inactive {
+        background: #f6f6f6;
+        .card-icon {
+            opacity: 0.4;
+        }
+        .card-title {
+            color: #999999;
+        }
+        .card-text {
+            color: #999999;
+            span {
+                visibility: visible;
+            }
+        }
+    }
+}

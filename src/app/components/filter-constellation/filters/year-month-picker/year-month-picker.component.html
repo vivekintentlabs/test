@@ -1,0 +1,10 @@
+<mat-form-field>
+    <input matInput [matDatepicker]="dp" placeholder="Year and Month" [(ngModel)]="_value" [ngModelOptions]="{standalone: true}">
+    <mat-datepicker-toggle matSuffix [for]="dp"></mat-datepicker-toggle>
+    <mat-datepicker #dp startView="multi-year" (monthSelected)="chosenMonthHandler($event, dp)"></mat-datepicker>
+
+    <mat-icon *ngIf="!fieldConfig.mandatory" matSuffix class="remove-filter" matTooltip="Remove Filter"
+        matTooltipPosition="above" (click)="removeFilter()">
+        <i class="material-icons">highlight_off</i>
+    </mat-icon>
+</mat-form-field>

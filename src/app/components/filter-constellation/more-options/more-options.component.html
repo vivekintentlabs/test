@@ -1,0 +1,24 @@
+<mat-form-field>
+    <mat-select [(ngModel)]="selectedItems" (selectionChange)="onSelectionChange($event)" placeholder="More..." multiple>
+        <mat-option [value]="'all'">Select All</mat-option>
+        <mat-option [value]="'clear'">Clear Filter</mat-option>
+        <mat-divider></mat-divider>
+
+        <ng-container *ngIf="isGrouped">
+            <mat-optgroup *ngFor="let group of filtersGrouped" [label]="group.name">
+                <ng-container *ngFor="let option of group.filters">
+                    <mat-option *ngIf="!option.mandatory" [value]="option.id">{{option.name | translate}}</mat-option>
+                </ng-container>
+            </mat-optgroup>
+        </ng-container>
+
+        <ng-container *ngIf="!isGrouped">
+            <ng-container *ngFor="let group of filtersGrouped">
+                <ng-container *ngFor="let option of group.filters">
+                    <mat-option *ngIf="!option.mandatory" [value]="option.id">{{option.name | translate}}</mat-option>
+                </ng-container>
+            </ng-container>
+        </ng-container>
+
+    </mat-select>
+</mat-form-field>

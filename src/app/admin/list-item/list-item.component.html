@@ -1,0 +1,62 @@
+<div class="main-content">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="card">
+                    <div class="card-header card-header-icon card-header-primary">
+                        <div class="card-icon">
+                            <i class="material-icons-outlined">list</i>
+                        </div>
+                        <h4 class="card-title">{{listTitle}}</h4>
+                    </div>
+                    <div class="card-body" *ngIf="displayGroups && lists; else loading">
+                        <div class="row">
+                            <mat-form-field class="col-sm-4">
+                                <mat-select placeholder="List Category" [(value)]="selected" (selectionChange)="listIsChanged($event.value)">
+                                    <mat-optgroup *ngFor="let group of displayGroups" [label]="group.name">
+                                        <ng-container *ngFor="let list of lists">
+                                            <mat-option *ngIf="list.displayGroupId === group.id"
+                                                [disabled]="list.name == 'School Interests'"
+                                                [hidden]="list.name == 'School Interests'" class="mat-option"
+                                                [value]="list.id">
+                                                {{list.name | translate}}
+                                            </mat-option>
+                                        </ng-container>
+                                    </mat-optgroup>
+                                </mat-select>
+                            </mat-form-field>
+                        </div>
+                        <p>
+                            {{selectedCat.description | translate}}<br>{{listDescrNote | translate}}
+                        </p>
+                        <div class="btn-toolbar">
+                            <div class="togglebutton" *ngIf="selectedCat.listSetting">
+                                <label>
+                                    <input type="checkbox" [checked]="selectedCat.listSetting.displayOther"
+                                        (change)="toggleChanged($event.target.checked, selectedCat.listSetting)">
+                                    <span class="toggle"></span>
+                                    {{displayOtherLabel}}
+                                </label>
+                            </div>
+                            <div class="togglebutton" *ngIf="userInfo.isSysAdmin()">
+                                <label>
+                                    <input type="checkbox" [checked]="selectedCat.canAddRemoveItems"
+                                        (change)="canAddRemoveItemsChanged($event.target.checked)">
+                                    <span class="toggle"></span>
+                                    Allow adding and removing of list items
+                                </label>
+                            </div>
+                        </div>
+                        <app-table-cmp *ngIf="lists" [schoolId]="userInfo.schoolId" [managementSystemId]="userInfo != null && userInfo.managementSystemId"
+                            [selectedCat]="selectedCat"></app-table-cmp>
+                    </div>
+                    <ng-template #loading>
+                        <div class="card-body">
+                            <mat-spinner class="mx-auto" [diameter]="45"></mat-spinner>
+                        </div>
+                    </ng-template>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

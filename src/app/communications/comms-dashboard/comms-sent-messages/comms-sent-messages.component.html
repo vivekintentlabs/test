@@ -1,0 +1,91 @@
+<div class="row">
+    <div class="col-md-12">
+        <div class="card">
+            <div class="card-header card-header-icon card-header-primary">
+                <div class="card-icon">
+                    <i class="material-icons-outlined">email</i>
+                </div>
+                <h4 class="card-title">Sent Messages</h4>
+            </div>
+            <div class="card-body">
+                <div class="toolbar">
+                    <div class="row">
+                    </div>
+                </div>
+                <div class="table-responsive" *ngIf="commService.school">
+                    <div [class.d-none]="dataSource" class="preloader-block w-100 justify-content-center align-items-center">
+                        <mat-spinner [diameter]="45"></mat-spinner>
+                    </div>
+                    <table [class.d-none]="!dataSource" mat-table [dataSource]="dataSource" matSort>
+                        <ng-container matColumnDef="campaignTime">
+                            <th mat-header-cell *matHeaderCellDef mat-sort-header>Sent</th>
+                            <td mat-cell *matCellDef="let element">{{element.campaignTime | localDate: ((element.campus) ? element.campus.timeZoneId : commService.mainCampus.timeZoneId) : dateDelimiterTimeShort}}</td>
+                        </ng-container>
+
+                        <ng-container matColumnDef="subject">
+                            <th mat-header-cell *matHeaderCellDef mat-sort-header>Subject</th>
+                            <td mat-cell *matCellDef="let element" class="l-cs" (click)="viewStats(element.id)"> {{element.subject}} </td>
+                        </ng-container>
+
+                        <ng-container matColumnDef="activity">
+                            <th mat-header-cell *matHeaderCellDef mat-sort-header> Activity</th>
+                            <td mat-cell *matCellDef="let element"> {{element.activity}} </td>
+                        </ng-container>
+
+                        <ng-container matColumnDef="log">
+                            <th mat-header-cell *matHeaderCellDef mat-sort-header>Log</th>
+                            <td mat-cell *matCellDef="let element"> {{(element.log) ? 'Yes' : 'No'}} </td>
+                        </ng-container>
+
+                        <ng-container matColumnDef="audience">
+                            <th mat-header-cell *matHeaderCellDef mat-sort-header>Audience</th>
+                            <td mat-cell *matCellDef="let element"> {{element.audience}} </td>
+                        </ng-container>
+
+                        <ng-container matColumnDef="stats.opens.opens_total">
+                            <th mat-header-cell *matHeaderCellDef mat-sort-header>Opened</th>
+                            <td mat-cell *matCellDef="let element"> {{(element.stats.opens) ? element.stats.opens.opens_total : 0}} </td>
+                        </ng-container>
+
+                        <ng-container matColumnDef="stats.clicks.clicks_total">
+                            <th mat-header-cell *matHeaderCellDef mat-sort-header>Clicked</th>
+                            <td mat-cell *matCellDef="let element"> {{(element.stats.clicks) ? element.stats.clicks.clicks_total: 0}} </td>
+                        </ng-container>
+
+                        <ng-container matColumnDef="stats.bounces.soft_bounces">
+                            <th mat-header-cell *matHeaderCellDef mat-sort-header>Bounced</th>
+                            <td mat-cell *matCellDef="let element"> {{(element.stats.bounces) ? element.stats.bounces.hard_bounces + element.stats.bounces.soft_bounces: 0}} </td>
+                        </ng-container>
+
+                        <ng-container matColumnDef="stats.abuse_reports">
+                            <th mat-header-cell *matHeaderCellDef mat-sort-header>Complaint</th>
+                            <td mat-cell *matCellDef="let element"> {{(element.stats.abuse_reports) ? element.stats.abuse_reports: 0}} </td>
+                        </ng-container>
+
+                        <ng-container matColumnDef="campus.name">
+                            <th class="" mat-header-cell *matHeaderCellDef mat-sort-header>Campus</th>
+                            <td mat-cell *matCellDef="let element"> {{element.campusId ? element.campus.name : 'All Campuses'}} </td>
+                        </ng-container>
+
+                        <ng-container matColumnDef="actions">
+                            <th class="text-right" mat-header-cell *matHeaderCellDef>Actions</th>
+                            <td class="text-right td-actions" mat-cell *matCellDef="let row">
+                                <button mat-raised-button type="button" class="btn btn-success btn-link" matTooltip="View Stats" matTooltipPosition="left" (click)="viewStats(row.id)">
+                                    <i class="material-icons">insert_chart_outlined</i>
+                                </button>
+                                <button mat-raised-button type="button" class="btn btn-light btn-link" matTooltip="Duplicate Message" matTooltipPosition="left" (click)="copy(row)">
+                                    <i class="material-icons">file_copy</i>
+                                </button>
+                            </td>
+                        </ng-container>
+
+                        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+                        <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+                    </table>
+
+                    <mat-paginator [pageSizeOptions]="[5, 10, 20]" showFirstLastButtons></mat-paginator>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

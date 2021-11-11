@@ -1,0 +1,20 @@
+<ng-container *ngIf="showAdminUse">
+    <fieldset *ngFor="let fieldset of formProperty.schema.fieldsets" class="col-12 rounded-sm my-2 py-2 {{fieldset?.htmlClass}}">
+        <div class="row">
+            <div class="col">
+                <legend *ngIf="formProperty.schema.title" class="h3 text-dark mt-0">{{formProperty.schema.title}}</legend>
+                <div *ngIf="formProperty.schema.description">{{formProperty.schema.description}}</div>
+
+                <div class="row">
+                    <ng-container *ngFor="let fieldId of fieldset.fields">
+                        <div *ngIf="inNewLine(fieldId)" class="w-100"></div>
+                        <div *ngIf="isVisible(fieldId)" [class]="getHtmlClass(fieldId)">
+                            <sf-form-element [formProperty]="getProperty(fieldId)"></sf-form-element>
+                        </div>
+                    </ng-container>
+                </div>
+
+            </div>
+        </div>
+    </fieldset>
+</ng-container>

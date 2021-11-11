@@ -1,0 +1,9 @@
+table {
+  tr {
+    td {
+      &.td-actions {
+        min-width: 115px;
+      }
+    }
+  }
+}

@@ -1,0 +1,11 @@
+@import '~scss/theme/core/variables';
+
+::ng-deep {
+    .ngx-stripe-card-base {
+        border-bottom: 1px solid $bmd-label-color;
+        padding: 5px 0px;
+    }
+    .ngx-stripe-card-invalid {
+        border-color: $bmd-invalid-underline;
+    }
+}

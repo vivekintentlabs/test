@@ -1,0 +1,47 @@
+<ng-container *ngIf="fieldSchema.type !== 'object'; else objectType">
+    <mat-form-field>
+        <mat-label>Label</mat-label>
+        <input matInput placeholder="What is this field called?" [(ngModel)]="fieldSchema.title">
+    </mat-form-field>
+    <mat-label>Description</mat-label>
+    <div *ngIf="(fieldSchema.widget.id === 'info');else otherContent" class="position-relative">
+        <div [ngClass]="{'d-none': isTinyMceLoaded}"
+            class="preloader-block w-100 justify-content-center align-items-center">
+            <mat-spinner [diameter]="45"></mat-spinner>
+        </div>
+        <div [ngClass]="{'invisible': !isTinyMceLoaded}"
+            class="editor-block w-100 justify-content-center align-items-center">
+            <div id="fieldDescription" [innerHTML]="fieldSchema.description | safeHtml"></div>
+        </div>
+    </div>
+    <ng-template #otherContent>
+        <mat-form-field>
+            <textarea matInput placeholder="Enter in any text that you want to appear below the field label"
+            [(ngModel)]="fieldSchema.description"></textarea>
+        </mat-form-field>
+    </ng-template>
+</ng-container>
+<ng-template #objectType>
+    <sf-field-editor-object [fieldSchema]="fieldSchema"></sf-field-editor-object>
+</ng-template>
+<ng-container *ngIf="fieldSchema.templateMetaData as templateMetaData">
+    <sf-field-editor-default-value [fieldSchema]="fieldSchema"></sf-field-editor-default-value>
+    <sf-field-editor-choice-limit [fieldSchema]="fieldSchema"></sf-field-editor-choice-limit>
+   
+    <section *ngIf="fieldSchema.type !== 'array'">
+        <h4>Validation</h4>
+        <mat-checkbox [(ngModel)]="templateMetaData.isRequired" [disabled]="!templateMetaData.isRequiredModifiable"
+            matTooltip="This can not be modified" [matTooltipDisabled]="templateMetaData.isRequiredModifiable">Mandatory
+        </mat-checkbox>
+    </section>
+    <section>
+        <h4>Visibility</h4>
+        <mat-checkbox [(ngModel)]="templateMetaData.isVisible" [disabled]="!templateMetaData.isVisibleModifiable"
+            matTooltip="This can not be modified" [matTooltipDisabled]="templateMetaData.isVisibleModifiable">Include on
+            Form</mat-checkbox>
+    </section>
+</ng-container>
+<mat-form-field *ngIf="isDebug">
+    <textarea matInput placeholder="Field schema" (keyup)="onTextAreaChange($event.target.value)"
+        [value]="fieldSchema | json"></textarea>
+</mat-form-field>

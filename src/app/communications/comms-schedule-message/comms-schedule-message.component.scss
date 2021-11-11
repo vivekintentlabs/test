@@ -1,0 +1,109 @@
+.disabled {
+    color: rgba(0,0,0,.26) !important;
+}
+.mat-spinner {
+    position: relative;
+    top: 10px;
+    display: inline-block;
+}
+
+#scheduledContactsModal {
+    .modal-header {
+        p {
+            position: absolute;
+            margin-top: 28px;
+            font-size: 15px;
+        }
+    }
+    table {
+        width: 100%;
+        margin: 0;
+        .mat-column-firstname,
+        .mat-column-lastname {
+            width: 15%;
+            font-size: 13px;
+        }
+        td.mat-cell:last-of-type, td.mat-footer-cell:last-of-type, th.mat-header-cell:last-of-type {
+            padding-right: 0 !important;
+        }
+        .table-in {
+            margin: 0;
+            background: transparent;
+            tr {
+                border: 0;
+                th {
+                    border: 0;
+                    font-size: 12px !important;
+                    font-weight: bold !important;
+                }
+            }
+        }
+        .mat-column-contactInfo {
+            padding-right: 0 !important;
+            .table > thead > tr > th, .table > tbody > tr > th, .table > tfoot > tr > th, .table > thead > tr > td, .table > tbody > tr > td, .table > tfoot > tr > td {
+                padding: 3px 8px!important;
+            }
+            .table > thead > tr > th.contact-info-col {
+                width: 30%;
+                padding: 0 !important;
+            }
+            .table > tbody > tr > td.mat-column-contacts,
+            .table > thead > tr > th.contact-rel-col {
+                padding: 0 !important;
+            }
+            tr:first-child {
+                td {
+                    border-top: 0;
+                }
+            }
+            tr.custom-size-row-cols {
+                th:nth-child(1),
+                th:nth-child(2),
+                td:nth-child(1),
+                td:nth-child(2) {
+                    width: 21%;
+                }
+                th:nth-child(3),
+                td:nth-child(3) {
+                    width: 14%;
+                }
+                th:nth-child(4),
+                td:nth-child(4) {
+                    width: 19%;
+                }
+                th:nth-child(5),
+                td:nth-child(5) {
+                    width: 12%;
+                }
+                th:nth-child(6),
+                td:nth-child(6) {
+                    width: 13%;
+                }
+            }
+            .mat-expansion-panel {
+                box-shadow: none;
+                .mat-expansion-panel-header {
+                    padding: 0;
+                    position: relative; 
+                    color: rgba(0,0,0,.74) !important;
+                }   
+                .table-sm td {
+                    color: rgba(0,0,0,.74) !important;
+                }
+                table {
+                    margin-bottom: 0;
+                    background-color: transparent !important;
+                    tr {
+                        th, td {
+                            font-size: 11px !important;
+                            border: 0 !important;
+                        }
+                        &:first-child td {
+                            border: 0 !important;
+                        }
+                    }
+                }
+            }
+        }
+    }
+}

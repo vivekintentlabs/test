@@ -1,0 +1,37 @@
+<div [ngClass]="{'main-content':(!isDashboard)}">
+    <div [ngClass]="{'container-fluid':(!isDashboard)}">
+        <app-widget *ngIf="loaded" [params]="widgetParams" (callBack)="widgetCallBack($event)">
+            <div class="row cards">
+                <div class="col-lg-6" *ngIf="isSubWidgetOnDashBoard('gender')">
+                    <app-demographic-chart title="Gender" type="gender" icon="people">
+                    </app-demographic-chart>
+                </div>
+                <div class="col-lg-6" *ngIf="isSubWidgetOnDashBoard('alumni')">
+                    <app-demographic-chart title="Alumni" type="alumni" icon="school">
+                    </app-demographic-chart>
+                </div>
+                <div class="col-lg-6" *ngIf="isSubWidgetOnDashBoard('siblings')">
+                    <app-demographic-chart title="Siblings" type="siblings" icon="people">
+                    </app-demographic-chart>
+                </div>
+                <div class="col-lg-6" *ngIf="isSubWidgetOnDashBoard('religion')">
+                    <app-demographic-chart title="Religion" type="religion" icon="supervised_user_circle">
+                    </app-demographic-chart>
+                </div>
+                <div class="col-lg-6" *ngIf="school.isBoardingEnabled && isSubWidgetOnDashBoard('student_type')">
+                    <app-demographic-chart title="Student Type" type="boardingType" icon="people">
+                    </app-demographic-chart>
+                </div>
+                <div class="col-lg-6" *ngIf="school.hasInternationals && isSubWidgetOnDashBoard('international')">
+                    <app-demographic-chart title="International Students" type="isInternational" icon="public">
+                    </app-demographic-chart>
+                </div>
+                <div class="col-lg-6" *ngIf="school.hasInternationals && isSubWidgetOnDashBoard('country_of_origin')">
+                    <app-demographic-chart title="Country of Origin for International Students"
+                        type="countryOfOrigin" icon="public">
+                    </app-demographic-chart>
+                </div>
+            </div>
+        </app-widget>
+    </div>
+</div>

@@ -1,0 +1,33 @@
+.logo {
+	a {
+        text-align: center;
+        cursor: pointer;
+        span {
+            font-size: 10px;
+            color: purple;
+        }
+        &:hover {
+            color: #fff;
+        }
+    }
+}
+.modal-backdrop {
+	z-index: 0 !important;
+}
+.pointer {
+	cursor: pointer;
+}
+
+#sclName {
+    padding-bottom: 1px;
+    margin: 5px auto 0;
+}
+
+.simple-text.text-center {
+    font-size: 16px;
+    margin-top: 10px;
+}
+
+.sub-nav-icon-m {
+    margin: 1px 15px 0 2px !important
+}

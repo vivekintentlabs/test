@@ -1,0 +1,18 @@
+<form [formGroup]="emailsForm">
+    <mat-form-field>
+        <mat-chip-list #chipList>
+            <mat-chip *ngFor="let item of _emails" [selectable]="selectable" [removable]="removable"
+                (removed)="remove(item.email)" [ngClass]="item.valid ? '' : 'text-danger'">
+                {{item.email}}
+                <mat-icon class="text-danger" matChipRemove *ngIf="removable">cancel</mat-icon>
+            </mat-chip>
+            <input [placeholder]="placeholder" type="email" [matChipInputFor]="chipList" [formControlName]="formControlName"
+                [matChipInputSeparatorKeyCodes]="separatorKeysCodes" [matChipInputAddOnBlur]="addOnBlur"
+                (matChipInputTokenEnd)="add($event)" (blur)="add($event)">
+        </mat-chip-list>
+
+        <mat-hint class="text-danger" [hidden]="emailsForm.valid && parentForm.controls[formControlName].valid">
+            It is incorrect email address!
+        </mat-hint>
+    </mat-form-field>
+</form>

@@ -1,0 +1,3 @@
+@mixin background-gradient-primary($opacity: 1) {
+  background: linear-gradient(to right, rgba($cerulean, $opacity), rgba($aqua, $opacity) 52%, rgba($mint, $opacity));
+}

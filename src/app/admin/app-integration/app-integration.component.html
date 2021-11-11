@@ -1,0 +1,50 @@
+<div class="main-content">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="card">
+                    <div class="card-header card-header-icon card-header-primary">
+                        <div class="card-icon">
+                            <i class="material-icons-outlined">settings</i>
+                        </div>
+                        <h4 class="card-title">App Integration</h4>
+                    </div>
+
+                    <div class="card-body">
+                        <div class="toolbar">
+                            <!--        Here you can write extra buttons/actions for the toolbar              -->
+                        </div>
+
+                        <form [formGroup]="formGroup" novalidate (ngSubmit)="onSubmit()" *ngIf="loaded">
+                            <hr>
+                            <div class="row">
+                                <label class="col-sm-2 label-on-left">Google Analytics</label>
+                                <div class="col-sm-5">
+                                    <mat-form-field>
+                                        <input matInput placeholder="Google Tracking ID" type="text" formControlName="googleTrackingId">
+                                        <mat-error [hidden]="formGroup.controls.googleTrackingId.valid || formGroup.controls.googleTrackingId.pristine"
+                                            class="text-danger">
+                                            Tracking ID should contain at least 5 and at most 20 characters.
+                                        </mat-error>
+                                    </mat-form-field>
+                                </div>
+                                <div class="col-sm-5">
+                                    <div class="togglebutton">
+                                        <label>
+                                            <input type="checkbox" formControlName="googleTrackingIsEnabled">
+                                            <span class="toggle"></span>
+                                            Enable Event Label for Google Analytics?
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                            <button type="submit" class="btn btn-success pull-right" [disabled]="!formGroup.valid || formGroup.pristine"
+                                [promiseBtn]="promiseForBtn">Save</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <app-stripe-integration></app-stripe-integration>
+    </div>
+</div>

@@ -1,0 +1,51 @@
+<div class="card">
+    <div class="card-header card-header-icon card-header-primary">
+        <div class="card-icon">
+            <i class="material-icons-outlined">table_rows</i>
+        </div>
+        <h4 class="card-title">Event Summary</h4>
+    </div>
+        
+    <div class="card-body">
+        <div class="toolbar">
+            <mat-checkbox [checked]="hidePast" (change)="hidePastEvents($event.checked)">
+                Hide past events
+            </mat-checkbox>
+        </div>
+        <div class="table-responsive">
+            <table class="table table-no-bordered table-hover" cellspacing="0" width="100%" style="width:100%">
+                <thead>
+                    <tr>
+                        <th>Event Type</th>
+                        <th>Date</th>
+                        <th>Students</th>
+                        <th>Interest</th>
+                        <th>Applicant</th>
+                        <th>{{'Enroled' | translate}}</th>
+                        <th>Families</th>
+                        <th>Total RSVP</th>
+                        <th>Check-ins</th>
+                        <th>% Check-ins</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr *ngFor="let item of displayedEvents">
+                        <td>{{(item.schoolTour) ? item.schoolTour.name : ''}}</td>
+                        <td>{{item.date | localeDate: dateDelimiter}}</td>
+                        <td>{{item.studentsCount || '-'}}</td>
+                        <td>{{item.studentsInterest || '-'}}</td>
+                        <td>{{item.studentsApplicant || '-'}}</td>
+                        <td>{{item.studentsEnroled || '-'}}</td>
+                        <td>{{item.families || '-'}}</td>
+                        <td>{{item.attending || '-'}}</td>
+                        <td>{{item.checkins || '-'}}</td>
+                        <td>{{item.checkinsPercentage + '%'|| '-'}}</td>
+                    </tr>
+                    <tr *ngIf="displayedEvents.length === 0">
+                        <td colspan="10" class="text-center">No data available in table</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>

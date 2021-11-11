@@ -1,0 +1,236 @@
+<app-display-form-header-footer>
+<div class="main-content">
+    <div class="container-fluid stepperWrap">
+        <div class="row">
+            <div class="col-md-12">
+                <div *ngIf="emptyAppPublishedFormMsg" [innerHTML]="emptyAppPublishedFormMsg"></div>
+                <form [formGroup]="requestForm" *ngIf="requestForm">
+                    <mat-horizontal-stepper [linear]="false" #stepper>
+                        <mat-step>
+                            <ng-template matStepLabel>Introduction</ng-template>
+                            <div>
+                                <div [innerHTML]="appRequestIntroduction"></div>
+                                <mat-form-field>
+                                    <input [value]="requestForm.value.email" matInput required placeholder="Email" type="email" formControlName="email" autofocus>
+                                    <mat-error
+                                        [hidden]="requestForm.controls.email.valid || requestForm.controls.email.pristine">
+                                        Email format should be
+                                        <i>john@doe.com</i> and contain at most 60 characters.
+                                    </mat-error>
+                                </mat-form-field>
+                                <re-captcha (resolved)="captchaResolved($event)" siteKey="{{SITE_KEY}}"></re-captcha>
+                                <div class="footer-btns">
+                                    <button mat-button class="btn btn-success" [promiseBtn]="promiseForBtn"
+                                        [disabled]="!requestForm.controls.email.valid || requestForm.controls.email.pristine || !captchaResponse"
+                                        (click)="sendVerification()">
+                                        Next
+                                    </button>
+                                </div>
+                            </div>
+                        </mat-step>
+                        <mat-step>
+                            <ng-template matStepLabel>Verify code</ng-template>
+                            <div class="stepperWrap">
+                                <p>A code has been sent to your email address</p>
+                                <p>Enter the code to continue</p>
+                                <mat-form-field>
+                                    <input matInput required placeholder="Code" type="text" autofocus formControlName="code">
+                                </mat-form-field>
+                                <div class="footer-btns">
+                                    <div class="row">
+                                        <div class="col">
+                                            <button mat-button class="btn btn-success" [promiseBtn]="promiseForBtn"
+                                                [disabled]="!requestForm.controls.code.valid || requestForm.controls.code.pristine || !!promiseForBtn"
+                                                (click)="checkVerification()">Verify
+                                            </button>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col">
+                                            <button mat-button class="btn-link px-2" [disabled]="!!promiseForBtn" (click)="resendVerification()">
+                                                Resend code
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </mat-step>
+                        <mat-step>
+                            <ng-template matStepLabel>Select a contact</ng-template>
+                            <div class="stepperWrap">
+
+                                <div *ngIf="contactClaim && dataSourceContacts" [ngClass]="{'d-none': shouldHideContacts}">
+                                    <div *ngIf="dataSourceContacts.data.length > 1;else singleContactContent">
+                                        <p>SELECT OR ENTER A STUDENT</p>
+                                        <p>There are multiple contacts with the same email. Please select a contact to continue.</p>
+                                    </div>
+                                    <ng-template #singleContactContent>
+                                        <p>SELECT OR ENTER A STUDENT</p>
+                                        <p>Your information has been successfully located.</p>
+                                    </ng-template>
+                                    <table mat-table [dataSource]="dataSourceContacts">
+                                        <ng-container matColumnDef="name">
+                                            <th class="w-25" mat-header-cell *matHeaderCellDef>Name</th>
+                                            <td mat-cell *matCellDef="let element">{{element.firstName}} {{element.lastName}}</td>
+                                        </ng-container>
+                                        <ng-container matColumnDef="updated">
+                                            <th mat-header-cell *matHeaderCellDef>Last Updated</th>
+                                            <td mat-cell *matCellDef="let element">{{element.updatedAt | localDate: contactClaim.schoolTimezoneId : date}}</td>
+                                        </ng-container>
+                                        <ng-container matColumnDef="address">
+                                            <th mat-header-cell *matHeaderCellDef>Address</th>
+                                            <td mat-cell *matCellDef="let element">{{element.address}}</td>
+                                        </ng-container>
+                                        <ng-container matColumnDef="mobile">
+                                            <th mat-header-cell *matHeaderCellDef>Mobile Phone</th>
+                                            <td mat-cell *matCellDef="let element">{{element.mobile}}</td>
+                                        </ng-container>
+                                        <ng-container matColumnDef="actions">
+                                            <th class="text-right" mat-header-cell *matHeaderCellDef>Select</th>
+                                            <td class="text-right" mat-cell *matCellDef="let row">
+                                                <div class="form-check form-check-radio">
+                                                    <label class="form-check-label">
+                                                        <input class="form-check-input" type="radio" name="contact"
+                                                            [checked]="(dataSourceContacts.data.length === 1)"
+                                                            (change)="selectContactItem($event.target.checked, row.id)">
+                                                        <span class="circle">
+                                                            <span class="check"></span>
+                                                        </span>
+                                                    </label>
+                                                </div>
+                                            </td>
+                                        </ng-container>
+                                        <tr mat-header-row *matHeaderRowDef="displayedContactColumns"></tr>
+                                        <tr mat-row *matRowDef="let row; columns: displayedContactColumns;"></tr>
+                                    </table>
+                                </div>
+                                <div [ngClass]="{'d-none': shouldHideStudents}">
+                                    <p class="subheader">Please select a student to continue or start a new application.</p>
+                                    <table mat-table [dataSource]="dataSourceStudents" class="table-student-select">
+                                        <ng-container matColumnDef="name">
+                                            <th mat-header-cell *matHeaderCellDef>Student Name</th>
+                                            <td mat-cell *matCellDef="let element">{{element.firstName}} {{element.lastName}}</td>
+                                        </ng-container>
+                                        <ng-container matColumnDef="updated">
+                                            <th mat-header-cell *matHeaderCellDef>Last Updated</th>
+                                            <td mat-cell *matCellDef="let element">{{element.updatedAt | localDate: contactClaim.schoolTimezoneId : date}}</td>
+                                        </ng-container>
+                                        <ng-container matColumnDef="status">
+                                            <th mat-header-cell *matHeaderCellDef>Application Status</th>
+                                            <td mat-cell *matCellDef="let row">
+                                                <span *ngIf="row.fillableFormInfo?.applicationStatus;else start_app">{{row.fillableFormInfo.applicationStatus}}</span>
+                                                <ng-template #start_app>Not Started</ng-template>
+                                            </td>
+                                        </ng-container>
+                                        <ng-container matColumnDef="actions">
+                                            <th class="text-right" mat-header-cell *matHeaderCellDef>Action</th>
+                                            <td class="text-right" mat-cell *matCellDef="let row">
+                                                <div matTooltip="This application was created by another user" matTooltipPosition="left" [matTooltipDisabled]="!row.fillableFormInfo?.isTaken">
+                                                    <button class="btn btn-primary" mat-button [promiseBtn]="promiseForBtn" 
+                                                    [disabled]="!!promiseForBtn || row.fillableFormInfo?.isTaken" 
+                                                    (click)="handleApplication(row.fillableFormInfo, row.id)">
+                                                        {{getAppButtonText(row.fillableFormInfo)}}
+                                                    </button>
+                                                </div>
+                                            </td>
+                                        </ng-container>
+                                        <tr mat-header-row *matHeaderRowDef="displayedStudentColumns"></tr>
+                                        <tr mat-row *matRowDef="let row; columns: displayedStudentColumns;"></tr>
+                                    </table>
+                                </div>
+                                <p class="subheader">START A NEW APPLICATION</p>
+                                <div class="student-new-fill">
+                                    <div id="st-firstName">
+                                        <mat-form-field>
+                                            <input matInput placeholder="First Name" type="text" formControlName="studentFirstName" required>
+                                            <mat-error [hidden]="requestForm.controls.studentFirstName.valid || requestForm.controls.studentFirstName.pristine">
+                                                First Name should contain at least {{requiredTextFieldMinLength}} and at most {{nameMaxLength}} characters.
+                                            </mat-error>
+                                        </mat-form-field>
+                                    </div>
+                                    <div id="st-lastName">
+                                        <mat-form-field>
+                                            <input matInput placeholder="Last Name" type="text" formControlName="studentLastName" required>
+                                            <mat-error [hidden]="requestForm.controls.studentLastName.valid || requestForm.controls.studentLastName.pristine">
+                                                Last Name should contain at least {{requiredTextFieldMinLength}} and at most {{nameMaxLength}} characters.
+                                            </mat-error>
+                                        </mat-form-field>
+                                    </div>
+                                    <div id="st-startApp">
+                                        <button class="btn btn-primary" mat-button [promiseBtn]="promiseForBtn"
+                                            [disabled]="!this.selectedContact || !requestForm.controls.studentFirstName.valid || !requestForm.controls.studentLastName.valid || !!promiseForBtn"
+                                            (click)="startApplication(SubmitStatus.NewStudent)">
+                                            Start Application
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </mat-step>
+                        <mat-step>
+                            <ng-template matStepLabel>Let's get started by entering in your details.</ng-template>
+                            <div class="stepperWrap">
+                                <p>Parent/Guardian details</p>
+                                <div class="row">
+                                    <div class="col-md">
+                                        <mat-form-field>
+                                            <input matInput placeholder="Parent/Guardian First Name" type="text" formControlName="contactFirstName" required>
+                                            <mat-error [hidden]="requestForm.controls.contactFirstName.valid || requestForm.controls.contactFirstName.pristine">
+                                                First Name should contain at least {{requiredTextFieldMinLength}} and at most {{nameMaxLength}} characters.
+                                            </mat-error>
+                                        </mat-form-field>
+                                    </div>
+                                    <div class="col-md">
+                                        <mat-form-field>
+                                            <input matInput placeholder="Parent/Guardian Last Name" type="text" formControlName="contactLastName" required>
+                                            <mat-error [hidden]="requestForm.controls.contactLastName.valid || requestForm.controls.contactLastName.pristine">
+                                                Last Name should contain at least {{requiredTextFieldMinLength}} and at most {{nameMaxLength}} characters.
+                                            </mat-error>
+                                        </mat-form-field>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md">
+                                        <mat-form-field>
+                                            <input matInput readonly required [value]="requestForm.value.email" placeholder="Email" type="email" formControlName="email">
+                                            <mat-error [hidden]="requestForm.controls.email.valid || requestForm.controls.email.pristine">
+                                                Email format should be
+                                                <i>john@doe.com</i> and contain at most 60 characters.
+                                            </mat-error>
+                                        </mat-form-field>
+                                    </div>
+                                </div>
+                                <p>Student details</p>
+                                <div class="row">
+                                    <div class="col-md">
+                                        <mat-form-field>
+                                            <input matInput placeholder="Student First Name" type="text" formControlName="studentFirstName" required>
+                                            <mat-error [hidden]="requestForm.controls.studentFirstName.valid || requestForm.controls.studentFirstName.pristine">
+                                                First Name should contain at least {{requiredTextFieldMinLength}} and at most {{nameMaxLength}} characters.
+                                            </mat-error>
+                                        </mat-form-field>
+                                    </div>
+                                    <div class="col-md">
+                                        <mat-form-field>
+                                            <input matInput placeholder="Student Last Name" type="text" formControlName="studentLastName" required>
+                                            <mat-error [hidden]="requestForm.controls.studentLastName.valid.valid || requestForm.controls.studentLastName.pristine">
+                                                Last Name should contain at least {{requiredTextFieldMinLength}} and at most {{nameMaxLength}} characters.
+                                            </mat-error>
+                                        </mat-form-field>
+                                    </div>
+                                </div>
+                                <div class="footer-btns">
+                                    <button class="btn btn-primary" mat-button [promiseBtn]="promiseForBtn"
+                                        [disabled]="!requestForm.controls.studentFirstName.valid || !requestForm.controls.studentLastName.valid || !!promiseForBtn"
+                                        (click)="startApplication(SubmitStatus.NewContactStudent)">
+                                        Start Application
+                                    </button>
+                                </div>
+                            </div>
+                        </mat-step>
+                    </mat-horizontal-stepper>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+</app-display-form-header-footer>

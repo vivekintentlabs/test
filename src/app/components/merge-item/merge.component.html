@@ -1,0 +1,30 @@
+<div class="modal-header">
+    <h4 class="modal-title text-left">{{title}}</h4>
+    <button type="button" class="close" aria-label="Close" (click)="cancel.emit()">
+        <span aria-hidden="true">&times;</span>
+    </button>
+</div>
+<h5 class="modal-title text-left pl-4">{{headerText}}</h5>
+<div class="modal-body" *ngIf="items.length > 0">
+    <div class="table-responsive">
+        <table class="table">
+            <thead>
+                <tr>
+                    <ng-container *ngFor="let col of displayedColumns">
+                        <th> {{col}} </th>
+                    </ng-container>
+                </tr>
+            </thead>
+            <ng-content></ng-content>
+        </table>
+    </div>
+    <div class="row">
+        <div class="col-12">
+            <button (click)="merge.emit()" mat-raised-button class="btn btn-primary pull-right">
+                <i class="material-icons">call_merge</i>Merge
+            </button>
+            <button type="button" mat-raised-button class="btn btn-cancel mx-1 pull-right"
+                (click)="cancel.emit()">Cancel</button>
+        </div>
+    </div>
+</div>

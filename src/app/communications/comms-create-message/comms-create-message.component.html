@@ -1,0 +1,119 @@
+<div class="main-content">
+    <div class="container-fluid" *ngIf="commService.isModuleActive">
+        <div class="row">
+            <div class="col">
+                <div class="row email-templates" *ngIf="emailTemplates && !selectedEmailTemplate">
+                    <div class="col-md-12 mt-3">
+                        <h4 class="">Choose template:</h4>
+                        <div class="row">
+                            <div class="col-12">
+                                <div class="cards">
+                                    <div class="card template-item" *ngFor="let emailTemplate of emailTemplates">
+                                        <div class="card-img-top">
+                                            <div class="card-template-block" [innerHTML]="emailTemplate.message | safeHtml"></div>
+                                        </div>
+                                        <div class="card-body">
+                                            <h5 class="card-title">{{ emailTemplate.subject }}</h5>
+                                            <button class="btn btn-primary" (click)="selectEmailTemplate(emailTemplate)">Select</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <form [formGroup]="emailForm" *ngIf="emailForm && selectedEmailTemplate">
+                    <h4 class="mb-4">{{ title }}</h4>
+                    <div class="row" *ngIf="schoolUsers.length">
+                        <div class="col-12">
+                            <mat-form-field>
+                                <mat-select required placeholder="From" formControlName="fromUser">
+                                    <mat-option [value]="null">{{noItemSelected}}</mat-option>
+                                    <mat-option *ngFor="let schoolUser of schoolUsers" [value]="schoolUser">
+                                        {{schoolUser.firstName}} {{schoolUser.lastName}}
+                                    </mat-option>
+                                </mat-select>
+                            </mat-form-field>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <mat-form-field>
+                                <input matInput type="text" placeholder="Subject" formControlName="subject" required>
+                                <mat-error
+                                    [hidden]="emailForm.controls.subject.valid || (emailForm.controls.subject.pristine)">
+                                    Please enter a Subject (maximum length is {{SUBJECT_MAX_LENGTH}})
+                                </mat-error>
+                            </mat-form-field>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div [ngClass]="{'d-none': isTinyMceLoaded}"
+                                class="preloader-block w-100 justify-content-center align-items-center">
+                                <mat-spinner [diameter]="45"></mat-spinner>
+                            </div>
+                            <div [ngClass]="{'invisible': !isTinyMceLoaded}"
+                                class="editor-block w-100 justify-content-center align-items-center">
+                                <div class="editor-wrapper"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row mt-3" [ngClass]="{'d-none': !isTinyMceLoaded}">
+                        <div class="col text-right">
+                            <button type="button" mat-raised-button class="btn btn-cancel mx-1"
+                                (click)="onCancel()">Cancel</button>
+                            <button type="button" mat-raised-button class="ml-2 mr-2 btn btn-success"
+                                [disabled]="!emailForm.valid || emailForm.pristine || isTinyMceActive"
+                                (click)="onSubmit()">Save</button>
+                            <button type="button" mat-raised-button class="mr-2 btn btn-success"
+                                [disabled]="!emailForm.valid || emailForm.pristine || isTinyMceActive"
+                                (click)="onSubmit(true)">Save & Exit</button>
+                            <button type="button" mat-raised-button class="btn btn-secondary"
+                                [disabled]="!emailForm.valid || isTinyMceActive"
+                                (click)="emailDialog.showTestEmailModal(emailForm.value)">Send a test</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    <div class="modal fade" id="previewModal" tabindex="-1" role="dialog" aria-labelledby="previewModalLabel">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title text-left">Preview Message</h4>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <label class="col-sm-2 label-on-left">Subject</label>
+                        <div class="col-sm-10">
+                            {{previewModal.subject}}
+                        </div>
+                    </div>
+                    <br />
+                    <div class="row">
+                        <label class="col-sm-2 label-on-left">From</label>
+                        <div class="col-sm-10">
+                            {{previewModal.from}}
+                        </div>
+                    </div>
+                    <br />
+                    <div class="row">
+                        <div class="col-sm-12">
+                            <div [innerHTML]="previewModal.message | safeHtml"></div>
+                        </div>
+                    </div>
+                    <br />
+                </div>
+                <div class="modal-footer">
+                    <button mat-raised-button type="button" class="btn btn-success" data-dismiss="modal">Ok</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <comms-test-email-dialog #emailDialog></comms-test-email-dialog>
+</div>

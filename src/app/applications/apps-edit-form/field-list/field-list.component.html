@@ -1,0 +1,42 @@
+<mat-tree [dataSource]="dataSource" [treeControl]="treeControl">
+  <!-- This is the tree node template for leaf nodes -->
+  <mat-tree-node *matTreeNodeDef="let node" matTreeNodePadding>
+    <ng-container *ngIf="node?.isCustom; else leafNode">
+      <button mat-icon-button type="button" matTooltip="Add custom field" (click)="addCustom(node)">
+        <mat-icon>control_point</mat-icon>
+      </button>
+      <div class="pointer" (click)="addCustom(node)">
+        {{node.name}}
+      </div>
+    </ng-container>
+    <ng-template #leafNode>
+      <button type="button" mat-icon-button (click)="toggleVisibility(node)" [disabled]="!node.visibilityModifiable"
+        [matTooltip]="getTooltip(node)">
+        <mat-icon class="mat-icon-rtl-mirror" [matTooltip]="getDisabledTooltip(node)">
+          {{node.visible ? 'visibility' : 'visibility_off'}}
+        </mat-icon>
+      </button>
+      {{node.name}}
+      <button type="button" mat-icon-button class="mat-warn ml-auto" matTooltip="Delete custom field"
+        (click)="deleteCustom(node)" *ngIf="node.id.includes(customFieldStr)">
+        <mat-icon class="mat-icon-rtl-mirror">delete_outline</mat-icon>
+      </button>
+    </ng-template>
+  </mat-tree-node>
+  <!-- This is the tree node template for expandable nodes -->
+  <mat-tree-node *matTreeNodeDef="let node;when: hasChild" matTreeNodePadding>
+    <button type="button" mat-icon-button matTreeNodeToggle [attr.aria-label]="'Toggle ' + node.name"
+      (click)="onExpansionChange(node)">
+      <mat-icon class="mat-icon-rtl-mirror">
+        {{treeControl.isExpanded(node) ? 'expand_more' : 'chevron_right'}}
+      </mat-icon>
+    </button>
+    <button type="button" mat-icon-button *ngIf="node.visibilityModifiable" (click)="toggleVisibility(node)"
+      [matTooltip]="getTooltip(node)">
+      <mat-icon class="mat-icon-rtl-mirror" [matTooltip]="getDisabledTooltip(node)">
+        {{node.visible ? 'visibility' : 'visibility_off'}}
+      </mat-icon>
+    </button>
+    {{node.name}}
+  </mat-tree-node>
+</mat-tree>

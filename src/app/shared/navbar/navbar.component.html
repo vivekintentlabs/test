@@ -1,0 +1,57 @@
+<nav #navbar class="navbar navbar-expand-lg navbar-transparent navbar-absolute">
+    <div class="container-fluid">
+        <div class="navbar-wrapper">
+            <div class="navbar-minimize">
+                <button mat-raised-button (click)="minimizeSidebar()" class="btn btn-just-icon btn-white btn-fab btn-round">
+                    <i class="material-icons text_align-center visible-on-sidebar-regular">more_vert</i>
+                    <i class="material-icons design_bullet-list-67 visible-on-sidebar-mini">view_list</i>
+                </button>
+            </div>
+            <a *ngIf="listTitles" class="navbar-brand" href="{{getPath()}}"> {{getTitle()}}</a>
+        </div>
+        <button mat-button class="navbar-toggler btn-no-ripple" type="button" (click)="sidebarToggle()">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="navbar-toggler-icon icon-bar"></span>
+            <span class="navbar-toggler-icon icon-bar"></span>
+            <span class="navbar-toggler-icon icon-bar"></span>
+        </button>
+        <div class="collapse navbar-collapse justify-content-end d-flex flex-wrap-reverse" id="navigation">
+            <ul class="navbar-nav float-right">
+                <li class="nav-item mr-3" *ngIf="userInfo.isSysAdmin()">
+                    <app-school-switcher-cmp></app-school-switcher-cmp>
+                </li>
+
+                <li class="nav-item mr-3">
+                    <app-campus-switcher-cmp></app-campus-switcher-cmp>
+                </li>
+            </ul>
+            <ul class="navbar-nav float-right">
+
+                <li class="nav-item send">
+                    <a class="nav-link" href="#" data-toggle="collapse" (click)="userProfile()">
+                        <i class="material-icons">account_box</i>
+                        <p>
+                            <span class="d-lg-none d-md-block">User Profile</span>
+                        </p>
+                    </a>
+                </li>
+                <li class="nav-item" *ngIf="userInfo.isSchoolEditorOrHigher()">
+                    <app-notifications-cmp></app-notifications-cmp>
+                </li>
+                <li class="nav-item send">
+                    <a class="nav-link" href="#" data-toggle="collapse" (click)="showFeedback()">
+                        <i class="material-icons">feedback</i> Feedback
+                    </a>
+                </li>
+                <li class="nav-item logout">
+                    <a class="nav-link" href="#" data-toggle="collapse" (click)="logout()">
+                        <i class="material-icons">power_settings_new</i> Logout
+                    </a>
+                </li>
+            </ul>
+
+        </div>
+    </div>
+</nav>
+<app-feedback-cmp></app-feedback-cmp>
+<app-user-profile-cmp></app-user-profile-cmp>

@@ -1,0 +1,5 @@
+<div [ngClass]="columnWidth ? 'row' : 'inline-checkbox'" >
+    <div *ngFor="let option of options" [ngClass]="columnWidth ? 'col-sm-'+columnWidth : ''">
+        <mat-checkbox [(ngModel)]="option.checked" (change)="onToggle($event)">{{option.name}}</mat-checkbox>
+    </div>
+</div>

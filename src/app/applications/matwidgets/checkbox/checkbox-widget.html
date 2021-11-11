@@ -1,0 +1,36 @@
+<label *ngIf="schema.title" [attr.for]="id"
+    [ngClass]="{'required' : isRequiredArray() || (schema.type !== 'array' && (formProperty|isRequired))}">
+    {{schema.title}}
+</label>
+<div *ngIf="schema.type==='array' && schema.description" class="mt-n2 mb-1">
+    <span class="formHelp">{{schema.description}}</span>
+    <span *ngIf="(formProperty|isRequired) && !schema.title" class="text-danger"> *</span>
+</div>
+<div class="ml-1">
+    <ng-container *ngIf="schema.type === 'array'">
+        <div class="err-msg-container">
+            <mat-error [hidden]="!(schema.minItems > formProperty?.value?.length)">
+                Please select a minimum of {{schema.minItems}} items
+            </mat-error>
+            <mat-error *ngIf="schema.hasOwnProperty('maxItems')"
+                [hidden]="!(formProperty?.value?.length > schema.maxItems)">
+                Please select a maximum of {{schema.maxItems}} items
+            </mat-error>
+        </div>
+        <div class="row" *ngIf="schema.items.oneOf">
+            <ng-container *ngFor="let option of schema.items.oneOf">
+                <mat-checkbox class="col-sm-4"
+                    *ngIf="option.hasOwnProperty('includeInList') ? option.includeInList : true"
+                    [disabled]="schema.readOnly || option.readOnly" [value]="option.enum[0]"
+                    [checked]="checked[option.enum[0]]" (change)="onCheck($event)">{{option.description}}
+                </mat-checkbox>
+            </ng-container>
+        </div>
+    </ng-container>
+
+    <mat-checkbox *ngIf="schema.type!=='array'" [disabled]="schema.readOnly" [value]="control.value" color="warn"
+        [indeterminate]="control.value !== false && control.value !== true" [checked]="control.value"
+        [attr.required]="(formProperty|isRequired) && !schema.title && schema.type==='boolean'"
+        (change)="onCheck($event)">{{schema.description}}
+    </mat-checkbox>
+</div>

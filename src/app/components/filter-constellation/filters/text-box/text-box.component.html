@@ -1,0 +1,9 @@
+<mat-form-field>
+    <input matInput [placeholder]="fieldConfig.name | translate" [(ngModel)]="fieldConfig.value" [ngModelOptions]="{standalone: true}"
+        (keyup)="textChanged()">
+
+    <mat-icon *ngIf="!fieldConfig.mandatory" matSuffix class="remove-filter" matTooltip="Remove Filter"
+        matTooltipPosition="above" (click)="removeFilter()">
+        <i class="material-icons">highlight_off</i>
+    </mat-icon>
+</mat-form-field>

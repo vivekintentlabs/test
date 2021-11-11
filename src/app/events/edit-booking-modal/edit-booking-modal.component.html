@@ -1,0 +1,301 @@
+<div class="modal-header">
+    <h4 class="modal-title text-left" id="exampleModalLabel">
+        {{ (isNewBooking) ? 'Register for an Event' : 'Event Attendees' }}
+    </h4>
+    <button type="button" class="close" aria-label="Close" (click)="onCancel()">
+        <span aria-hidden="true">&times;</span>
+    </button>
+</div>
+<div class="modal-body">
+    <div class="row" *ngIf="!isNewBooking">
+        <div class="col-md-12">
+            <h4 class="card-title">Booking date: {{bookingDate}} at {{bookingTime}}</h4>
+        </div>
+    </div>
+    <div class="row" *ngIf="editBooking">
+        <div class="col-md-12">
+            <div *ngIf="campuses !== null && campuses.length>2 && campusesWithEvents && campusesWithEvents.length > 1">
+                <div class="row">
+                    <div class="col-md-12">
+                        <mat-form-field>
+                            <mat-select placeholder="Campus" [(value)]="campusId"
+                                (selectionChange)="campusChanged($event.value)">
+                                <mat-option value="all">All</mat-option>
+                                <mat-option *ngFor="let item of campusesWithEvents" [value]="item.id">
+                                    {{item.name}}
+                                </mat-option>
+                            </mat-select>
+                        </mat-form-field>
+                    </div>
+                </div>
+            </div>
+
+            <div *ngIf="events && events.length>0">
+                <div class="row">
+                    <div class="col-md-12">
+                        <mat-form-field>
+                            <mat-select placeholder="Events" [(value)]="editBooking.eventId"
+                                (selectionChange)="eventChangedNew()">
+                                <mat-option *ngFor="let event of eventsForCampus" [value]="event.id">
+                                    {{(event.schoolTour) ? event.schoolTour.name + ' - ':''}}
+                                    {{(hasOneCampus) ? '' : event.campus.name + ' - '}}
+                                    {{event.date | localeDate: dateDelimiter}} - Start
+                                    {{event.time | time: 'short'}}
+                                </mat-option>
+                            </mat-select>
+                        </mat-form-field>
+                    </div>
+                </div>
+            </div>
+            <div class="card my-3">
+                <div class="card-body pb-0">
+                    <h6>Contacts</h6>
+                    <div class="table-responsive">
+                        <table id="editBookingContactsTable" class="table table-no-bordered table-hover">
+                            <thead>
+                                <tr>
+                                    <th class="table-data">{{ 'Name' }}</th>
+                                    <th class="table-action">{{ 'Check In' }}</th>
+                                    <th class="text-right table-action">{{ 'Actions' }}</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr *ngFor="let item of editBooking.contacts" [class.hide]="!item">
+                                    <td hidden>{{item.id}}</td>
+                                    <td class="table-data">{{item.firstName}} {{item.lastName}}</td>
+                                    <td class="table-action">
+                                        <mat-checkbox [checked]="item.BookingContact != null && item.BookingContact.checkedIn"
+                                            (change)="checkInContact($event.checked, item)">
+                                        </mat-checkbox>
+                                    </td>
+                                    <td class="td-actions text-right table-action">
+                                        <button mat-raised-button type="button" class="btn btn-success btn-link"
+                                            matTooltip="Edit" matTooltipPosition="left" (click)="editContact(item.id)">
+                                            <i class="material-icons">edit</i>
+                                        </button>
+                                        <button mat-raised-button type="button" class="btn btn-danger btn-link"
+                                            matTooltip="Remove" matTooltipPosition="left" (click)="deleteContact(item.id)"
+                                            *ngIf="!userInfo.isSchoolRepresentative()">
+                                            <i class="material-icons">close</i>
+                                        </button>
+                                    </td>
+                                </tr>
+                            </tbody>
+                            <tfoot>
+                                <tr *ngIf="!(editBooking.contacts && editBooking.contacts.length > 0)">
+                                    <td colspan="3" class="text-center red-text">No Contacts yet</td>
+                                </tr>
+                            </tfoot>
+                        </table>
+                    </div>
+
+                    <div class="text-right">
+                        <button type="button" mat-raised-button class="btn btn-primary mx-1"
+                            (click)="addNewContact()" *ngIf="showNew">Add a new Contact
+                        </button>
+                        <button type="button" mat-raised-button class="btn btn-secondary"
+                            (click)="selectContact()">Select Contact
+                        </button>
+                    </div>
+                    <h6>Students</h6>
+                    <div class="table-responsive">
+                        <table id="editBookingStudentsTable" class="table table-no-bordered table-hover">
+                            <thead>
+                                <tr>
+                                    <th class="table-data">{{ 'Name' }}</th>
+                                    <th class="table-action">{{ 'Check In' }}</th>
+                                    <th class="text-right table-action">{{ 'Actions' }}</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr *ngFor="let item of editBooking.students" [class.hide]="!item">
+                                    <td hidden>{{item.id}}</td>
+                                    <td class="table-data">{{item.firstName}} {{item.lastName}}</td>
+                                    <td class="table-action">
+                                        <mat-checkbox [checked]="item.BookingStudent.checkedIn" (change)="checkInStudent($event.checked, item)">
+                                        </mat-checkbox>
+                                    </td>
+                                    <td class="td-actions text-right table-action">
+                                        <button mat-raised-button type="button" class="btn btn-success btn-link"
+                                            matTooltip="Edit" matTooltipPosition="left" (click)="editStudent(item.id)">
+                                            <i class="material-icons">edit</i>
+                                        </button>
+                                        <button mat-raised-button type="button" class="btn btn-danger btn-link"
+                                            matTooltip="Remove" matTooltipPosition="left" (click)="deleteStudent(item.id)"
+                                            *ngIf="!userInfo.isSchoolRepresentative()">
+                                            <i class="material-icons">close</i>
+                                        </button>
+                                    </td>
+                                </tr>
+                            </tbody>
+                            <tfoot>
+                                <tr *ngIf="!(editBooking.students && editBooking.students.length > 0)">
+                                    <td colspan="3" class="text-center red-text">No Students yet</td>
+                                </tr>
+                            </tfoot>
+                        </table>
+                    </div>
+
+                    <div class="text-right">
+                        <button type="button" class="btn btn-primary" (click)="addNewStudent()"
+                            *ngIf="showNew">Add a new Student</button>
+                        <button type="button" class="btn btn-secondary" (click)="selectStudent()">Select
+                            Student</button>
+                    </div>
+                    <h6>Other Attendees</h6>
+                    <div class="table-responsive">
+                        <table class="table table-no-bordered table-hover mb-1">
+                            <thead>
+                                <tr>
+                                    <th class="w-25">{{ 'Name' }}</th>
+                                    <th class="w-25">{{ 'Number' }}</th>
+                                    <th class="w-50">{{ 'Check In' }}</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td class="w-25">Other Attendees</td>
+                                    <td class="w-25">
+                                        <mat-form-field>
+                                            <input matInput type="number" min="0" [max]="maxBookingAttendees"
+                                                [(ngModel)]="editBooking.otherAttendees"
+                                                (input)="changeOtherAttendees(editBooking.otherAttendees)" required>
+                                            <mat-hint class="text-danger"
+                                                *ngIf="editBooking.otherAttendees === null">
+                                                Other Attendees cannot be empty.
+                                            </mat-hint>
+                                            <mat-hint class="text-danger"
+                                                *ngIf="editBooking.otherAttendees > maxBookingAttendees">
+                                                Other Attendees cannot be greater than {{maxBookingAttendees}}.
+                                            </mat-hint>
+                                        </mat-form-field>
+                                    </td>
+                                    <td class="w-50">
+                                        <mat-checkbox [disabled]="!(editBooking.otherAttendees>0)" [checked]="editBooking.otherAttendeesCheckedIn"
+                                            (change)="checkInOtherAttendants($event.checked)">
+                                        </mat-checkbox>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card my-3">
+                <div class="card-body pb-1">
+                    <div class="row">
+                        <div class="col-md-3 rsvp">
+                            Total RSVP
+                        </div>
+                        <div class="col-md-3 ml-2 p-0">
+                            <mat-form-field style="min-width: 112px !important">
+                                <input matInput type="number" min="1" [max]="maxBookingAttendees"
+                                    [(ngModel)]="editBooking.totalAttendees"
+                                    (input)="changeTotalAttendees(editBooking.totalAttendees)" required>
+                                <mat-hint class="text-danger"
+                                    *ngIf="!(editBooking.totalAttendees && editBooking.totalAttendees > 0)">
+                                    Total must be at least {{requiredMinNumber}}.
+                                </mat-hint>
+                                <mat-hint class="text-danger" *ngIf="editBooking.totalAttendees > maxBookingAttendees">
+                                    Total cannot be greater than {{maxBookingAttendees}}.
+                                </mat-hint>
+                            </mat-form-field>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                    </div>
+                </div>
+            </div>
+            <div class="card my-3" *ngIf='event && event.isSubToursEnabled && event.subTours.length > 0 && bookingForm'>
+                <div class="card-body pb-1">
+                    <div class="row">
+                        <div class="col-md-3 rsvp">
+                            Subtour
+                        </div>
+                        <div class="col-md-9">
+                            <form [formGroup]="bookingForm" novalidate>
+                                <app-sub-tour-list [isOnlineRegistration]="false" [placeholder]=''
+                                    [options]="event.subTours" formControlName="subTours"
+                                    [multiple]='event.isMultipleSubtours' (changed)="markFormAsDirty()">
+                                </app-sub-tour-list>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-sm-12">
+                    <div class="row col-sm">
+                        <mat-label>Is this the first time visiting our school?</mat-label>
+                        <div class="col-sm">
+                            <div class="form-check form-check-radio form-check-inline">
+                                <label class="form-check-label">
+                                    <input class="form-check-input" type="radio" [checked]="editBooking.isFirstVisit"
+                                        (click)="changeVisitorType($event.target.checked)">Yes
+                                    <span class="circle">
+                                        <span class="check"></span>
+                                    </span>
+                                </label>
+                            </div>
+                            <div class="form-check form-check-radio form-check-inline">
+                                <label class="form-check-label">
+                                    <input class="form-check-input" type="radio"
+                                        [checked]="editBooking.isFirstVisit === false"
+                                        (click)="changeVisitorType(!$event.target.checked)">No
+                                    <span class="circle">
+                                        <span class="check"></span>
+                                    </span>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row" *ngIf="!userInfo.isSchoolRepresentative()">
+                <div class="col-sm-12">
+                    <mat-form-field>
+                        <mat-label>Message</mat-label>
+                        <textarea matInput maxlength="messageMaxLength" mat-autosize matAutosizeMaxRows="3"
+                            placeholder="Please add any additional information or questions here"
+                            [(ngModel)]="editBooking.message" [readonly]="!messageIsEditable"
+                            (input)="markFormAsDirty()"></textarea>
+                        <mat-hint class="text-warning" *ngIf="!messageIsEditable">
+                            This is not editable since it was entered via a form or a system updated entry
+                        </mat-hint>
+                        <mat-hint class="text-warning" *ngIf="editBooking.message && editBooking.message.length > almostFullMessageField">
+                            Max length is {{messageMaxLength}} characters
+                        </mat-hint>
+                    </mat-form-field>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-12">
+                    <h4 class="card-title">{{conductTitle}}</h4>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-2">
+                    <div class="togglebutton">
+                        <label>
+                            <input type="checkbox" [checked]="conductAgreed" (click)="changeConduct()">
+                            <span class="toggle"></span>
+                        </label>
+                    </div>
+                </div>
+                <div class="col-md-10">
+                    <div [innerHTML]="conductText"></div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-12 text-right">
+                    <button type="button" mat-raised-button class="btn btn-cancel mx-1"
+                        (click)="onCancel()">Cancel</button>
+                    <button type="button" mat-raised-button class="btn btn-success"
+                        [disabled]="!(editBooking.totalAttendees && editBooking.totalAttendees > 0 && editBooking.totalAttendees <= maxBookingAttendees) || !(!submitted && editBooking.students.length > 0 && editBooking.contacts.length > 0 && editBooking.otherAttendees != null && editBooking.otherAttendees <= maxBookingAttendees)"
+                        [promiseBtn]="promiseForBtn" (click)="onSubmit()">Save</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,48 @@
+<div class="main-content">
+    <div class="container-fluid">
+
+        <div class="card">
+            <div class="card-header card-header-icon card-header-primary">
+                <div class="card-icon">
+                    <i class="material-icons">settings_applications</i>
+                </div>
+                <h4 class="card-title">Operation Mode</h4>
+            </div>
+
+            <div class="card-body">
+                <div class="toolbar">
+                    <!--        Here you can write extra buttons/actions for the toolbar              -->
+                </div>
+                <hr>
+
+                <form [formGroup]="formGroup" novalidate (ngSubmit)="onSubmit()" *ngIf="loaded">
+                    <div class="row">
+                        <div class="col-4">
+                            <mat-form-field>
+                                <!-- <mat-select placeholder="Mode" formControlName="operationMode" (selectionChange)="onCountryChange($event.value)" -->
+                                <mat-select placeholder="Operation Mode" formControlName="operationMode" required>
+                                    <mat-option *ngFor="let option of operationModes" [value]="option.value">{{option.name}}</mat-option>
+                                </mat-select>
+                                <mat-error [hidden]="formGroup.controls.operationMode.valid || formGroup.controls.operationMode.pristine"
+                                    class="text-danger">
+                                    Operation Mode should be selected.
+                                </mat-error>
+                            </mat-form-field>
+                        </div>
+                    </div>
+
+                    <hr>
+                    <div class="row">
+                        <div class="col text-right">
+                            <button mat-raised-button class="btn btn-cancel mx-1" type="button" (click)="onCancel()">Cancel</button>
+                            <button mat-raised-button class="btn btn-success" type="submit" [promiseBtn]="promiseForBtn"
+                                [disabled]="!formGroup.valid || formGroup.pristine">Save</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+
+        </div>
+
+    </div>
+</div>

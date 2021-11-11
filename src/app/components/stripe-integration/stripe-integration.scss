@@ -1,0 +1,17 @@
+:host ::ng-deep {
+    #readonly-inputs-form .mat-form-field-underline {
+        height: 0px !important;
+    }
+
+    #gatewayStatus span {
+        border-radius: 15px;
+        padding: 5px 10px;
+        margin-left: 5px;
+        font-size: 10pt;
+    }
+
+    .error {
+        font-size: 12px;
+        color: red;
+    }
+}

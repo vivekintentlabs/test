@@ -1,0 +1,92 @@
+<div class="card">
+    <div class="card-header card-header-icon card-header-primary" data-background-color="purple">
+        <div class="card-icon">
+            <i class="material-icons-outlined">event</i>
+        </div>
+        <h4 class="card-title">Subtours</h4>
+    </div>
+
+    <div class="card-body">
+        <div class="table-responsive">
+            <table [id]="tableId" mat-table [dataSource]="dataSource" matSort (matSortChange)="onSortChange($event)">
+                <!-- Name Column -->
+                <ng-container matColumnDef="name">
+                    <th mat-header-cell *matHeaderCellDef mat-sort-header>Name</th>
+                    <td mat-cell *matCellDef="let element">{{element.name}}</td>
+                </ng-container>
+
+                <!-- StartTime Column -->
+                <ng-container matColumnDef="startTime">
+                    <th mat-header-cell *matHeaderCellDef mat-sort-header>Start Time</th>
+                    <td mat-cell *matCellDef="let element">{{element.startTime | time: 'short' }}</td>
+                </ng-container>
+
+                <!-- End Time Column -->
+                <ng-container matColumnDef="endTime">
+                    <th mat-header-cell *matHeaderCellDef mat-sort-header>End Time</th>
+                    <td mat-cell *matCellDef="let element">{{element.endTime | time: 'short' }}</td>
+                </ng-container>
+
+                <!-- Max Number Column -->
+                <ng-container matColumnDef="maxNumber">
+                    <th mat-header-cell *matHeaderCellDef mat-sort-header>Max Number</th>
+                    <td mat-cell *matCellDef="let element">{{element.maxNumber}}</td>
+                </ng-container>
+
+                <!-- Total RSVP Column -->
+                <ng-container matColumnDef="rsvp">
+                    <th mat-header-cell *matHeaderCellDef mat-sort-header>Total RSVP</th>
+                    <td mat-cell *matCellDef="let element" [ngClass]="{'red': element.rsvp >= element.maxNumber}">
+                        {{element.rsvp || '-'}}
+                    </td>
+                </ng-container>
+
+                <!-- Registration Column -->
+                <ng-container matColumnDef="registration">
+                    <th mat-header-cell *matHeaderCellDef mat-sort-header>Registration</th>
+                    <td mat-cell *matCellDef="let element">
+                        {{element.isRegistrationDisabled ? 'Disabled' : 'Enabled'}}
+                        <i *ngIf="element.isRegistrationDisabledAutoManaged"
+                            matTooltip="When the Subtour is fully booked, online registration will be disabled automatically"
+                            class="material-icons va-bottom text-muted font-1-5em">av_timer</i>
+                    </td>
+                </ng-container>
+
+                <!-- Actions Column -->
+                <ng-container matColumnDef="actions">
+                    <th mat-header-cell *matHeaderCellDef> <span class="float-right">Actions</span></th>
+                    <td class="td-actions text-right" mat-cell *matCellDef="let element">
+                        <button mat-raised-button type="button" class="btn btn-success btn-link" matTooltip="Edit"
+                            matTooltipPosition="left" (click)="$event.stopPropagation(); editSubTour(element.id)">
+                            <i class="material-icons">edit</i>
+                        </button>
+                        <button mat-raised-button type="button" class="btn btn-danger btn-link" matTooltip="Delete"
+                            matTooltipPosition="left" (click)="$event.stopPropagation(); deleteSubTour(element.id)">
+                            <i class="material-icons">delete_outline</i>
+                        </button>
+                    </td>
+                </ng-container>
+
+                <!-- No Data -->
+                <ng-container matColumnDef="noData">
+                    <td [hidden]="!dataSource || (dataSource && dataSource.filteredData && dataSource.filteredData.length > 0)"
+                        mat-footer-cell *matFooterCellDef colspan="7">
+                        {{noDataInTable}}
+                    </td>
+                </ng-container>
+
+                <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+                <tr mat-row *matRowDef="let row; columns: displayedColumns;" (click)="selection.toggle(row)"></tr>
+                <tr mat-footer-row *matFooterRowDef="['noData']" class="text-center"></tr> <!-- No Data-->
+            </table>
+            <app-spinner [tableIsLoading]="tableIsLoading"></app-spinner>
+            <mat-paginator (page)="onPaginatorChange($event)"></mat-paginator>
+            <div class="text-right">
+                <button mat-raised-button class="btn btn-primary" type="button" (click)="addSubTour()">
+                    <i class="material-icons">playlist_add</i>Add Subtour
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+<app-edit-sub-tour [eventId]="event.id" [subTourId]="subTourId" (updateSubTour)="updateSubTour()"></app-edit-sub-tour>

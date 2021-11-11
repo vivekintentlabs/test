@@ -1,0 +1,12 @@
+{
+  "extends": "./tsconfig-base.json",
+
+  "compileOnSave": false,
+  "compilerOptions": {
+    "baseUrl": "src",
+    "outDir": "./dist/out-tsc",
+    "typeRoots": [
+      "node_modules/@types"
+    ],
+  },
+}

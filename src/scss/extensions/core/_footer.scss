@@ -1,0 +1,30 @@
+.footer {
+  .row {
+    margin: 0px;
+    .col-sm-12 {
+      padding-left: 0px;
+    }
+  }
+  .copyright {
+    font-size: $font-size-small;
+    font-weight: $font-weight-bold;
+    margin: 0px;
+  }
+  ul {
+    li {
+      a {
+        font-size: $font-size-small;
+        &:first-child {   
+          padding-left: 0;
+        }
+      }
+    }
+  }
+}
+.login-page {
+  .footer {
+    .container {
+      padding: 0 15px;
+    }
+  }
+}

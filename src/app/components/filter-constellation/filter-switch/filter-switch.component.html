@@ -1,0 +1,18 @@
+<div [ngSwitch]="filterConfig.type" class="field w-100">
+    <div app-text-box *ngSwitchCase="fieldType.Text" [fieldConfig]="filterConfig" (valueChanged)="valueHasChanged($event)"
+        (filterRemoved)="deleteFilter($event)"></div>
+
+    <div app-check-box *ngSwitchCase="fieldType.Checkbox" [fieldConfig]="filterConfig" (valueChanged)="valueHasChanged($event)"
+        (filterRemoved)="deleteFilter($event)"></div>
+
+    <div app-drop-down *ngSwitchCase="fieldType.Dropdown" [fieldConfig]="filterConfig" (valueChanged)="valueHasChanged($event)"
+        (filterRemoved)="deleteFilter($event)"></div>
+
+    <div app-date-range-picker *ngSwitchCase="fieldType.DateRange" [fieldConfig]="filterConfig" [value]="filterConfig.value"
+        (valueChanged)="valueHasChanged($event)" (filterRemoved)="deleteFilter($event)">
+    </div>
+
+    <div app-year-month-picker *ngSwitchCase="fieldType.YearMonthPicker" [fieldConfig]="filterConfig" [value]="filterConfig.value"
+        (valueChanged)="valueHasChanged($event)" (filterRemoved)="deleteFilter($event)">
+    </div>
+</div>

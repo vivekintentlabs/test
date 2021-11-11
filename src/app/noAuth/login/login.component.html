@@ -1,0 +1,76 @@
+<div class="wrapper wrapper-full-page">
+    <!-- <div class="full-page login-page" filter-color="black" data-image="../../../assets/img/login.jpeg"> -->
+    <div class="page-header login-page header-filter" filter-color="black" style="background-image: url('../../../assets/img/login.jpeg'); background-size: cover; background-position: top center;">
+        <!--   you can change the color of the filter page using: data-color="blue | purple | green | orange | red | rose " -->
+        <div class="container">
+            <div class="col-md-6 col-sm-8 mx-auto">
+                <app-maintenance *ngIf="loaded" [isUnderMaintenance]="isUnderMaintenance" [msg]="underMaintenanceMsg"></app-maintenance>
+
+                <div class="card card-login card-hidden">
+                    <div class="card-body py-3" *ngIf="loaded">
+                        <form [formGroup]="loginForm" novalidate (ngSubmit)="onSubmit()">
+                            <h3 class="card-title text-center">
+                                Log in {{ (isUnderMaintenance) ? '(only system admin)' : '' }}
+                            </h3>
+                            <span class="bmd-form-group">
+                                <div class="input-group">
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text pt-0">
+                                            <i class="material-icons">email</i>
+                                        </span>
+                                    </div>
+                                    <div class="flex-grow-1">
+                                        <mat-form-field>
+                                            <input matInput placeholder="Email address" type="email" formControlName="username"
+                                                required>
+                                            <mat-error [hidden]="loginForm.controls.username.valid || loginForm.controls.username.pristine">
+                                                Email format should be
+                                                <i>john@doe.com</i>.
+                                            </mat-error>
+                                        </mat-form-field>
+                                    </div>
+                                </div>
+                            </span>
+                            <span class="bmd-form-group">
+                                <div class="input-group">
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text pt-0">
+                                            <i class="material-icons">lock_outline</i>
+                                        </span>
+                                    </div>
+                                    <div class="flex-grow-1">
+                                        <mat-form-field>
+                                            <input matInput placeholder="Password" type="password" formControlName="password"
+                                                required>
+                                            <mat-error [hidden]="loginForm.controls.password.valid || loginForm.controls.password.pristine">
+                                                {{passwordErrorText}}
+                                            </mat-error>
+                                        </mat-form-field>
+                                    </div>
+                                </div>
+                            </span>
+
+                            <div class="text-center">
+                                <div class="row">
+                                    <div class="col">
+                                        <button type="submit" class="btn btn-primary btn-round btn-wd" [disabled]="!loginForm.valid">
+                                            Sign in</button>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col">
+                                        <a [routerLink]="['/noAuth/forgot-password']" style="color: #999999;">
+                                            Forgot Password?</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+
+                <app-social-login *ngIf="loaded && !isUnderMaintenance"></app-social-login>
+            </div>
+        </div>
+        <app-footer-cmp *ngIf="loaded"></app-footer-cmp>
+    </div>
+</div>

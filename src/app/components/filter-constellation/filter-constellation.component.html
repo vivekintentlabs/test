@@ -1,0 +1,41 @@
+<div id="filterConstellationCmp" class="filter-box" *ngIf="filters">
+    <div class="d-flex">
+        <div class="flex-grow-1">
+            <div class="row">
+                <ng-container *ngFor="let filter of filters">
+                    <ng-container *ngIf="filter.display && filter.mandatory">
+                        <div app-filter-switch class="col-md-{{filter.width}}" [filterConfig]="filter" (valueChanged)="valueHasChanged($event)"></div>
+                    </ng-container>
+                </ng-container>
+                <div *ngIf="more" app-more-options class="col-md-2" [filters]="filters" (selectionChanged)="moreOptionsSelectionChanged($event)"></div>
+            </div>
+
+            <div class="row">
+                <ng-container *ngFor="let filter of filters">
+                    <ng-container *ngIf="filter.display && !filter.mandatory">
+                        <div app-filter-switch class="col-md-{{filter.width}}" [filterConfig]="filter" (filterDeleted)="filterIsDeleted($event)"
+                            (valueChanged)="valueHasChanged($event)"></div>
+                    </ng-container>
+                </ng-container>
+            </div>
+
+            <div class="row" *ngIf="debugMode && filterValues && filterValues.length > 0">
+                <div class="col text-muted">
+                    <ng-container>
+                        <h4>Resulting Values:</h4>
+                        <hr class="mt-0">
+                        <ng-container *ngFor="let value of filterValues">
+                            <p><b>{{findFilter(value.id).name | translate}}:</b> {{stringify(value.value)}}</p>
+                        </ng-container>
+                    </ng-container>
+                </div>
+            </div>
+        </div>
+        <div class="pl-2 mb-0">
+            <button type="button" class="btn btn-reset" matTooltip="Reset Filter" matTooltipPosition="above"
+                (click)="onResetFilter()">
+                <i class="material-icons w-auto">refresh</i>
+            </button>
+        </div>
+    </div>
+</div>

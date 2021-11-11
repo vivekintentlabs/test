@@ -1,0 +1,5 @@
+<div id="studentFilterCmp" *ngIf="filters && filters.length > 0">
+    <app-filter-constellation [debugMode]="false" [filters]="filters" [filterValues]="values" [name]="uniqName"
+        [useLocalStorage]="useLocalStorage" [updateTrigger]="updateTrigger" (filterChanged)="onFilterChange($event)">
+    </app-filter-constellation>
+</div>

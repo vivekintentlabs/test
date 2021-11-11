@@ -1,0 +1,11 @@
+<fieldset *ngFor="let fieldset of formProperty.schema.fieldsets">
+    <legend *ngIf="fieldset.title">{{fieldset.title}}</legend>
+    <div *ngIf="fieldset.description">{{fieldset.description}}</div>
+    <div class="row">
+        <ng-container *ngFor="let fieldId of fieldset.fields">
+            <div *ngIf="isVisible(fieldId)" class="col d-flex flex-column-reverse">
+                <sf-form-element #res [formProperty]="getProperty(fieldId)"></sf-form-element>
+            </div>
+        </ng-container>
+    </div>
+</fieldset>

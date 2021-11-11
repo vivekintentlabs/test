@@ -1,0 +1,28 @@
+<div class="modal fade" id="feedbackModal" tabindex="-1" role="dialog" aria-labelledby="feedbackModalLabel"
+    aria-hidden="true" data-backdrop="static" data-keyboard="false">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title text-left" id="feedbackModalLabel">{{brand.name}} Feedback</h4>
+                <button type="button" class="close" aria-label="Close" (click)="onCancel()">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form [formGroup]="feedbackForm" novalidate *ngIf="feedbackForm">
+                    <mat-form-field>
+                        <textarea matInput mat-autosize matAutosizeMaxRows="10" formControlName="html"
+                            placeholder="Please send in feedback, bugs you have found or features you would have expected to see.">
+                        </textarea>
+                    </mat-form-field>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" mat-raised-button class="btn btn-cancel mx-1" (click)="onCancel()">Cancel</button>
+                <button type="button" mat-raised-button class="btn btn-success" [disabled]="!feedbackForm.valid"
+                    (click)="sendFeedback()">Send
+                </button>
+            </div>
+        </div>
+    </div>
+</div>

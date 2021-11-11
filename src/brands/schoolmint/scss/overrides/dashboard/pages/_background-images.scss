@@ -1,0 +1,9 @@
+.sidebar-background {
+    background-image: none !important;
+}
+
+.change-password-page, .forgot-password-page, .google-login-page, .login-page,
+.register-page, .unsubscribe-notifications-page,
+.unsubscribe-page {
+    background-image: url('/assets/img/et-login.png') !important;
+}

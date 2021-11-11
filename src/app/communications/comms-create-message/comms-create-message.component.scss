@@ -1,0 +1,47 @@
+.preloader-block {
+    height: 250px;
+    display: flex;
+    position: absolute;
+}
+
+.editor-block {
+    border: 1px solid #c5c5c5;
+    background: #ffffff;
+    margin: 0 auto;
+}
+
+.email-templates {
+    .card {
+        width: 18rem;
+        .card-template-block {
+            zoom: 0.5;
+            line-height: 1.3;
+            outline: 0;
+            .mce-merge-tags {
+                font-size: 13px;
+                background: grey;
+                color: #fff;
+                border-radius: 9px;
+                border: 1px solid transparent;
+                padding: 1px 6px 2px;
+                margin: 0 1px;
+                line-height: 16.9px;
+            }
+        }
+        .card-img-top {
+            height: 210px;
+            padding: 5px 10px;
+            overflow: hidden;
+        }
+        .card-body {
+            padding: 5px 10px;
+            .card-title {
+                white-space: nowrap;
+                overflow: hidden;
+            }
+        }
+    }
+    .template-item {
+        display: inline-block;
+    }
+}

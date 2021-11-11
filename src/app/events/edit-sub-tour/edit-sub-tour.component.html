@@ -1,0 +1,87 @@
+<div class="modal fade" id="editSubTourModal" tabindex="-1" role="dialog" aria-labelledby="editSubTourModalLabel"
+    data-backdrop="static" data-keyboard="false" style="overflow-y: auto;">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title text-left" id="exampleModalLabel"> {{title}}
+                </h4>
+                <button type="button" class="close" aria-label="Close" (click)="onCancel()">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <form [formGroup]="subTourForm" class="mb-0" novalidate (ngSubmit)="onSubmit()" *ngIf="loaded">
+                <div class="modal-body">
+                    <mat-form-field>
+                        <input matInput placeholder="Name of the subtour" type="text" formControlName="name" required>
+                        <mat-error
+                            *ngIf="!(subTourForm.controls.name.valid || subTourForm.controls.name.pristine)">
+                            Name is required and should contain at least {{requiredTextFieldMinLength}} and at most {{requiredStringFieldMaxLength}} characters.
+                        </mat-error>
+                    </mat-form-field>
+
+                    <mat-form-field>
+                        <input matInput type="time" placeholder="Start Time" formControlName="startTime" required readonly
+                            (click)="timeChanged(subTourForm.controls.startTime, '9:00', 'startTime')"/>
+                        <span matSuffix>
+                            <i class="material-icons pointer text-muted font-1-5em"
+                                (click)="timeChanged(subTourForm.controls.startTime, '9:00', 'startTime')">access_time</i>
+                        </span>
+                    </mat-form-field>
+
+                    <mat-form-field>
+                        <input matInput type="time" placeholder="End Time" formControlName="endTime" required readonly
+                            (click)="timeChanged(subTourForm.controls.endTime, '9:00', 'endTime')"/>
+                        <span matSuffix>
+                            <i class="material-icons pointer text-muted font-1-5em"
+                                (click)="timeChanged(subTourForm.controls.endTime, '9:00', 'endTime')">access_time</i>
+                        </span>
+                    </mat-form-field>
+                    <mat-error *ngIf="!validEndTime">The end time should be after the start time</mat-error>
+                    <mat-form-field>
+                        <input matInput placeholder="Maximum number of attendees permitted for the subtour"
+                            type="number" min="0" formControlName="maxNumber" required autocomplete="off">
+                        <mat-error
+                            [hidden]="subTourForm.controls.maxNumber.valid || subTourForm.controls.maxNumber.pristine">
+                            Max number should be less than 11 characters.
+                        </mat-error>
+                    </mat-form-field>
+
+                    <div class="row">
+                        <div class="card online-reg m-3 p-2">
+                            <h4 class="card-title">Subtour Online Registrations</h4>
+                            <small class="category">When online registrations are disabled, this subtour will appear as fully booked</small>
+                            <div>
+                                <div class="togglebutton">
+                                    <label class="font-weight-light text-dark">
+                                        <input type="checkbox" formControlName="isRegistrationDisabled"
+                                            (change)="disableRegistration($event.target.checked)">
+                                        <span class="toggle"></span>
+                                        No longer accept online registrations for this subtour
+                                    </label>
+                                </div>
+                            </div>
+                            <div>
+                                <div class="togglebutton">
+                                    <label class="font-weight-light text-dark">
+                                        <input type="checkbox" formControlName="isRegistrationDisabledAutoManaged"
+                                            (change)="disableRegistrationAutoManaged($event.target.checked)">
+                                        <span class="toggle"></span>
+                                        Automatically disable online registrations when capacity for subtour is met
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" mat-raised-button class="btn btn-cancel mx-1" data-dismiss="modal"
+                        (click)="onCancel()">Cancel
+                    </button>
+                    <button type="submit" mat-raised-button class="btn btn-success" [promiseBtn]="promiseForBtn"
+                        [disabled]="!subTourForm.valid || subTourForm.pristine">Save
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

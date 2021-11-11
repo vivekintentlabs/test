@@ -1,0 +1,3 @@
+<div class="apps-header" [innerHTML]="appSchoolData.header | safeHtml" *ngIf="appSchoolData && isNotIframe"></div>
+<ng-content></ng-content>
+<div class="apps-footer" [innerHTML]="appSchoolData.footer | safeHtml" *ngIf="appSchoolData && isNotIframe"></div>

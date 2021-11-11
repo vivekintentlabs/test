@@ -1,0 +1,128 @@
+<div class="main-content">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="card">
+                    <div class="card-header card-header-icon card-header-primary">
+                        <div class="card-icon">
+                            <i class="material-icons-outlined">person</i>
+                        </div>
+                        <h4 class="card-title">School Users</h4>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-sm-8"></div>
+                            <div class="col-sm-4">
+                                <div class="float-right mx-2">
+                                    <mat-form-field>
+                                        <input matInput (keyup)="applyFilter($event.target.value)"
+                                            [value]="tableState.searchText" placeholder="Search results">
+                                    </mat-form-field>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="table-responsive">
+                            <table [id]="tableId" mat-table [dataSource]="dataSource" matSort
+                                (matSortChange)="onSortChange($event)">
+
+                                <!-- Name Column -->
+                                <ng-container matColumnDef="name">
+                                    <th mat-header-cell *matHeaderCellDef mat-sort-header>Name</th>
+                                    <td mat-cell *matCellDef="let element">{{element.name}}</td>
+                                </ng-container>
+
+                                <!-- Email Column -->
+                                <ng-container matColumnDef="email">
+                                    <th mat-header-cell *matHeaderCellDef mat-sort-header>Email</th>
+                                    <td mat-cell *matCellDef="let element">{{element.email}}</td>
+                                </ng-container>
+
+                                <!-- Status Column -->
+                                <ng-container matColumnDef="activated">
+                                    <th mat-header-cell *matHeaderCellDef mat-sort-header>Status</th>
+                                    <td mat-cell *matCellDef="let element">
+                                        {{(element.activated) ? 'Active' : 'Disabled'}}
+                                    </td>
+                                </ng-container>
+
+                                <!-- Access Level Column -->
+                                <ng-container matColumnDef="role">
+                                    <th mat-header-cell *matHeaderCellDef mat-sort-header>Access Level</th>
+                                    <td mat-cell *matCellDef="let element">{{element.role}}</td>
+                                </ng-container>
+
+                                <!-- Notifications Column -->
+                                <ng-container matColumnDef="sendNotifications">
+                                    <th mat-header-cell *matHeaderCellDef mat-sort-header>Notifications</th>
+                                    <td mat-cell *matCellDef="let element">
+                                        <mat-checkbox (change)="updateSendNotifications($event.checked, element.id)"
+                                            [checked]="element.sendNotifications">
+                                        </mat-checkbox>
+                                    </td>
+                                </ng-container>
+
+                                <!-- LastLogin Column -->
+                                <ng-container matColumnDef="lastLogin">
+                                    <th mat-header-cell *matHeaderCellDef mat-sort-header>LastLogin</th>
+                                    <td mat-cell *matCellDef="let element">
+                                        {{element.lastLogin | localeDate: dateDelimiterTime}}</td>
+                                </ng-container>
+
+                                <!-- Actions Column -->
+                                <ng-container matColumnDef="actions">
+                                    <th mat-header-cell *matHeaderCellDef> <span class="float-right">Actions</span></th>
+                                    <td class="td-actions text-right" mat-cell *matCellDef="let element">
+                                        <div class="d-inline"
+                                            matTooltip="{{ (element.activated) ? 'Resend Signup' : 'Activate this user to send Signup'}}"
+                                            matTooltipPosition="left">
+                                            <button mat-raised-button type="button" class="btn btn-primary btn-link"
+                                                (click)="inviteUser(element.email)" [disabled]="!element.activated">
+                                                <i class="material-icons">mail_outline</i>
+                                            </button>
+                                        </div>
+                                        <button mat-raised-button type="button" class="btn btn-success btn-link"
+                                            matTooltip="Edit" matTooltipPosition="left"
+                                            (click)="editSchoolUser(element.id)">
+                                            <i class="material-icons">edit</i>
+                                        </button>
+                                        <button mat-raised-button type="button" class="btn btn-danger btn-link"
+                                            matTooltip="Delete" matTooltipPosition="left"
+                                            (click)="deleteSchoolUser(element.id)">
+                                            <i class="material-icons">delete_outline</i>
+                                        </button>
+                                    </td>
+                                </ng-container>
+
+                                <!-- No Data -->
+                                <ng-container matColumnDef="noData">
+                                    <td [hidden]="!dataSource || (dataSource && dataSource.filteredData && dataSource.filteredData.length > 0)"
+                                        mat-footer-cell *matFooterCellDef colspan="11">
+                                        {{noDataInTable}}
+                                    </td>
+                                </ng-container>
+
+                                <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+                                <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+                                <tr mat-footer-row *matFooterRowDef="['noData']" class="text-center"></tr>
+                                <!-- No Data-->
+
+                            </table>
+                            <app-spinner [tableIsLoading]="tableIsLoading"></app-spinner>
+                            <mat-paginator (page)="onPaginatorChange($event)"></mat-paginator>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-12 text-right">
+                                <button class="btn btn-primary" (click)="addSchoolUser()">
+                                    <i class="material-icons">playlist_add</i> Add School User</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <app-email-signature [users]="users" (stateChangeOutput)="emailSignatureStateChanged($event)">
+        </app-email-signature>
+    </div>
+</div>

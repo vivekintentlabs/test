@@ -1,0 +1,125 @@
+<div class="main-content">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="card">
+                    <div class="card-header card-header-icon card-header-primary">
+                        <div class="card-icon">
+                            <i class="material-icons-outlined">event</i>
+                        </div>
+                        <h4 class="card-title">{{title}}</h4>
+                    </div>
+                    <div class="card-body">
+                        <form [formGroup]="formGroup" class="form-horizontal" novalidate (ngSubmit)="onSubmit()" *ngIf="loaded">
+                            <div class="row">
+                                <div class="col-sm-12">
+                                    <div class="row">
+                                        <label class="col-sm-3 col-form-label required">Date</label>
+                                        <div class="col-sm-3">
+                                            <mat-form-field>
+                                                <input matInput [matDatepicker]="date" formControlName="date">
+                                                <mat-datepicker-toggle matSuffix [for]="date"></mat-datepicker-toggle>
+                                                <mat-datepicker #date></mat-datepicker>
+                                            </mat-form-field>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <label class="col-3 col-form-label required">Start Time</label>
+                                <div class="col-3">
+                                    <mat-form-field>
+                                        <input matInput type="time" formControlName="time" readonly
+                                            (click)="timeChanged(formGroup.controls.time, '9:00', 'startTime')"/>
+                                        <span matSuffix>
+                                            <i class="material-icons clickable text-muted font-1-5em"
+                                                (click)="timeChanged(formGroup.controls.time, '9:00', 'startTime')">access_time</i>
+                                        </span>
+                                    </mat-form-field>
+                                </div>
+                                <label class="col-form-label required">End Time</label>
+                                <div class="col-3">
+                                    <mat-form-field>
+                                        <input matInput type="time" formControlName="endTime" readonly
+                                            (click)="timeChanged(formGroup.controls.endTime, '9:00', 'endTime')"/>
+                                        <span matSuffix>
+                                            <i class="material-icons clickable text-muted font-1-5em"
+                                                (click)="timeChanged(formGroup.controls.endTime, '9:00', 'endTime')">access_time</i>
+                                        </span>
+                                    </mat-form-field>
+                                    <mat-error *ngIf="!validEndTime">The end time should be after the start time</mat-error>
+                                </div>
+                            </div>
+                            <div class="row" *ngIf="users !== null">
+                                <label class="col-sm-3 col-form-label required">Assignee</label>
+                                <div class="col-3">
+                                    <mat-form-field>
+                                        <mat-select placeholder="" formControlName="assigneeId" required>
+                                            <mat-option *ngFor="let item of users" [value]="item.id">
+                                                {{item.firstName + ' ' + item.lastName}}
+                                            </mat-option>
+                                        </mat-select>
+                                    </mat-form-field>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <label class="col-sm-3 col-form-label">CC Email Address(es)</label>
+                                <div class="col-sm-9">
+                                    <app-email-chips [parentForm]="formGroup" formControlName="cc"></app-email-chips>
+                                </div>
+                            </div>
+                            <div class="row" *ngIf="users !== null">
+                                <div class="col-sm-3 col-form-label">
+                                </div>
+                                <h5 class="col-9">
+                                    An email and calendar invite will also be sent to the Assignee & CC Email if it has been entered
+                                </h5>
+                            </div>
+                            <div class="row" *ngIf="campuses !== null && campuses.length > 1">
+                                <label class="col-sm-3 col-form-label required">Campus</label>
+                                <div class="col-3">
+                                    <mat-form-field>
+                                        <mat-select placeholder="" formControlName="campusId" required (selectionChange)="campusChanged($event.value)">
+                                            <mat-option *ngFor="let item of campuses" [value]="item.id">
+                                                {{item.name}}
+                                            </mat-option>
+                                        </mat-select>
+                                    </mat-form-field>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <label class="col-sm-3 col-form-label required">Location</label>
+                                <div class="col-6">
+                                    <mat-form-field>
+                                        <textarea matInput mat-autosize matAutosizeMaxRows="3"
+                                            formControlName="location" required>
+                                        </textarea>
+                                        <mat-error
+                                            [hidden]="formGroup.controls.location.valid || formGroup.controls.location.pristine">
+                                            Location should contain at least {{requiredTextFieldMinLength}} and at most {{requiredStringFieldMaxLength}} characters.
+                                        </mat-error>
+                                    </mat-form-field>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col text-right">
+                                    <button type="button" mat-raised-button class="btn btn-cancel mx-1" (click)="onCancel()">Cancel</button>
+                                    <button type="submit" class="btn btn-success" [promiseBtn]="promiseForBtn"
+                                        [disabled]="!formGroup.valid || formGroup.pristine">save
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="clearfix"></div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <app-personal-tour-bookings *ngIf="personalTour && personalTour.id" [personalTour]="personalTour"></app-personal-tour-bookings>
+    </div>
+
+    <app-personal-tour-event-email *ngIf="!isAdd && !isDuplicate && showIfNoRepresentative && campus" [id]="personalTourId"
+        [campusTimezoneId]="campus.timeZoneId">
+    </app-personal-tour-event-email>
+</div>
