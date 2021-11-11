@@ -1,0 +1,132 @@
+<div class="logo d-flex flex-column justify-content-center">
+    <a (click)="showModal()" class="logo-mini">
+        <img src="./assets/img/miniLogo.png" alt="{{brand.name}}">
+    </a>
+    <a (click)="showModal()" class="logo-normal">
+        <img src="./assets/img/Logo.png" alt="{{brand.name}}">
+    </a>
+</div>
+
+<div class="sidebar-wrapper">
+
+    <div class="user" *ngIf="userInfo.isSysAdmin() && debugMode">
+        <div class="photo">
+            <img src="./assets/img/faces/avatar.jpg" />
+        </div>
+        <div class="user-info">
+            <a data-toggle="collapse" href="#collapseExample" class="collapsed">
+                <span>
+                    Tania Andrew
+                    <b class="caret"></b>
+                </span>
+            </a>
+            <div class="collapse" id="collapseExample">
+                <ul class="nav">
+                    <li class="nav-item">
+                        <a href="javascript:void(0)" class="nav-link">
+                            <span class="sidebar-mini">MP</span>
+                            <span class="sidebar-normal">My Profile</span>
+                        </a>
+                    </li>
+                    <!-- <li class="nav-item">
+                        <a href="javascript:void(0)" class="nav-link">
+                            <span class="sidebar-mini">EP</span>
+                            <span class="sidebar-normal">Edit Profile</span>
+                        </a>
+                    </li> -->
+                    <li class="nav-item">
+                        <a href="javascript:void(0)" class="nav-link">
+                            <span class="sidebar-mini">S</span>
+                            <span class="sidebar-normal">Settings</span>
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <div id="sclName" class="user" *ngIf="userInfo.isSchoolAdminOrLower()">
+        <div *ngIf="school">
+            <p class="simple-text text-center">{{school.name}}</p>
+        </div>
+    </div>
+
+    <ul class="nav">
+        <li routerLinkActive="active" *ngFor="let menuitem of menuItems" class="nav-item">
+            <!--If is a single link-->
+            <a [routerLink]="[menuitem.path]" *ngIf="menuitem.type === 'link' && !menuitem.hidden" class="nav-link">
+                <i class="material-icons">{{menuitem.icontype}}</i>
+                <p>{{menuitem.title}}</p>
+            </a>
+            <!--If it have a submenu-->
+            <a data-toggle="collapse" href="#{{menuitem.collapse}}" *ngIf="menuitem.type === 'sub' && !menuitem.hidden" (click)="updatePS()" class="nav-link">
+                <i class="material-icons">{{menuitem.icontype}}</i>
+                <p>{{menuitem.title}}
+                    <b class="caret"></b>
+                </p>
+            </a>
+
+            <!--Display the submenu items-->
+            <div id="{{menuitem.collapse}}" class="collapse" *ngIf="menuitem.type === 'sub' && !menuitem.hidden">
+                <ul class="nav">
+                    <ng-container *ngFor="let childitem of menuitem.children">
+                        <li routerLinkActive="active" *ngIf="!childitem.hidden" class="nav-item">
+                            <a [routerLink]="[menuitem.path, childitem.path]" class="nav-link mt-1 py-1">
+                                <!-- <span class="sidebar-mini">{{childitem.ab}}</span> -->
+                                <!-- icons instead simple strings -->
+                                <i class="material-icons sub-nav-icon-m">{{childitem.ab}}</i>
+                                <span class="sidebar-normal">{{childitem.title}}</span>
+                            </a>
+                        </li>
+                    </ng-container>
+                </ul>
+            </div>
+        </li>
+        <li *ngIf="userInfo.isSysAdmin() && debugMode">
+            <a href="http://md-pro-angular.creative-tim.com/documentation/tutorial?ref=md-pro-archive">
+                <i class="material-icons">school</i>
+                <p>Documentation</p>
+            </a>
+        </li>
+    </ul>
+
+    <div *ngIf="isMobileMenu()">
+        <ul class="nav navbar-nav nav-mobile-menu">
+            <li class="separator hidden-lg hidden-md"></li>
+
+            <li class="nav-item" *ngIf="userInfo.isSysAdmin()" class="nav-item">
+                <app-school-switcher-cmp></app-school-switcher-cmp>
+            </li>
+
+            <li class="nav-item">
+                <app-campus-switcher-cmp></app-campus-switcher-cmp>
+            </li>
+
+            <li *ngIf="userInfo.isSchoolEditorOrHigher()" class="nav-item">
+                <app-notifications-cmp></app-notifications-cmp>
+            </li>
+
+            <li class="nav-item">
+                <a (click)="userProfile()" class="dropdown-toggle" data-toggle="dropdown" class="nav-link">
+                    <i class="material-icons">account_box</i>
+                    <p class="hidden-lg hidden-md">User Profile</p>
+                </a>
+            </li>
+
+            <li class="send" class="nav-item">
+                <a (click)="showFeedback()" class="dropdown-toggle" data-toggle="dropdown" class="nav-link">
+                    <i class="material-icons">feedback</i>
+                    <p class="hidden-lg hidden-md">Feedback</p>
+                </a>
+            </li>
+
+            <li class="logout" class="nav-item">
+                <a (click)="logout()" class="dropdown-toggle" data-toggle="dropdown" class="nav-link">
+                    <i class="material-icons">power_settings_new</i>
+                    <p class="hidden-lg hidden-md">Logout</p>
+                </a>
+            </li>
+            <li class="separator hidden-lg hidden-md"></li>
+        </ul>
+    </div>
+</div>

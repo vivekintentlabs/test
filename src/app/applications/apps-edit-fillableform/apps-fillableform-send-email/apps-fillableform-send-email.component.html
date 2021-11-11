@@ -1,0 +1,68 @@
+<div class="modal-header">
+    <h4 class="modal-title text-left" id="emailModalLabel">Send Email</h4>
+    <button type="button" class="close" aria-label="Close" (click)="onCancel()">
+        <span aria-hidden="true">&times;</span>
+    </button>
+</div>
+<form id="stripeKeysModal" [formGroup]="emailForm" novalidate *ngIf="emailForm">
+    <div class="modal-body">
+        <div class="row">
+            <label class="col-sm-2 mt-3 required">To:</label>
+            <div class="col-sm-10">
+                <app-email-chips [parentForm]="emailForm" formControlName="to"></app-email-chips>
+            </div>
+        </div>
+        <div class="row">
+            <label class="col-sm-2 mt-3">Cc:</label>
+            <div class="col-sm-10">
+                <app-email-chips [parentForm]="emailForm" formControlName="cc" placeholder=""></app-email-chips>
+            </div>
+        </div>
+        <div class="row">
+            <label class="col-sm-2 mt-3">Bcc:</label>
+            <div class="col-sm-10">
+                <app-email-chips [parentForm]="emailForm" formControlName="bcc" placeholder=""></app-email-chips>
+            </div>
+        </div>
+        <div class="row">
+            <label class="col-sm-2 mt-3 required">From:</label>
+            <div class="col-sm-10" *ngIf="schoolUsers.length">
+                <mat-form-field>
+                    <mat-select required formControlName="fromUser" placeholder="Select User">
+                        <mat-option [value]="null">{{noItemSelected}}</mat-option>
+                        <mat-option *ngFor="let schoolUser of schoolUsers" [value]="schoolUser">
+                            {{schoolUser.firstName}} {{schoolUser.lastName}}
+                        </mat-option>
+                    </mat-select>
+                </mat-form-field>
+            </div>
+        </div>
+        <div class="row">
+            <label class="col-sm-2 mt-3 required">Subject:</label>
+            <div class="col-sm-10">
+                <mat-form-field>
+                    <input matInput type="text" formControlName="subject" required>
+                    <mat-error
+                        [hidden]="emailForm.controls.subject.valid || emailForm.controls.subject.pristine">
+                        This field is required and max length is {{requiredEmailSubjectMaxLength}}.
+                    </mat-error>
+                </mat-form-field>
+            </div>
+        </div>
+        <div class="row">
+            <label class="col-sm-2 required">Body</label>
+            <div class="col-sm-10">
+                <textarea id="emailMessage" formControlName="message" required></textarea>
+                <span class="mat-error" [hidden]="emailForm.controls.message.valid || emailForm.controls.message.pristine">
+                    {{bodyMessageErrorText}}
+                </span>
+            </div>
+        </div>
+    </div>
+    <div class="modal-footer text-right pb-0">
+        <button mat-raised-button class="btn btn-cancel mx-1" type="button" (click)="onCancel()">Cancel</button>
+        <button type="submit" [disabled]="!emailForm.valid || emailForm.pristine || !!promiseForBtn"
+            class="btn btn-success" (click)="onSubmit()">Send
+        </button>
+    </div>
+</form>

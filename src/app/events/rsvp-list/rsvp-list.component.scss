@@ -1,0 +1,19 @@
+
+@media (min-width: 992px) and (max-width:1200px) {
+    .col-4,
+    .col-10 {
+        padding-right: 0px !important;
+    }
+}
+
+tr.clickable td:not(.td-actions){
+    cursor: pointer;
+}
+
+i.material-icons.md-16 {
+    font-size: 16px !important;
+}
+
+.list-unstyled {
+    margin-bottom: 0;
+}

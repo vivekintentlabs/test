@@ -1,0 +1,66 @@
+<div class="modal-header">
+    <h4 class="modal-title text-left" id="selectStudentModalLabel">Select Student</h4>
+    <button type="button" class="close" aria-label="Close" (click)="onCancelSelectStudent()">
+        <span aria-hidden="true">&times;</span>
+    </button>
+</div>
+<div class="modal-body">
+    <div class="row">
+        <div class="col-12">
+            <mat-form-field>
+                <input matInput [disabled]="!dataSource" (keyup)="applyFilter($event.target.value)"
+                    placeholder="Search results" class="search-field" [value]="tableState.searchText">
+            </mat-form-field>
+        </div>
+    </div>
+    <div class="scroll-container table-responsive">
+        <table [id]="tableId" mat-table [dataSource]="dataSource" matSort
+            (matSortChange)="onSortChange($event)">
+
+            <!-- First Name -->
+            <ng-container matColumnDef="firstName">
+                <th mat-header-cell *matHeaderCellDef mat-sort-header>First Name</th>
+                <td mat-cell *matCellDef="let element">{{element.firstName}}</td>
+            </ng-container>
+
+            <!-- Last Name Column -->
+            <ng-container matColumnDef="lastName">
+                <th mat-header-cell *matHeaderCellDef mat-sort-header>Last Name</th>
+                <td mat-cell *matCellDef="let element">{{element.lastName}}</td>
+            </ng-container>
+
+            <!-- Primary Contact Column -->
+            <ng-container matColumnDef="primaryContactName">
+                <th mat-header-cell *matHeaderCellDef mat-sort-header>Primary Contact Name</th>
+                <td mat-cell *matCellDef="let element">{{element.primaryContactName}}</td>
+            </ng-container>
+
+            <!-- No Data -->
+            <ng-container matColumnDef="noData">
+                <td [hidden]="!dataSource || (dataSource && dataSource.filteredData && dataSource.filteredData.length > 0)"
+                    mat-footer-cell *matFooterCellDef colspan="11">
+                    {{noDataInTable}}
+                </td>
+            </ng-container>
+
+            <tr mat-header-row *matHeaderRowDef="displayedColumns; sticky: true"></tr>
+            <tr mat-row (click)="selectStudent(row)" *matRowDef="let row; columns: displayedColumns;"></tr>
+            <tr mat-footer-row *matFooterRowDef="['noData']" class="text-center"></tr> <!-- No Data-->
+
+        </table>
+        <app-spinner [tableIsLoading]="tableIsLoading"></app-spinner>
+    </div>
+    <mat-paginator></mat-paginator>
+
+    <div class="row">
+        <div class="col-md-12 text-right">
+            <button type="button" mat-raised-button class="btn btn-cancel"
+                (click)="onCancelSelectStudent()">Cancel
+            </button>
+            <button *ngIf="addNewStudent" type="button" mat-raised-button class="btn btn-primary mx-1"
+                (click)="createNewStudent()">
+                Add Student/sibling
+            </button>
+        </div>
+    </div>
+</div>

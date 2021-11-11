@@ -1,0 +1,154 @@
+<div class="modal fade" id="emailModal-{{ type }}" tabindex="-1" role="dialog" aria-labelledby="emModalLabel"
+    data-keyboard="false" data-backdrop="static">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title text-left">{{ title }} - {{titleEmail}} - Message</h4>
+                <button type="button" class="close" aria-label="Close" (click)="onCancel()">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <form [formGroup]="emailForm" *ngIf="loaded">
+                <div class="modal-body">
+                    <div class="row">
+                        <label class="col-2 mt-3 required">Subject</label>
+                        <div class="col-6">
+                            <mat-form-field>
+                                <input matInput type="text" formControlName="subject" required>
+                                <mat-error
+                                    [hidden]="emailForm.controls.subject.valid || emailForm.controls.subject.pristine">
+                                    This field is required and max length is {{requiredEmailSubjectMaxLength}}.
+                                </mat-error>
+                            </mat-form-field>
+                        </div>
+                        <div class="col-4">
+                            <mat-form-field>
+                                <mat-select placeholder="Insert Field" formControlName="insertField"
+                                    (selectionChange)="insertField($event.value)">
+                                    <mat-option *ngFor="let item of insertSubjectEmail" [value]="item.value">
+                                        {{item.text}}
+                                    </mat-option>
+                                </mat-select>
+                            </mat-form-field>
+                        </div>
+                    </div>
+                    <br />
+                    <div class="row">
+                        <label class="col-2">Body</label>
+                        <div class="col-sm-10">
+                            <textarea id="emailMessage" formControlName="message"></textarea>
+                            <span class="mat-error" [hidden]="emailForm.controls.message.valid || emailForm.controls.message.pristine">{{bodyMessageErrorText}}</span>
+                        </div>
+                    </div>
+                    <br />
+                    <div class="row">
+                        <label class="col-2 mt-3">When</label>
+                        <div class="col-10">
+                            <div class="form-check form-check-radio">
+                                <label class="form-check-label">
+                                    <input class="form-check-input" value="true" type="radio"
+                                        formControlName="isImmediate"
+                                        (click)="sendImmediatelyChanged($event.target.value)"> Send immediately after
+                                    registration
+                                    <span class="circle">
+                                        <span class="check"></span>
+                                    </span>
+                                </label>
+                            </div>
+                            <div class="form-check form-check-radio">
+                                <label class="form-check-label">
+                                    <input class="form-check-input" value="false" type="radio"
+                                        formControlName="isImmediate"
+                                        (click)="sendImmediatelyChanged($event.target.value)">
+                                    Schedule to send {{ campusTimezoneId ? '(Based on ' + campusTimezoneId + ' timezone)' : ''}}
+                                    <span class="circle">
+                                        <span class="check"></span>
+                                    </span>
+                                </label>
+                            </div>
+                            <div class="row">
+                                <div class="col-2">
+                                    <mat-form-field>
+                                        <mat-select [disabled]="isSendImmediately" (value)="days[0]"
+                                            formControlName="scheduleDays">
+                                            <mat-option *ngFor="let day of days; let i = index" [value]="day">
+                                                {{day}}
+                                            </mat-option>
+                                        </mat-select>
+                                    </mat-form-field>
+                                </div>
+                                <div class="mt-3">Days</div>
+                                <div class="col-2">
+                                    <mat-form-field>
+                                        <mat-select [disabled]="isSendImmediately" formControlName="scheduleMoment"
+                                            (selectionChange)="momentChng()">
+                                            <mat-option *ngFor="let moment of moments; let i = index" [value]="moment">
+                                                {{moment}}
+                                            </mat-option>
+                                        </mat-select>
+                                    </mat-form-field>
+                                </div>
+                                <div class="mt-3">{{eventTypeName}}</div>
+                            </div>
+                            <div class="row">
+                                <div class="mt-3 ml-3">Time (Hours only)</div>
+                                <div class="col-4">
+                                    <mat-form-field>
+                                        <input matInput type="time" formControlName="scheduledLocalTime" readonly
+                                            (click)="timeChanged(emailForm.controls.scheduledLocalTime, '06:00')" />
+                                        <span matSuffix>
+                                            <i class="material-icons clickable text-muted font-1-5em"
+                                                (click)="timeChanged(emailForm.controls.scheduledLocalTime, '06:00')">access_time</i>
+                                        </span>
+                                    </mat-form-field>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row" *ngIf="emailForm.controls.scheduleMoment.value === 'after'">
+                        <label class="col-2 mt-1">Audience</label>
+                        <div class="col-10">
+                            <label>This email should be sent to:</label>
+                            <br />
+                            <div class="form-check form-check-radio">
+                                <label class="form-check-label">
+                                    <input class="form-check-input" value='true' type="radio"
+                                        formControlName="isCheckedIn"> Contacts that checked in
+                                    <span class="circle">
+                                        <span class="check"></span>
+                                    </span>
+                                </label>
+                            </div>
+                            <div class="form-check form-check-radio">
+                                <label class="form-check-label">
+                                    <input class="form-check-input" value='false' type="radio"
+                                        formControlName="isCheckedIn"> Contacts that did not check in
+                                    <span class="circle">
+                                        <span class="check"></span>
+                                    </span>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <label class="col-2">Status</label>
+                        <div class="col-10">
+                            <mat-checkbox [checked]="email.activated" formControlName="activated">
+                                Activated
+                            </mat-checkbox>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" mat-raised-button class="btn btn-cancel mx-1"
+                        (click)="onCancel()">Cancel</button>
+                    <button type="button" mat-raised-button class="btn btn-success"
+                        [disabled]="!emailForm.valid || emailForm.pristine" [promiseBtn]="promiseForBtn"
+                        (click)="onSubmit()">Save
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

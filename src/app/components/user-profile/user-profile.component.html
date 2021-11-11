@@ -1,0 +1,98 @@
+<div class="modal fade" id="userProfileModal" tabindex="-1" role="dialog" aria-labelledby="userProfileLabel" aria-hidden="true"
+    data-backdrop="static" data-keyboard="false">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title text-left" id="userProfileLabel">User Profile</h4>
+                <button type="button" class="close" aria-label="Close" (click)="userProfileCancel()">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <form [formGroup]="userProfileForm" novalidate (ngSubmit)="onSubmit()" *ngIf="loaded" class="m-0">
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <mat-form-field>
+                                <input matInput placeholder="Surname" type="text" formControlName="lastName" required>
+                                <mat-error [hidden]="userProfileForm.controls.lastName.valid || (!userProfileForm.controls.lastName.value && userProfileForm.controls.lastName.pristine)">
+                                    Surname should contain at least {{requiredTextFieldMinLength}} and at most {{length50}} characters.
+                                </mat-error>
+                            </mat-form-field>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <mat-form-field>
+                                <input matInput placeholder="Given Name(s)" type="text" formControlName="firstName" required>
+                                <mat-error [hidden]="userProfileForm.controls.firstName.valid || (!userProfileForm.controls.firstName.value && userProfileForm.controls.firstName.pristine)">
+                                    Given Name(s) should contain at least {{requiredTextFieldMinLength}} and at most {{length50}} characters.
+                                </mat-error>
+                            </mat-form-field>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <mat-form-field>
+                                <input matInput placeholder="Job Title" type="text" formControlName="title" required>
+                                <mat-error [hidden]="userProfileForm.controls.title.valid || (!userProfileForm.controls.title.value && userProfileForm.controls.title.pristine)">
+                                    Job Title should contain at least {{requiredTextFieldMinLength}} and at most {{length60}} characters.
+                                </mat-error>
+                            </mat-form-field>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <label class="col-md-3 label-on-left">Email:</label>
+                        <div class="col-md-9">
+                            {{user.email}}
+                        </div>
+                    </div>
+                    <div class="row">
+                        <label class="col-md-3 label-on-left">Access Level:</label>
+                        <div class="col-md-9">{{user.role}}
+                        </div>
+                    </div>
+                    <div class="row" *ngIf="userInfo.isSchoolEditorOrHigher()">
+                        <div class="col-md-12">
+                            <mat-checkbox formControlName="sendNotifications">
+                                Receive an email every time a signup form is completed
+                            </mat-checkbox>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" mat-raised-button class="btn btn-cancel mx-1" (click)="userProfileCancel()">Cancel</button>
+                    <button type="submit" mat-raised-button class="btn btn-success" [disabled]="!userProfileForm.valid || userProfileForm.pristine">Save</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="whatsNewModal" tabindex="-1" role="dialog" aria-labelledby="whatsNewLabel">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title text-left" id="whatsNewLabel">New Stuff!</h4>
+                <button type="button" class="close" aria-label="Close" (click)="onCancel()">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <p *ngIf="!isMobile">
+                    We’ve been working hard to incorporate your feedback, add new features, fix problems and include more all around cool stuff.
+                    <br/>
+                    <br/> You can learn more about what’s included in this release
+                    <a href="{{brand.whatsNewUrl}}" target="_blank">here</a>
+                </p>
+                <p *ngIf="isMobile">
+                    We’ve been working hard to incorporate your feedback, add new features, fix problems and include more all around cool stuff.
+                    <br/>
+                    <br/> You can learn more about what’s included in this release
+                    <a href="{{brand.whatsNewUrl}}" target="_blank">here</a>
+                </p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" mat-raised-button class="btn btn-success" (click)="onCancel()">Ok</button>
+            </div>
+        </div>
+    </div>
+</div>

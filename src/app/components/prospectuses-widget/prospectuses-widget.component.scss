@@ -1,0 +1,19 @@
+.card-header {
+    .row {
+        .col-sm-8 {
+            .row {
+                .col-sm-12 {
+                    padding: 0;
+
+                    .card-header-icon {
+                        margin-top: -10px;
+                    }
+                    
+                    h4 {
+                        margin-top: 15px;
+                    }
+                }
+            }
+        }
+    }
+}

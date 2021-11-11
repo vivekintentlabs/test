@@ -1,0 +1,20 @@
+<label *ngIf="schema.title" [id]="id + 'Label'" class="w-100" [ngClass]="{'required': formProperty|isRequired}">
+    {{schema.title}}
+</label>
+<div *ngIf="schema.description" class="mt-n2 mb-1">
+    <span class="formHelp">{{schema.description}}</span>
+    <span *ngIf="(formProperty|isRequired) && !schema.title" class="text-danger"> *</span>
+</div>
+
+<mat-radio-group [attr.aria-labelledby]="id + 'Label'" [required]="formProperty|isRequired" [disabled]="schema.readOnly"
+    [id]="id" [name]="name" [formControl]="control">
+    <ng-container *ngFor="let option of schema.oneOf">
+        <mat-radio-button *ngIf="option.hasOwnProperty('includeInList') ? option.includeInList : true"
+            [value]="option.enum[0]" [checked]="option.enum[0] === control.value" class="mr-3"
+            [ngClass]="schema.widget.htmlClassForOptions || ''"
+            [disabled]="option.readOnly">{{option.description}}
+        </mat-radio-button>
+    </ng-container>
+</mat-radio-group>
+
+<input *ngIf="schema.readOnly" [attr.name]="name" type="hidden" [formControl]="control">

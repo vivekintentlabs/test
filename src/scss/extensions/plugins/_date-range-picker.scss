@@ -1,0 +1,22 @@
+ngx-daterangepicker-material .md-drppicker {
+  th {
+    // Same as Angular Material date picker
+    color: mat-color(map-get($custom-theme, foreground), secondary-text);
+  }
+  td.active,
+  td.active:hover,
+  .ranges ul li button.active {
+    background-color: $brand-primary;
+  }
+  td.in-range:not([class*="active"]) {
+    background-color: $bg-light;
+  }
+  .btn:not(.btn-default) {
+    @extend .btn-primary;
+  }
+  .btn.btn-default {
+    @extend .btn-cancel;
+    padding: 0 4px;
+    line-height: 32px;
+  }
+}

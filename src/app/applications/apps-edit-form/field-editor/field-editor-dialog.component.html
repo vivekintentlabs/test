@@ -1,0 +1,9 @@
+<h1 mat-dialog-title>Edit field</h1>
+<div mat-dialog-content>
+  <p>The following properties are editable.</p>
+  <sf-field-editor [fieldSchema]="fieldSchema" [isDebug]="isDebug"></sf-field-editor>
+</div>
+<div mat-dialog-actions>
+  <button mat-button mat-dialog-close cdkFocusInitial>Cancel</button>
+  <button mat-button [mat-dialog-close]="fieldSchema" cdkFocusInitial>Update</button>
+</div>

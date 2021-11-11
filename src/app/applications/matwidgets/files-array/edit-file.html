@@ -1,0 +1,24 @@
+<div class="modal-header">
+    <h4 class="modal-title text-left">Edit Upload</h4>
+    <button type="button" class="close" aria-label="Close" (click)="onCancel()">
+        <span aria-hidden="true">&times;</span>
+    </button>
+</div>
+<h5 class="modal-title text-left pl-4 pr-4">Please add any notes you wish to record against this document</h5>
+
+<div *ngIf="property" class="modal-body">
+    <p>Filename: {{property.value.name}}</p>
+    <p>Date Time uploaded: {{property.value.dateTimeUpload}}</p>
+    <p>User: {{property.value.user}}</p>
+    <mat-form-field>
+        <textarea matInput mat-autosize matAutosizeMaxRows="10" placeholder="Notes" [(ngModel)]="notes">
+        </textarea>
+    </mat-form-field>
+    <p>Status:</p>
+    <mat-checkbox [(ngModel)]="statusComplete">Complete</mat-checkbox>
+</div>
+<div class="modal-footer">
+    <button type="button" mat-raised-button class="btn btn-cancel mx-1" (click)="onCancel()">Cancel</button>
+    <button type="button" mat-raised-button class="btn btn-success" (click)="updateFileInfo()">Ok
+    </button>
+</div>

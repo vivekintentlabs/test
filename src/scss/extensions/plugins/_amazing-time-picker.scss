@@ -1,0 +1,18 @@
+#time-picker {
+  .time-picker-header {
+    background-color: $brand-primary !important;
+  }
+  .time-picker-clock {
+    .time-picker-clock-arrow,
+    .time-picker-clock-origin,
+    span,
+    button.active {
+      background: $brand-primary !important;
+    }
+  }
+  .time-picker-footer {
+    button {
+      color: $brand-primary !important;
+    }
+  }
+}

@@ -1,0 +1,57 @@
+<div class="main-content">
+    <div class="container-fluid">
+        <div class="card">
+            <div class="card-header card-header-icon card-header-primary">
+                <div class="card-icon">
+                    <i class="material-icons">assignment</i>
+                </div>
+                <h4 class="card-title">Application internal settings (TODO)</h4>
+            </div>
+            <div class="card-body">
+                <mat-checkbox [(ngModel)]="shouldDeleteNestedForms">
+                    Delete published and fillable forms
+                </mat-checkbox>
+                <button class="btn btn-primary" [promiseBtn]="promiseForBtn" (click)="resetMasterForm()">
+                    Reset master form
+                </button>
+
+                <hr>
+
+                <div>
+                    This button should be clicked one time by equipped personel!
+                    <br>
+                    It will sync all of the students/contacts ids involved in an application to MYSQL
+                </div>
+                <button class="btn btn-primary" [promiseBtn]="promiseForBtn" (click)="populateApplicationMapping()">
+                    Add Applications to MYSQL
+                </button>
+
+                <hr>
+
+                <h6>Generate a contact token by filling out the contact id</h6>
+                <div class="row">
+                    <div class="col-sm-2">
+                        <mat-form-field appearance="legacy">
+                            <mat-label>Contact ID</mat-label>
+                            <input #contactId matInput type="number" placeholder="Enter a contact id" required>
+                            <button type="button" mat-icon-button matSuffix matTooltip="Generate contact token" matTooltipPosition="left"
+                                [disabled]="!contactId.value" (click)="generateContactToken(+contactId.value)">
+                                <mat-icon>generating_tokens</mat-icon>
+                            </button>
+                        </mat-form-field>
+                    </div>
+                    <div class="col-sm-10">
+                        <mat-form-field>
+                            <mat-label>Generated contact token</mat-label>
+                            <input [(ngModel)]="contactToken" matInput type="text" placeholder="Generated contact token" readonly>
+                            <button type="button" mat-icon-button matSuffix matTooltip="Copy contact token" matTooltipPosition="left"
+                                [disabled]="!contactToken" (click)="copyContactToken()">
+                                <mat-icon>content_copy</mat-icon>
+                            </button>
+                        </mat-form-field>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

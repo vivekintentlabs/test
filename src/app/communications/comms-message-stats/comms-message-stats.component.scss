@@ -1,0 +1,51 @@
+.rounded.border-secondary {
+    cursor: pointer;
+    border: 1px solid #ccc !important;
+    visibility: hidden;
+    small {
+        font-size: 67%;
+    }
+}
+
+table {
+    width: 100%;
+    .w-40 {
+        width: 40%;
+    }
+    .w-30 {
+        width: 30%;
+    }
+}
+
+.card-body {
+    h3 {
+        font-size: 20px;
+        color: inherit;
+        font-weight: inherit;
+        line-height: 1.4em;
+        margin: 20px 0 10px;
+        font-family: "Roboto", "Helvetica", "Arial", sans-serif;
+        font-weight: 300;
+        line-height: 1.5em;
+    }
+
+    p {
+        margin: 0 0 1rem;
+    }
+}
+
+.point {
+    h1 {
+        color: inherit;
+        font-family: "Roboto", "Helvetica", "Arial", sans-serif;
+        font-size: 3.3125rem;
+        font-weight: inherit;
+        line-height: 1.15em;
+        margin: 0 0 0.5rem;
+    }
+}
+
+.preloader-block {
+    height: 200px;
+    display: flex;
+}

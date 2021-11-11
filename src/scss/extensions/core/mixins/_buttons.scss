@@ -1,0 +1,85 @@
+@mixin text-button-variant($color, $hover-color: rgba($color, .06), $active-color: rgba($color, .14)) {
+  @extend .shadow-none;
+  @extend .btn-link;
+  color: $color;
+
+  &:hover {
+    color: $color;
+    background-color: $hover-color;
+  }
+
+  &:focus,
+  &:active {
+    color: $color;
+    background-color: $active-color;
+  }
+}
+
+@mixin button-add-border($border-style: solid, $border-color: null) {
+  border-color: $border-color;
+  border-style: $border-style;
+  @include fake-border-box-sizing();
+}
+
+// Can't get `box-sizing: border-box` to work, so fake it for now
+@mixin fake-border-box-sizing($border-width: $btn-border-width, $normal-padding-y: $btn-padding-y, $normal-padding-x: $btn-padding-x) {
+  border-width: $border-width;
+  padding: ($normal-padding-y - $border-width) ($normal-padding-x - $border-width);
+}
+
+@mixin button-ghost-variant(
+  $color,
+  $border-color: $color,
+  $focus-bg: mix($color, $bmd-btn-bg, 7%),
+  $active-bg: mix($color, $bmd-btn-bg, 14%),
+  $addBorder: false,
+  $addShadow: true
+) {
+  @include bmd-button-variant($color, $bmd-btn-bg, $focus-bg, $active-bg, $border-color, $border-color, $border-color);
+  @if $addBorder {
+    @include button-add-border();
+  }
+  @if not($addShadow) {
+    @extend .shadow-none;
+    &:active, &:focus, &:focus:active {
+      @extend .shadow-none;
+    }
+  }
+}
+
+@mixin restyle-bmd-outline-buttons() {
+  &.btn-outline {
+    @include button-ghost-variant($bmd-btn-color);
+  }
+  &.btn-outline-primary {
+    @include button-ghost-variant($btn-primary-bg);
+  }
+  // Here $btn-secondary-bg is not used. Reason is, in ET $btn-secondary-bg is 
+  // $brand-info where as in SM it is $white. In order to use secondary
+  // color, $brand-info is used
+  &.btn-outline-secondary {
+    @include button-ghost-variant($brand-info);
+  }
+  &.btn-outline-info {
+    @include button-ghost-variant($btn-info-bg);
+  }
+  &.btn-outline-success {
+    @include button-ghost-variant($btn-success-bg);
+  }
+  &.btn-outline-warning {
+    @include button-ghost-variant($btn-warning-bg);
+  }
+  &.btn-outline-danger {
+    @include button-ghost-variant($btn-danger-bg);
+  }
+
+  &.btn-outline,
+  &.btn-outline-primary,
+  &.btn-outline-secondary,
+  &.btn-outline-info,
+  &.btn-outline-success,
+  &.btn-outline-warning,
+  &.btn-outline-danger {
+    @include fake-border-box-sizing();
+  }
+}

@@ -1,0 +1,39 @@
+#contactsModal {
+    .modal-header {
+        p {
+            position: absolute;
+            margin-top: 28px;
+            font-size: 15px;
+        }
+    }
+    table {
+        .mat-column-email {
+            width: 30%;
+        }
+        .mat-column-contactInfo {
+            table {
+                margin: 0;
+                th {
+                    border: 0;
+                    font-weight: bold;
+                    font-size: 12px !important;
+                }
+                tr:first-child {
+                    td {
+                        border: 0;
+                    }
+                }
+                .mat-column-name {
+                    width: 30%;
+                }
+                .mat-column-mobile {
+                    width: 25%;
+                }
+                .mat-column-status {
+                    width: 15%;
+                    text-align: center;
+                }
+            }
+        }
+    }
+}

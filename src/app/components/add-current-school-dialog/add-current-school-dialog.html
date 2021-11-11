@@ -1,0 +1,32 @@
+
+<form [formGroup]="currentSchoolForm" class="m-0" (ngSubmit)="onSubmit()" *ngIf="currentSchoolForm">
+    <div mat-dialog-content>
+        <div class="row">
+            <div class="col">
+                <h4>
+                    <button type="button" class="close float-right" (click)="onCancel()">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                    Add New Current School
+                </h4>
+            </div>
+        </div>
+        <div class="row my-2">
+            <div class="col">
+                <mat-form-field>
+                    <input matInput placeholder="School Name" type="text" formControlName="schoolName" cdkFocusInitial required>
+                    <mat-error [hidden]="currentSchoolForm.controls.schoolName.valid || currentSchoolForm.controls.schoolName.pristine">
+                        School Name should contain at least {{requiredTextFieldMinLength}} and at most {{length60}} characters.
+                    </mat-error>
+                </mat-form-field>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col text-right">
+                <button type="button" mat-raised-button class="btn btn-cancel mx-1" (click)="onCancel()">Cancel</button>
+                <button type="submit" mat-raised-button class="btn btn-success" [mat-dialog-close]="currentSchoolForm.value" [disabled]="!currentSchoolForm.valid || currentSchoolForm.pristine">save</button>
+            </div>
+        </div>
+    </div>
+</form>

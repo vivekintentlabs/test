@@ -1,0 +1,52 @@
+<div class="main-content">
+    <div class="container-fluid" *ngIf="!commService.isModuleActive">
+        <div class="row">
+            <div class="col">
+                <h3 class="text-center">Welcome to the Communications Module</h3>
+                <p class="mt-3">The {{brand.name}} Comms is a module designed to provide you the necessary functionality to build relationships with families that demonstrate an ideal profile to increase the probability of converting into future students.</p>
+                <p>Send emails, text messages and print mailing labels along with recording these respective events in the activity log for each of the relevant students and parents.</p>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col">
+                <div class="card">
+                    <div class="card-body text-center">
+                        <div class="card-icon">
+                            <i class="material-icons-new md-48 outline-mail_outline"></i>
+                        </div>
+                        <h5 class="card-title">Email Messages</h5>
+                        <p class="card-text mt-3 mb-2">Send beautiful emails to custom audiences. <span>Coming Soon</span></p>
+                    </div>
+                </div>
+            </div>
+            <div class="col">
+                <div class="card inactive">
+                    <div class="card-body text-center">
+                        <div class="card-icon">
+                            <i class="material-icons-new md-48 outline-contact_mail"></i>
+                        </div>
+                        <h5 class="card-title">Mailing labels</h5>
+                        <p class="card-text mt-3 mb-2">Download and print mailing labels for parents or students. <span>Coming Soon</span></p>
+                    </div>
+                </div>
+            </div>
+            <div class="col">
+                <div class="card inactive">
+                    <div class="card-body text-center">
+                        <div class="card-icon">
+                            <i class="material-icons-new md-48 outline-textsms"></i>
+                        </div>
+                        <h5 class="card-title">Text Messaging</h5>
+                        <p class="card-text mt-3 mb-2">Quickly send text messages to contacts. <span>Coming Soon</span></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col text-center">
+                <a class="btn btn-primary btn-lg" 
+                    href="mailto:{{brand.contactEmail}}?subject={{brand.name}} Communications Module&body=Hi,%0D%0A%0D%0AI am interested in learning more about the Comms module in {{brand.name}}. Could you please contact me to discuss?">CONTACT US TO UNLOCK</a>
+            </div>
+        </div>
+    </div>
+</div>

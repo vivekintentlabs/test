@@ -1,0 +1,10 @@
+<mat-form-field>
+    <input matInput type="text" [placeholder]="fieldConfig.name | translate" [(ngModel)]="_value" [ngModelOptions]="{standalone: true}"
+        ngxDaterangepickerMd [ranges]="ranges" [locale]="localeOptions" [alwaysShowCalendars]="true"
+        [showCancel]="true" (change)="dateRangeChanged($event)" readonly />
+
+    <mat-icon *ngIf="!fieldConfig.mandatory" matSuffix class="remove-filter" matTooltip="Remove Filter" matTooltipPosition="above"
+        (click)="removeFilter()">
+        <i class="material-icons">highlight_off</i>
+    </mat-icon>
+</mat-form-field>

@@ -1,0 +1,17 @@
+.filter-box {
+  padding: 15px 20px;
+  border-radius: 4px;
+  width: 100%;
+  display: inline-block;
+  margin: 15px auto;
+  background: $filter-box-bg;
+  .mat-form-field-wrapper {
+    padding-bottom: 0;
+  }
+  .mat-form-field-infix {
+    padding: 8px 0;
+  }
+  .mat-form-field-underline {
+    bottom: 0;
+  }
+}

@@ -1,0 +1,27 @@
+.main-content{
+    min-height: calc(100vh - 155px) !important;
+    padding-bottom: 5px;
+
+    table {
+        tr {
+            &.mat-header-row,
+            &.mat-row {
+                height: inherit;
+            }
+        }
+    }
+
+    @media (min-width: 768px) and (min-height: 576px) {
+        .container-fluid {
+            height: calc(100vh - 105px);
+        }
+    }
+    @media (max-width: 767px), (max-height: 575px) {
+        .container-fluid {
+            .table-responsive {
+                min-height: 200px;
+                max-height: 500px;
+            }
+        }
+    }
+}

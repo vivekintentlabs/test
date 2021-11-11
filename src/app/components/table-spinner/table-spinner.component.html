@@ -1,0 +1,7 @@
+<div class="text-center my-3">
+    <app-spinner [tableIsLoading]="getTableRowsPromise"></app-spinner>
+
+    <div *ngIf="!showSpinner && totalLength === 0">
+        {{noDataInTable}}
+    </div>
+</div>

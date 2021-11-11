@@ -1,0 +1,144 @@
+<div class="main-content">
+    <div class="container-fluid d-flex flex-column">
+
+        <div class="row h-50 flex-grow-1">
+            <div class="col-md-12 h-100">
+                <div class="card my-0 h-100">
+
+                    <div class="card-body d-flex flex-column h-100">
+                        <div class="row">
+                            <div class="col-md-3 table-stats">
+                                <div>{{ getTotalCount() }} Contact(s)</div>
+                                <span *ngIf="selectedCount > 0" class="select-count" style="cursor: default">
+                                    {{selectedCount}} Selected
+                                </span>
+                            </div>
+                            <div class="col-sm-9 text-right">
+                                <div class="mx-1 d-inline-block">
+                                    <mat-form-field>
+                                        <input matInput (keyup)="onSearchChange($event.target.value)"
+                                            [value]="tableState.searchText" placeholder="Search results">
+                                    </mat-form-field>
+                                </div>
+
+                                <button mat-raised-button type="button" class="btn btn-cancel"
+                                    (click)="leaveDuplicatesMode()">
+                                    <i class="material-icons">content_copy</i> Leave duplicates mode
+                                </button>
+                                <button *ngIf="selection.selected.length > 1" class="btn btn-primary"
+                                    mat-raised-button type="button" (click)="mergeContacts()"> <i class="material-icons">call_merge</i> Merge
+                                </button>
+                                <button *ngIf="selection.selected.length > 1" class="btn btn-primary"
+                                    mat-raised-button type="button" (click)="linkingContacts()"> <i class="material-icons">compare_arrows</i> Link
+                                </button>
+                            </div>
+                        </div>
+                        <div id="duplicateContactsListTableContainer" class="table-responsive h-25 flex-grow-1"
+                            infiniteScroll [infiniteScrollThrottle]="debounceTime" [infiniteScrollDistance]=".1" [scrollWindow]="false"
+                            infiniteScrollContainer="#duplicateContactsListTableContainer" [fromRoot]="true">
+                            <table [id]="tableId" mat-table [dataSource]="dataSource" matSort>
+                                <!-- Checkbox Column -->
+                                <ng-container matColumnDef="select">
+                                    <th mat-header-cell *matHeaderCellDef class="pr-3 pt-2">
+                                        <mat-checkbox (change)="$event ? masterToggle() : null"
+                                            [checked]="selection.hasValue() && isAllSelected()"
+                                            [indeterminate]="selection.hasValue() && isPartiallySelected()">
+                                        </mat-checkbox>
+                                    </th>
+                                    <td mat-cell *matCellDef="let row" class="pt-2">
+                                        <mat-checkbox (click)="$event.stopPropagation()"
+                                            (change)="$event ? selection.toggle(row) : null"
+                                            [checked]="selection.isSelected(row)">
+                                        </mat-checkbox>
+                                    </td>
+                                </ng-container>
+
+                                <!-- Last Update Column -->
+                                <ng-container matColumnDef="updatedAt">
+                                    <th mat-header-cell *matHeaderCellDef mat-sort-header disabled>
+                                        Last Update
+                                    </th>
+                                    <td mat-cell *matCellDef="let element">
+                                        {{element.updatedAt | localDate: currentCampusTimeZone : date}}
+                                    </td>
+                                </ng-container>
+
+                                <!-- Name Column -->
+                                <ng-container matColumnDef="name">
+                                    <th mat-header-cell *matHeaderCellDef mat-sort-header disabled>
+                                        Name</th>
+                                    <td mat-cell *matCellDef="let element" class="l-cs"
+                                        (click)="editContact(element.id)">{{element.name}}</td>
+                                </ng-container>
+
+                                <!-- Address Column -->
+                                <ng-container matColumnDef="address">
+                                    <th mat-header-cell *matHeaderCellDef mat-sort-header disabled>
+                                        Address</th>
+                                    <td mat-cell *matCellDef="let element">{{element.address}}</td>
+                                </ng-container>
+
+                                <!-- City Column -->
+                                <ng-container matColumnDef="location">
+                                    <th mat-header-cell *matHeaderCellDef mat-sort-header disabled>
+                                        Location</th>
+                                    <td mat-cell *matCellDef="let element">{{element | address}}</td>
+                                </ng-container>
+
+                                <!-- Email Column -->
+                                <ng-container matColumnDef="email">
+                                    <th mat-header-cell *matHeaderCellDef mat-sort-header disabled>
+                                        Email</th>
+                                    <td mat-cell *matCellDef="let element">{{element.email}}</td>
+                                </ng-container>
+
+                                <!-- Mobile Column -->
+                                <ng-container matColumnDef="mobile">
+                                    <th mat-header-cell *matHeaderCellDef mat-sort-header disabled>
+                                        Mobile</th>
+                                    <td mat-cell *matCellDef="let element">{{element.mobile}}</td>
+                                </ng-container>
+
+                                <!-- Actions Column -->
+                                <ng-container matColumnDef="actions">
+                                    <th mat-header-cell *matHeaderCellDef> <span class="float-right">Actions</span></th>
+                                    <td class="td-actions text-right" mat-cell *matCellDef="let element">
+                                        <button mat-raised-button type="button" class="btn btn-success btn-link"
+                                            matTooltip="Edit" matTooltipPosition="left"
+                                            (click)="$event.stopPropagation(); editContact(element.id)">
+                                            <i class="material-icons">edit</i>
+                                        </button>
+                                        <button mat-raised-button type="button" class="btn btn-danger btn-link"
+                                            matTooltip="Delete" matTooltipPosition="left"
+                                            (click)="$event.stopPropagation(); deleteContact(element.id)">
+                                            <i class="material-icons">delete_outline</i>
+                                        </button>
+                                    </td>
+                                </ng-container>
+
+                                <ng-container matColumnDef="noData">
+                                    <td mat-footer-cell *matFooterCellDef colspan="11" class="border-bottom-0">
+                                        <app-table-spinner [getTableRows]="getTableRows"></app-table-spinner>
+
+                                        <div [hidden]="!dataSource || !dataSource.filteredData.length ||
+                                            !dataSource.filter && getTotalCount() !== dataSource.filteredData.length">
+                                            end of the list
+                                        </div>
+                                    </td>
+                                </ng-container>
+
+                                <tr mat-header-row *matHeaderRowDef="displayedColumns; sticky: true"></tr>
+                                <tr mat-row *matRowDef="let row; columns: displayedColumns;" [class]="dataSource.filter ? '' : row.color" (click)="selection.toggle(row)"></tr>
+                                <tr mat-footer-row *matFooterRowDef="['noData']" class="text-center"></tr>
+                            </table>
+                        </div>
+                    </div>
+                    <!-- end content-->
+                </div>
+                <!--  end card  -->
+            </div>
+            <!-- end col-md-12 -->
+        </div>
+        <!-- end row -->
+    </div>
+</div>

@@ -1,0 +1,277 @@
+<form [formGroup]="studentEditForm" class="m-0" (ngSubmit)="onSubmit()" *ngIf="loaded">
+    <div class="row">
+        <div class="col-md-4">
+            <mat-form-field>
+                <input matInput placeholder="First Name" type="text" formControlName="firstName" required>
+                <mat-error [hidden]="studentEditForm.controls.firstName.valid || (!studentEditForm.controls.id.value && studentEditForm.controls.firstName.pristine)">
+                    First Name should contain at least {{requiredTextFieldMinLength}} and at most {{nameMaxLength}} characters.
+                </mat-error>
+            </mat-form-field>
+        </div>
+        <div class="col-md-4">
+            <mat-form-field>
+                <input matInput placeholder="Last Name" type="text" formControlName="lastName" required>
+                <mat-error [hidden]="studentEditForm.controls.lastName.valid || (!studentEditForm.controls.id.value && studentEditForm.controls.lastName.pristine)">
+                    Last Name should contain at least {{requiredTextFieldMinLength}} and at most {{nameMaxLength}} characters.
+                </mat-error>
+            </mat-form-field>
+        </div>
+        <div class="col-md-4">
+            <mat-form-field>
+                <input matInput placeholder="Preferred Name(s)" type="text" formControlName="preferredName">
+            </mat-form-field>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-8">
+            <div class="row">
+                <div class="col-md-6">
+                    <mat-form-field>
+                        <input matInput [matDatepicker]="dateOfBirth" [max]="maxDate" placeholder="Date of Birth" formControlName="dateOfBirth">
+                        <mat-datepicker-toggle matSuffix [for]="dateOfBirth"></mat-datepicker-toggle>
+                        <mat-datepicker [startView]="studentEditForm.controls.dateOfBirth.value ? 'month' : 'multi-year'" #dateOfBirth>
+                        </mat-datepicker>
+                    </mat-form-field>
+                </div>
+                <div class="col-md-6">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <label>Gender</label>
+                        </div>
+                        <div class="col-md-12">
+                            <app-radio-group [options]="genders" [value]="student.genderId"
+                                formControlName="genderId">
+                            </app-radio-group>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-6">
+                    <mat-form-field>
+                        <mat-select [placeholder]="'et.currentSchoolYear' | translate" formControlName="currentSchoolYearId" ngClass="simple">
+                            <mat-option [value]="null">{{noItemSelected}} </mat-option>
+                            <mat-option *ngFor="let currentSchoolYear of currentSchoolYears" [value]="currentSchoolYear.id">
+                                {{ currentSchoolYear.name }}
+                            </mat-option>
+                        </mat-select>
+                    </mat-form-field>
+                </div>
+                <div class="col-md-6">
+                    <app-other-current-school formControlName="currentSchoolId" placeholder="Current School" [list]="currentSchools"
+                    [school]="school" htmlId="studentEditFormCurrentSchoolId" [allowSearchOption]="true">
+                    </app-other-current-school>
+
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-12" *ngIf="campuses !== null && campuses.length > 2">
+                    <mat-form-field>
+                        <mat-select placeholder="Campus" formControlName="campusId" (selectionChange)="campusChanged($event.value)"
+                            required>
+                            <mat-option *ngFor="let campus of campuses" [value]="campus.id">
+                                {{campus.name}}
+                            </mat-option>
+                        </mat-select>
+                    </mat-form-field>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-6">
+                    <mat-form-field>
+                        <mat-select placeholder="Seeking {{ 'et.enrolment' | translate }} in {{'et.year' | translate}} Level" formControlName="schoolIntakeYearId">
+                            <mat-option [value]="null">{{noItemSelected}} </mat-option>
+                            <mat-option *ngFor="let yearLevel of yearLevels" [value]="yearLevel.id">
+                                {{yearLevel.name}}
+                            </mat-option>
+                        </mat-select>
+                    </mat-form-field>
+                </div>
+                <div class="col-md-6">
+                    <mat-form-field>
+                        <mat-select placeholder="Starting Year" formControlName="startingYear">
+                            <mat-option [value]="null">{{noItemSelected}} </mat-option>
+                            <mat-option md-select-on-focus *ngFor="let startingYear of startingYears; let i = index"
+                                [value]="startingYear">
+                                {{startingYear| startingYear: (startingMonth$ | async)}}
+                            </mat-option>
+                        </mat-select>
+                    </mat-form-field>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <label>Siblings (Past/Present/Future)</label>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <app-radio-group [options]="siblings" [value]="student.siblingsId"
+                                formControlName="siblingsId">
+                            </app-radio-group>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <label>Family believes they have submitted an application</label>
+                        </div>
+                        <div class="col-md-12">
+                            <app-radio-group [options]="submittedApplicationOptions" [value]="student.submittedApplication"
+                                formControlName="submittedApplication">
+                            </app-radio-group>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+        <div class="col-md-4">
+            <div class="row">
+                <div class="col-md-12">
+                    <app-other-list-item formControlName="religionId" placeholder="Religion"
+                        [list]="religions" [listId]="listId.religion" htmlId="studentEditFormReligionId"
+                        [allowSearchOption]="true">
+                    </app-other-list-item>
+                </div>
+            </div>
+            <point-view *ngIf="!isModal" [label]="'Score'" [points]="maxScore" [isGreen]="isGreen"></point-view>
+            <div *ngIf="isBoardingEnabled" class="row">
+                <div class="col-md-12">
+                    <mat-form-field>
+                        <mat-select placeholder="Student Type" formControlName="boardingTypeId">
+                            <mat-option *ngFor="let boardingType of boardingTypes" [value]="boardingType.id">{{boardingType.name}}</mat-option>
+                        </mat-select>
+                    </mat-form-field>
+                </div>
+            </div>
+            <div class="row" *ngIf="school.hasInternationals">
+                <div class="col-md-12">
+                    <label>International Student</label>
+                </div>
+                <div class="col-md-12">
+                    <app-radio-group [options]="booleanOptions" [value]="student.isInternational"
+                        formControlName="isInternational">
+                    </app-radio-group>
+                </div>
+            </div>
+            <div class="row" *ngIf="school.hasInternationals && countries.length">
+                <div class="col-md-12">
+                    <app-select-search formControlName="countryOfOriginId" placeholder="Country of origin" [list]="countries">
+                    </app-select-search>
+                </div>
+            </div>
+            <div class="row" *ngIf="!userInfo.isSchoolRepresentative()">
+                <div class="col-md-12">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <label>Special Needs</label>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="form-check form-check-radio form-check-inline mt-0">
+                                <label class="form-check-label">
+                                    <input class="form-check-input" type="radio" [value]="true" formControlName="hasSpecialNeeds"
+                                        (change)="snChanged()"> Yes
+                                    <span class="circle">
+                                        <span class="check"></span>
+                                    </span>
+                                </label>
+                            </div>
+                            <div class="form-check form-check-radio form-check-inline mt-0">
+                                <label class="form-check-label">
+                                    <input class="form-check-input" type="radio" [value]="false" formControlName="hasSpecialNeeds"
+                                        (change)="snChanged()"> No
+                                    <span class="circle">
+                                        <span class="check"></span>
+                                    </span>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-12 mt-1">
+                    <app-other-list-item formControlName="specialNeedsIds" placeholder="Special Needs"
+                        [list]="specialNeeds" [listId]="listId.special_need" htmlId="studentEditFormSpecialNeeds"
+                        [allowSearchOption]="true" [multiple]="true">
+                    </app-other-list-item>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-12 mt-1">
+            <label>Other Interests</label>
+            <div class="ml-1">
+                <div class="row">
+                    <div class="col-md-4" *ngFor="let row of allOtherInterests; let i = index" [class.hide]="!row">
+                        <mat-checkbox formControlName="{{listId.other_interest}}_{{i}}">
+                            {{ row.name }}
+                        </mat-checkbox>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
+<div *ngIf="!hideRelationship">
+    <form [formGroup]="relationshipForm" class="m-0" novalidate *ngIf="loaded">
+        <label>Current Contact</label>
+        <div class="row">
+            <div class="col-md-12">
+                <div class="row">
+                    <div class="col-md-6">
+                        <app-other-list-item [formControl]="relationshipForm.controls['relationshipTypeId']" placeholder="Contact Relationship"
+                            [list]="relationships" [listId]="listId.contact_relationship" htmlId="stuedentRelationshipFormRelationshipTypeId"
+                            [isRequired]="true">
+                        </app-other-list-item>
+                    </div>
+                    <div class="col-md-6">
+                        <mat-form-field>
+                            <mat-select placeholder="Contact Type" formControlName="contactTypeId" required>
+                                <mat-option *ngFor="let contactType of contactTypes" [value]="contactType.id">
+                                    {{contactType.name}}
+                                </mat-option>
+                            </mat-select>
+                        </mat-form-field>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+<form [formGroup]="studentEditForm" class="m-0" (ngSubmit)="onSubmit()" *ngIf="loaded">
+    <div class="row" *ngIf="isRelationComponent && contactId">
+        <div class="col-md-8">
+            <label>Current Contact Information</label>
+            <br>{{(currentContact.salutationId && currentContact.salutation ? currentContact.salutation.name + ' ' :
+            '') + currentContact.firstName
+            + ' ' + currentContact.lastName}}
+            <br *ngIf="currentContact.address || currentContact.city || (currentContact.administrativeAreaId && currentContact.administrativeArea) || currentContact.postCode">
+            {{(currentContact.address)?currentContact.address +', ':''}} {{(currentContact.city)?currentContact.city +
+            ',':''}}
+            {{(currentContact.administrativeAreaId && currentContact.administrativeArea) ?
+            currentContact.administrativeArea.name +', ':''}}
+            {{(currentContact.postCode)?currentContact.postCode:''}}
+            <br>{{currentContact.email}}
+            <br>{{currentContact.mobile}}
+        </div>
+    </div>
+
+    <div class="row" *ngIf="isModal">
+        <div class="col text-right">
+            <button type="button" mat-raised-button class="btn btn-cancel mx-1" (click)="onCancel()">Cancel</button>
+            <button type="submit" mat-raised-button class="btn btn-success" [promiseBtn]="promiseForBtn"
+                [disabled]="!studentEditForm.valid || (studentEditForm.pristine && relationshipForm.pristine) ||
+                    (!hideRelationship ? !relationshipForm.valid : false)">save</button>
+        </div>
+    </div>
+</form>

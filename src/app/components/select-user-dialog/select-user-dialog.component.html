@@ -1,0 +1,33 @@
+<form [formGroup]="selectUserForm" *ngIf="selectUserForm" class="mb-0">
+    <div mat-dialog-content>
+        <div class="row">
+            <div class="col">
+                <h4>
+                    <button type="button" class="close float-right" (click)="onCancel()">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                    Select User
+                </h4>
+            </div>
+        </div>
+        <div class="row my-2">
+            <div class="col">
+                <mat-form-field>
+                    <mat-select placeholder="Select User" formControlName="userId" required>
+                        <mat-option [value]="null">{{noItemSelected}} </mat-option>
+                        <mat-option *ngFor="let item of data.users" [value]="item.id">
+                            {{item.firstName + ' ' + item.lastName}}
+                        </mat-option>
+                    </mat-select>
+                </mat-form-field>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col text-right">
+                <button type="button" mat-raised-button class="btn btn-cancel mx-1" (click)="onCancel()">Cancel</button>
+                <button type="submit" mat-raised-button class="btn btn-success" [disabled]="!selectUserForm.valid || selectUserForm.pristine" (click)="onSubmit()">save</button>
+            </div>
+        </div>
+    </div>
+</form>

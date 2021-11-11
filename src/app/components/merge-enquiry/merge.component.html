@@ -1,0 +1,73 @@
+<div class="modal-header">
+    <h4 class="modal-title text-left">{{title}}</h4>
+    <button type="button" class="close" aria-label="Close" (click)="onCancel()">
+        <span aria-hidden="true">&times;</span>
+    </button>
+</div>
+<h5 class="modal-title text-left pl-4">{{headerText}}</h5>
+<div class="modal-body" *ngIf="mergeFields.length > 0">
+    <div class="table-responsive">
+        <table class="table">
+            <thead>
+                <tr>
+                    <th></th>
+                    <ng-container *ngFor="let enquiry of enquiries">
+                        <th class="bold"> {{enquiry.lastName}}, {{enquiry.firstName}} </th>
+                    </ng-container>
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor="let mergeField of mergeFields" [hidden]="mergeField.mergeType === MergeType.Hidden">
+                    <td>{{mergeField.title | translate}}</td>
+                    <ng-container *ngFor="let value of mergeField.values; let i = index">
+                        <ng-container [ngSwitch]="mergeField.mergeType">
+                            <td *ngSwitchCase="MergeType.Modifiable">
+                                <ng-container *ngTemplateOutlet="multiple"></ng-container>
+                            </td>
+                            <td *ngSwitchCase="MergeType.Address">
+                                <ng-container *ngTemplateOutlet="multiple"></ng-container>
+                            </td>
+                            <td *ngSwitchCase="MergeType.NotModifiable">
+                                <div class="form-check form-check-inline" *ngIf="value">
+                                    <label class="form-check-label">
+                                        <input class="form-check-input" type="radio" [disabled]="true"
+                                            [checked]="mergeField.selected === i" [value]="i">
+                                        {{value | truncate:[40, '...'] }}
+                                        <span class="circle">
+                                            <span class="check"></span>
+                                        </span>
+                                    </label>
+                                </div>
+                            </td>
+                            <td *ngSwitchCase="MergeType.Readonly">
+                                <div class="readonly">{{value}}</div>
+                            </td>
+                            <ng-template #multiple>
+                                <div class="form-check form-check-inline" *ngIf="value">
+                                    <label class="form-check-label">
+                                        <input class="form-check-input" type="radio"
+                                            [checked]="mergeField.selected === i" [value]="i"
+                                            (change)="mergeField.selected = i;  mergeField.isUserSelected = true;">
+                                        {{value | truncate:[40, '...'] }}
+                                        <span class="circle">
+                                            <span class="check"></span>
+                                        </span>
+                                    </label>
+                                </div>
+                            </ng-template>
+                        </ng-container>
+                    </ng-container>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+<div class="modal-footer">
+    <h5 class="modal-title flex-grow-1">
+        {{footerText}}
+    </h5>
+    <button type="button" mat-raised-button class="btn btn-cancel mx-1 pull-right" (click)="onCancel()">Cancel</button>
+    <button mat-raised-button [promiseBtn]="promiseForBtn" (click)="merge()" class="btn btn-primary pull-right">
+        <i class="material-icons">call_merge</i>Merge
+    </button>
+</div>

@@ -1,0 +1,33 @@
+<div class="card">
+    <div class="card-header card-header-icon card-header-primary">
+        <div class="card-icon">
+            <i class="material-icons-outlined">{{icon}}</i>
+        </div>
+        <h4 class="card-title">{{title}}</h4>
+    </div>
+    <div class="card-body">
+        <div class="row">
+            <div class="col">
+                <app-bar-chart-grouped [inputBarChart]="inputBarChart"></app-bar-chart-grouped>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-12">
+                <label class="col-form-label">
+                    <h6>Legend</h6>
+                </label>
+                <div class="d-flex flex-wrap">
+                    <div class="d-inherit pr-2" *ngFor="let s of inputBarChart.series; let i = index">
+                        <button *ngIf="s.legend.url !== ''" mat-raised-button class="btn btn-legend btn-round btn-sm legend-chart pt-2" (click)="onClickLegend(s.legend)">
+                            <i class="material-icons mr-1 mtn-2" [ngClass]="s.className">lens</i>{{s.legend.name}}
+                        </button>
+                        <div class="unClickableLegend" *ngIf="s.legend.url === ''">
+                            <i class="fa fa-circle mr-1 mt-10" [ngClass]="s.className"></i>{{s.legend.name}}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

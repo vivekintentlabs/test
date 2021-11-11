@@ -1,0 +1,382 @@
+<div class="modal-header">
+    <h4 class="modal-title text-left" id="exampleModalLabel">
+        {{ (belongsToActivityLog) ? 'Register for Personal Tour' : 'Personal Tour Attendees' }}
+    </h4>
+    <button type="button" class="close" aria-label="Close" (click)="onCancel()">
+        <span aria-hidden="true">&times;</span>
+    </button>
+</div>
+<div class="modal-body">
+    <div class="row" *ngIf="editPersonalTourBooking">
+        <div class="col-md-12">
+            <form [formGroup]="personalTourForm" class="form-horizontal" novalidate *ngIf="loaded">
+                <div class="row" *ngIf="allPersonalTours && allPersonalTours.length>0">
+                    <div class="col-md-12" *ngIf="futurePersonalTours.length != 0">
+                        <div class="form-check form-check-radio" *ngFor="let item of radios">
+                            <label class="form-check-label">
+                                <input class="form-check-input" type="radio" [value]=item.value
+                                    formControlName="isNew"
+                                    (change)="isNew(item.value)">{{item.name}}
+                                <span class="circle">
+                                    <span class="check"></span>
+                                </span>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+                <br>
+                <div class="row" [hidden]="!personalTourForm.controls.isNew.value">
+                    <div class="col-md-12">
+                        <div class="row">
+                            <label class="col-md-3 required">Date</label>
+                            <div class="col-md-9">
+                                <mat-form-field>
+                                    <input matInput [matDatepicker]="date" formControlName="date">
+                                    <mat-datepicker-toggle matSuffix [for]="date">
+                                    </mat-datepicker-toggle>
+                                    <mat-datepicker #date></mat-datepicker>
+                                </mat-form-field>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <label class="col-3 col-form-label required">Start Time</label>
+                            <div class="col-3">
+                                <mat-form-field>
+                                    <input matInput type="time" formControlName="time" readonly
+                                    (click)="timeChanged(personalTourForm.controls.time, '9:00', 'startTime')"/>
+                                    <span matSuffix>
+                                        <i class="material-icons clickable text-muted font-1-5em"
+                                            (click)="timeChanged(personalTourForm.controls.time, '9:00', 'startTime')">access_time</i>
+                                    </span>
+                                </mat-form-field>
+                            </div>
+                            <label class="col-form-label required">End Time</label>
+                            <div class="col-3">
+                                <mat-form-field>
+                                    <input matInput type="time" formControlName="endTime" readonly
+                                    (click)="timeChanged(personalTourForm.controls.endTime, '9:00', 'endTime')"/>
+                                    <span matSuffix>
+                                        <i class="material-icons clickable text-muted font-1-5em"
+                                            (click)="timeChanged(personalTourForm.controls.endTime, '9:00', 'endTime')">access_time</i>
+                                    </span>
+                                </mat-form-field>
+                                <mat-error *ngIf="!validEndTime">The end time should be after the start
+                                    time</mat-error>
+                            </div>
+                        </div>
+                        <div class="row" *ngIf="users !== null">
+                            <label class="col-sm-3 col-form-label required">Assignee</label>
+                            <div class="col-9">
+                                <mat-form-field>
+                                    <mat-select placeholder="" formControlName="assigneeId" required>
+                                        <mat-option *ngFor="let item of users" [value]="item.id">
+                                            {{item.firstName +' '+ item.lastName}}
+                                        </mat-option>
+                                    </mat-select>
+                                </mat-form-field>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <label class="col-sm-3 col-form-label">CC Email Address(es)</label>
+                            <div class="col-sm-9">
+                                <app-email-chips [parentForm]="personalTourForm" formControlName="cc">
+                                </app-email-chips>
+                            </div>
+                        </div>
+                        <div class="row" *ngIf="users !== null">
+                            <div class="col-sm-3 col-form-label">
+                            </div>
+                            <h5 class="col-9">
+                                An email and calendar invite will also be sent to the Assignee & CC Email if it has been entered
+                            </h5>
+                        </div>
+                        <div class="row" *ngIf="campuses !== null && campuses.length > 1">
+                            <label class="col-sm-3 label-on-left required">Campus</label>
+                            <div class="col-sm-9">
+                                <mat-form-field>
+                                    <mat-select placeholder="" formControlName="campusId" required (selectionChange)="changeLocation($event.value)">
+                                        <mat-option *ngFor="let item of campuses" [value]="item.id">
+                                            {{item.name}}
+                                        </mat-option>
+                                    </mat-select>
+                                </mat-form-field>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <label class="col-sm-3 label-on-left required">Location</label>
+                            <div class="col-6">
+                                <mat-form-field>
+                                    <textarea matInput mat-autosize matAutosizeMaxRows="3"
+                                        formControlName="location" required>
+                                    </textarea>
+                                    <mat-error
+                                        [hidden]="personalTourForm.controls.location.valid || personalTourForm.controls.location.pristine">
+                                        Location should contain at least {{requiredTextFieldMinLength}} and at most {{requiredStringFieldMaxLength}} characters.
+                                    </mat-error>
+                                </mat-form-field>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row" *ngIf="!personalTourForm.controls.isNew.value">
+                    <div class="col-sm-12" *ngIf="campuses !== null && campuses.length > 1 && campusesWithPersonalTours && campusesWithPersonalTours.length > 1">
+                        <mat-form-field>
+                            <mat-select placeholder="Campus" formControlName="campusWithPersonalToursId"
+                                (selectionChange)="campusChanged($event.value)">
+                                <mat-option value="all">All</mat-option>
+                                <mat-option *ngFor="let item of campusesWithPersonalTours"
+                                    [value]="item.id">
+                                    {{item.name}}
+                                </mat-option>
+                            </mat-select>
+                        </mat-form-field>
+                    </div>
+                    <div class="col-md-12">
+                        <mat-form-field>
+                            <mat-select placeholder="Select from an existing Personal Tour"
+                                [(value)]="editPersonalTourBooking.personalTourId"
+                                (selectionChange)="personalTourChangedNew($event.value)">
+                                <mat-option *ngFor="let pt of personalToursForCampus" [value]="pt.id">
+                                    Personal Tour - {{(hasOneCampus)?'':pt.campus.name + ' - '}}
+                                    {{pt.date | localeDate: dateDelimiter}} - Start
+                                    {{pt.time | time: 'short'}}
+                                </mat-option>
+                            </mat-select>
+                        </mat-form-field>
+                    </div>
+                </div>
+            </form>
+            <div class="card my-3">
+                <div class="card-body pb-1">
+                    <h6>Contacts</h6>
+                    <div class="table-responsive">
+                        <table class="table table-no-bordered table-hover">
+                            <thead>
+                                <tr>
+                                    <th class="w-50">{{ 'Name' }}</th>
+                                    <th class="w-25">{{ 'Check In' }}</th>
+                                    <th class="text-right w-25">{{ 'Actions' }}</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr *ngFor="let item of editPersonalTourBooking.contacts" [class.hide]="!item">
+                                    <td class="w-50">{{item.firstName}} {{item.lastName}}</td>
+                                    <td class="w-25">
+                                        <mat-checkbox [checked]="item.PersonalTourContact != null && item.PersonalTourContact.checkedIn"
+                                            (change)="checkInContact($event.checked, item)">
+                                        </mat-checkbox>
+                                    </td>
+                                    <td class="td-actions text-right table-actio">
+                                        <button *ngIf="!belongsToActivityLog" mat-raised-button type="button"
+                                            class="btn btn-success btn-link" matTooltip="Edit"
+                                            matTooltipPosition="left" (click)="editContact(item.id)">
+                                            <i class="material-icons">edit</i>
+                                        </button>
+                                        <button mat-raised-button type="button" class="btn btn-danger btn-link"
+                                            matTooltip="Remove" matTooltipPosition="left"
+                                            (click)="deleteContact(item.id)">
+                                            <i class="material-icons">close</i>
+                                        </button>
+                                    </td>
+                                </tr>
+                            </tbody>
+                            <tfoot>
+                                <tr
+                                    *ngIf="!(editPersonalTourBooking.contacts && editPersonalTourBooking.contacts.length > 0)">
+                                    <td colspan="3" class="text-center red-text">No Contacts yet</td>
+                                </tr>
+                            </tfoot>
+                        </table>
+                    </div>
+
+                    <div class="text-right">
+                        <button type="button" class="btn btn-primary" (click)="addNewContact()"
+                            *ngIf="showNew">Add
+                            a new Contact</button>
+                        <button type="button" class="btn btn-secondary"
+                            (click)="selectContact()">Select
+                            Contact
+                        </button>
+                    </div>
+
+                    <h6>Students</h6>
+                    <div class="table-responsive">
+                        <table class="table table-no-bordered table-hover">
+                            <thead>
+                                <tr>
+                                    <th class="w-50">{{ 'Name' }}</th>
+                                    <th class="w-25">{{ 'Check In' }}</th>
+                                    <th class="text-right w-25">{{ 'Actions' }}</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr *ngFor="let item of editPersonalTourBooking.students" [class.hide]="!item">
+                                    <td class="w-50">{{item.firstName}} {{item.lastName}}</td>
+                                    <td class="w-25">
+                                        <mat-checkbox [checked]="item.PersonalTourStudent != null && item.PersonalTourStudent.checkedIn"
+                                            (change)="checkInStudent($event.checked, item)">
+                                        </mat-checkbox>
+                                    </td>
+                                    <td class="td-actions text-right w-25">
+                                        <button *ngIf="!belongsToActivityLog" mat-raised-button type="button"
+                                            class="btn btn-success btn-link" matTooltip="Edit"
+                                            matTooltipPosition="left" (click)="editStudent(item.id)">
+                                            <i class="material-icons">edit</i>
+                                        </button>
+                                        <button mat-raised-button type="button" class="btn btn-danger btn-link"
+                                            matTooltip="Remove" matTooltipPosition="left"
+                                            (click)="deleteStudent(item.id)">
+                                            <i class="material-icons">close</i>
+                                        </button>
+                                    </td>
+                                </tr>
+                            </tbody>
+                            <tfoot>
+                                <tr
+                                    *ngIf="!(editPersonalTourBooking.students && editPersonalTourBooking.students.length > 0)">
+                                    <td colspan="3" class="text-center red-text">No Students yet</td>
+                                </tr>
+                            </tfoot>
+                        </table>
+                    </div>
+
+                    <div class="text-right">
+                        <button type="button" mat-raised-button class="btn btn-primary"
+                            (click)="addNewStudent()" *ngIf="showNew">Add
+                            a new Student</button>
+                        <button type="button" mat-raised-button class="btn btn-secondary"
+                            (click)="selectStudent()">Select
+                            Student
+                        </button>
+                    </div>
+
+                    <h6>Other Attendees</h6>
+                    <div class="table-responsive">
+                        <table class="table table-no-bordered table-hover mb-1">
+                            <thead>
+                                <tr>
+                                    <th class="w-25">{{ 'Name' }}</th>
+                                    <th class="w-25">{{ 'Number' }}</th>
+                                    <th class="w-50">{{ 'Check In' }}</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td class="w-25">Other Attendees</td>
+                                    <td class="w-25">
+                                        <mat-form-field>
+                                            <input matInput type="number" min="0" [max]="maxBookingAttendees"
+                                                [(ngModel)]="editPersonalTourBooking.otherAttendees"
+                                                (input)="changeOtherAttendees(editPersonalTourBooking.otherAttendees)"
+                                                required>
+                                            <mat-hint class="text-danger"
+                                                *ngIf="editPersonalTourBooking.otherAttendees === null">
+                                                Other Attendees cannot be empty.
+                                            </mat-hint>
+                                            <mat-hint class="text-danger"
+                                                *ngIf="editPersonalTourBooking.otherAttendees > maxBookingAttendees">
+                                                Other Attendees cannot be greater than {{maxBookingAttendees}}.
+                                            </mat-hint>
+                                        </mat-form-field>
+                                    </td>
+                                    <td class="w-50">
+                                        <mat-checkbox [disabled]="!(editPersonalTourBooking.otherAttendees>0)"
+                                            [checked]="editPersonalTourBooking.otherAttendeesCheckedIn" (change)="checkInOtherAttendants($event.checked)">
+                                        </mat-checkbox>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            <div class="card my-3">
+                <div class="card-body pb-1">
+                    <div class="row">
+                        <div class="col-md-3 rsvp">
+                            Total RSVP
+                        </div>
+                        <div class="col-md-3 ml-2 p-0">
+                            <mat-form-field style="min-width: 112px !important">
+                                <input matInput type="number" min="1" [max]="maxBookingAttendees"
+                                    [(ngModel)]="editPersonalTourBooking.totalAttendees"
+                                    (input)="changeTotalAttendees(editPersonalTourBooking.totalAttendees)"
+                                    required>
+                                <mat-hint class="text-danger"
+                                    *ngIf="!(editPersonalTourBooking.totalAttendees && editPersonalTourBooking.totalAttendees > 0)">
+                                    Total must be at least {{requiredMinNumber}}.
+                                </mat-hint>
+                                <mat-hint class="text-danger"
+                                    *ngIf="editPersonalTourBooking.totalAttendees > maxBookingAttendees">
+                                    Total cannot be greater than {{maxBookingAttendees}}.
+                                </mat-hint>
+                            </mat-form-field>
+                        </div>
+                        <div class="col-md-3">
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-sm-12">
+                    <div class="row col-sm">
+                        <mat-label>Is this the first time visiting our school?</mat-label>
+                        <div class="col-sm">
+                            <div class="form-check form-check-radio form-check-inline">
+                                <label class="form-check-label">
+                                    <input class="form-check-input" type="radio"
+                                        [checked]="editPersonalTourBooking.isFirstVisit"
+                                        (click)="changeVisitorType($event.target.checked)">Yes
+                                    <span class="circle">
+                                        <span class="check"></span>
+                                    </span>
+                                </label>
+                            </div>
+                            <div class="form-check form-check-radio form-check-inline">
+                                <label class="form-check-label">
+                                    <input class="form-check-input" type="radio"
+                                        [checked]="editPersonalTourBooking.isFirstVisit === false"
+                                        (click)="changeVisitorType(!$event.target.checked)">No
+                                    <span class="circle">
+                                        <span class="check"></span>
+                                    </span>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-12">
+                    <h4 class="card-title">{{conductTitle}}</h4>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-2">
+                    <div class="togglebutton">
+                        <label>
+                            <input type="checkbox" [checked]="conductAgreed" (click)="changeConduct()">
+                            <span class="toggle"></span>
+                        </label>
+                    </div>
+                </div>
+                <div class="col-md-10">
+                    <div [innerHTML]="conductText"></div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-12 text-right">
+                    <button type="button" mat-raised-button class="btn btn-cancel"
+                        (click)="onCancel()">Cancel</button>
+                    <button type="button" mat-raised-button class="btn btn-success ml-1"
+                        [disabled]="!(editPersonalTourBooking.totalAttendees && editPersonalTourBooking.totalAttendees > 0 && editPersonalTourBooking.totalAttendees <= maxBookingAttendees)
+                            || !(isDirty && editPersonalTourBooking.students.length > 0
+                            && editPersonalTourBooking.contacts.length > 0 &&
+                            (personalTourForm?.value.isNew ? personalTourForm.valid : true)
+                            && (editPersonalTourBooking.otherAttendees != null && editPersonalTourBooking.otherAttendees <= maxBookingAttendees))"
+                        [promiseBtn]="promiseForBtn" (click)="onSubmit()">Save</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

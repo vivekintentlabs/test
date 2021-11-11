@@ -1,0 +1,32 @@
+<div class="modal fade" id="testEmailModal" role="dialog">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title text-left">Send a Test Email</h4>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <form [formGroup]="testEmailForm" class="mb-0" *ngIf="testEmailForm">
+                <div class="modal-body">
+                    <span>Enter an email to send your test message to.</span>
+                    <mat-form-field>
+                        <input matInput required placeholder="Email" type="email" formControlName="email" autofocus>
+                        <mat-error
+                            [hidden]="testEmailForm.controls.email.valid || testEmailForm.controls.email.pristine">
+                            Email format should be
+                            <i>john@doe.com</i> and contain at most 60 characters.
+                        </mat-error>
+                    </mat-form-field>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" mat-raised-button class="btn btn-cancel mx-1"
+                        data-dismiss="modal">Cancel</button>
+                    <button type="button" mat-raised-button class="btn btn-success"
+                        [disabled]="isSubmitted || !testEmailForm.valid" (click)="sendTestEmail()">Send Test
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

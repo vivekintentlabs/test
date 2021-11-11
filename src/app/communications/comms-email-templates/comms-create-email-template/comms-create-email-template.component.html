@@ -1,0 +1,49 @@
+<div class="main-content">
+    <div class="container-fluid" *ngIf="commService.isModuleActive">
+        <div class="row">
+            <div class="col">
+                <form [formGroup]="emailForm" *ngIf="emailForm">
+                    <h4 class="mb-4">{{ title }}</h4>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <mat-form-field>
+                                <input matInput type="text" placeholder="Subject" formControlName="subject" required>
+                                <mat-error
+                                    [hidden]="emailForm.controls.subject.valid || (emailForm.controls.subject.pristine)">
+                                    Please enter a Subject (maximum length is {{SUBJECT_MAX_LENGTH}})
+                                </mat-error>
+                            </mat-form-field>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12 mt-3">
+                            <div [ngClass]="{'d-none': isTinyMceLoaded}"
+                                class="preloader-block w-100 justify-content-center align-items-center">
+                                <mat-spinner [diameter]="45"></mat-spinner>
+                            </div>
+                            <div [ngClass]="{'invisible': !isTinyMceLoaded}" class="editor-block justify-content-center align-items-center">
+                                <div id="customMceToolbar"></div>
+                                <div id="et-tinymce-editor" class="editor-wrapper"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row mt-3" [ngClass]="{'d-none': !isTinyMceLoaded}">
+                        <div class="col text-right">
+                            <button type="button" mat-raised-button class="btn btn-cancel mx-1"
+                                (click)="onCancel()">Cancel</button>
+                            <button type="button" mat-raised-button class="ml-2 mr-2 btn btn-success"
+                                [disabled]="!emailForm.valid || emailForm.pristine || isTinyMceActive"
+                                (click)="onSubmit()">Save</button>
+                            <button type="button" mat-raised-button class="mr-2 btn btn-success"
+                                [disabled]="!emailForm.valid || emailForm.pristine || isTinyMceActive"
+                                (click)="onSubmit(true)">Save & Exit</button>
+                            <button type="button" mat-raised-button class="btn btn-secondary"
+                                [disabled]="!emailForm.valid || isTinyMceActive || !emailForm.controls.id.value"
+                                (click)="showSendTestEmail()">{{(emailForm.pristine) ? 'Send a test' : ' Save & Send a test'}}</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

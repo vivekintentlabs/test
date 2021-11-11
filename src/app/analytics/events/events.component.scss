@@ -1,0 +1,58 @@
+// #tableResponsiveAttendees th, #tableResponsiveAttendees td {
+//   border: 1px solid rgba(146,146,146, 1) !important;
+// }
+#tableResponsiveAttendees {
+    overflow-x: auto;
+    margin-left: 324px;
+}
+
+.headcol-1 {
+    position: absolute;
+    min-width: 200px;
+    left: 20px;
+}
+
+.headcol-2 {
+    position: absolute;
+    min-width: 68px;
+    left: 219px;
+}
+
+.headcol-3 {
+    position: absolute;
+    min-width: 58px;
+    left: 286px;
+}
+
+.header-vc{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+#tableResponsiveAttendees tbody>tr {
+    position: inherit;
+}
+
+#tableResponsiveAttendees .table-bordered {
+    border: none !important;
+}
+
+.brt-2 {
+    border-right: 2px solid rgb(146, 146, 146) !important;
+}
+
+.bbt-2 {
+    border-bottom: 2px solid rgb(146, 146, 146) !important;
+}
+
+.registrants {
+    color: #3C4858;
+    font-size: 1.0625rem;
+    line-height: 1em;
+    font-weight: 300;
+}
+
+.reg-margin {
+    margin: -10px 15px 0;
+}

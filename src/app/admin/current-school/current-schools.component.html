@@ -1,0 +1,138 @@
+<div class="main-content">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="card">
+                    <div class="card-header card-header-icon card-header-primary">
+                        <div class="card-icon">
+                            <i class="material-icons-outlined">account_balance</i>
+                        </div>
+                        <h4 class="card-title">Current Schools</h4>
+                    </div>
+                    <div class="card-body">
+                        <div class="toolbar">
+                            <!--        Here you can write extra buttons/actions for the toolbar              -->
+                        </div>
+                        <p>
+                            Schools below will be listed in Alphabetical order when displayed in the pick list. Note if
+                            Display Other... is enabled, this option will appear at the bottom of the list.
+                        </p>
+                        <div class="row align-items-center">
+                            <div class="togglebutton col-sm-8" *ngIf="school">
+                                <label>
+                                    <input type="checkbox" [checked]="school.currentSchoolDisplayOther"
+                                        (change)="toggleChanged($event.target.checked)">
+                                    <span class="toggle"></span>
+                                    {{displayOtherLabel}}
+                                </label>
+                            </div>
+                            <mat-form-field class="col-sm-4">
+                                <input matInput [disabled]="!dataSource" [value]="tableState.searchText"
+                                    (keyup)="applyFilter($event.target.value)" placeholder="Search results">
+                            </mat-form-field>
+                        </div>
+                        <div class="table-responsive">
+                            <table [id]="tableId" mat-table [dataSource]="dataSource" matSort (matSortChange)="onSortChange($event)">
+                                <!-- Checkbox Column -->
+                                <ng-container matColumnDef="select">
+                                    <th mat-header-cell *matHeaderCellDef class="pr-3">
+                                        <mat-checkbox (change)="$event ? masterToggle() : null"
+                                            [checked]="selection.hasValue() && isAllSelected()"
+                                            [indeterminate]="selection.hasValue() && isPartiallySelected()">
+                                        </mat-checkbox>
+                                    </th>
+                                    <td mat-cell *matCellDef="let row">
+                                        <mat-checkbox (click)="$event.stopPropagation()" (change)="$event ? selection.toggle(row) : null"
+                                            [checked]="selection.isSelected(row)">
+                                        </mat-checkbox>
+                                    </td>
+                                </ng-container>
+
+                                <!-- School Name Column -->
+                                <ng-container matColumnDef="schoolName">
+                                    <th mat-header-cell *matHeaderCellDef mat-sort-header>School Name</th>
+                                    <td mat-cell *matCellDef="let element">{{element.schoolName}}</td>
+                                </ng-container>
+
+                                <!-- Classification Column -->
+                                <ng-container matColumnDef="classificationName">
+                                    <th mat-header-cell *matHeaderCellDef mat-sort-header>Classification</th>
+                                    <td mat-cell *matCellDef="let element">{{element.classificationName}}</td>
+                                </ng-container>
+
+                                <!-- Status Column -->
+                                <ng-container matColumnDef="statusName">
+                                    <th mat-header-cell *matHeaderCellDef mat-sort-header>Status</th>
+                                    <td mat-cell *matCellDef="let element">{{element.statusName}}</td>
+                                </ng-container>
+
+                                <!-- Include in List Column -->
+                                <ng-container matColumnDef="includeInList">
+                                    <th mat-header-cell *matHeaderCellDef mat-sort-header>Include in List</th>
+                                    <td mat-cell *matCellDef="let element">
+                                        <mat-checkbox (change)="changedIncludeInList($event.checked, element)" [checked]="element.includeInList"></mat-checkbox>
+                                    </td>
+                                </ng-container>
+
+                                <!-- Synergetic Code Column -->
+                                <ng-container matColumnDef="synCode">
+                                    <th mat-header-cell *matHeaderCellDef mat-sort-header>{{ synCodeTitle }}</th>
+                                    <td mat-cell *matCellDef="let element">{{element.synCode}}</td>
+                                </ng-container>
+
+                                <!-- Actions Column -->
+                                <ng-container matColumnDef="actions">
+                                    <th mat-header-cell *matHeaderCellDef> <span class="float-right">Actions</span></th>
+                                    <td class="td-actions text-right" mat-cell *matCellDef="let element">
+                                        <button mat-raised-button type="button" class="btn btn-success btn-link" matTooltip="Edit"
+                                            matTooltipPosition="left" (click)="$event.stopPropagation(); editCurrentSchool(element.id)">
+                                            <i class="material-icons">edit</i>
+                                        </button>
+                                        <button mat-raised-button type="button" class="btn btn-danger btn-link" matTooltip="Delete"
+                                            matTooltipPosition="left" (click)="$event.stopPropagation(); deleteCurrentScool(element.id)">
+                                            <i class="material-icons">delete_outline</i>
+                                        </button>
+                                    </td>
+                                </ng-container>
+
+                                <!-- No Data -->
+                                <ng-container matColumnDef="noData">
+                                    <td [hidden]="!dataSource || (dataSource && dataSource.filteredData && dataSource.filteredData.length > 0)" mat-footer-cell *matFooterCellDef colspan="11">
+                                    </td>
+                                </ng-container>
+
+                                <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+                                <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+                                <tr mat-footer-row *matFooterRowDef="['noData']" class="text-center"></tr> <!-- No Data-->
+
+                            </table>
+                            <app-spinner [tableIsLoading]="tableIsLoading"></app-spinner>
+                            <mat-paginator (page)="onPaginatorChange($event)"></mat-paginator>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-12 text-right">
+                                <button *ngIf="visibleSelectedCount && visibleSelectedCount > 0" mat-raised-button type="button" class="btn btn-delete"
+                                    (click)="removeSelected()">Delete Selected Item(s)</button>
+
+                                <button *ngIf="visibleSelectedCount && visibleSelectedCount > 1" class="btn btn-secondary" mat-raised-button
+                                    type="button" (click)="merge()"> <i class="material-icons">call_merge</i> Merge
+                                </button>
+
+                                <label class="btn-bs-file btn btn-primary text-white">Import
+                                    <input #fileInput type="file" accept="{{allowedFormats.join(', ')}}" (change)="import()" />
+                                </label>
+
+                                <button class="btn btn-primary" mat-raised-button (click)="addCurrentSchool()"><i class="material-icons">playlist_add</i> Add Current School</button>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- end content-->
+                </div>
+                <!--  end card  -->
+            </div>
+            <!-- end col-md-12 -->
+        </div>
+        <!-- end row -->
+    </div>
+</div>

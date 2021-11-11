@@ -1,0 +1,16 @@
+.mat-focused .mat-form-field-required-marker {
+  color: mat-color(map-get($custom-theme, warn), text);
+}
+
+// If the font-size of an <input> is 16px or larger, Safari on iOS in mobile 
+// will focus into the input normally. But as soon as the font-size is 15px or less, 
+// the viewport will zoom into that input. To prevent a zoom into, We have increased
+// a font-size for mobile devices.
+@media only screen and (max-device-width: 767px) {
+  input.mat-input-element {
+    font-size: 16px;
+  }
+  textarea.mat-input-element {
+    font-size: 16px;
+  }
+}

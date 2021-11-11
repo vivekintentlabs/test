@@ -1,0 +1,37 @@
+<div [ngClass]="{'main-content':(!isDashboard)}">
+    <div [ngClass]="{'container-fluid':(!isDashboard)}">
+        <app-widget [params]="widgetParams" (callBack)="widgetCallBack($event)">
+            <div class="row" *ngIf="charts.length > 0">
+                <div class="col text-right">
+                    <button *ngFor="let chart of charts" mat-raised-button class="btn btn-sm lightGrey"
+                        [ngClass]="{'darkGrey':(chart.selected)}" (click)="onChartTypeChange(chart.type)">
+                        <i class="material-icons-outlined">{{ chart.icon }}</i>
+                    </button>
+                </div>
+            </div>
+
+            <div class="row cards">
+                <div class="col-lg-6" *ngIf="isSubWidgetOnDashBoard('hear_about_us') && selectedChartType === ChartType.Pie">
+                    <app-pie-chart-col [title]="titleHA" icon="info" [inputPieChart]="inputPieChartHearAboutUs"
+                        *ngIf="inputPieChartHearAboutUs && inputPieChartHearAboutUs.series.length > 0">
+                    </app-pie-chart-col>
+                </div>
+                <div class="col-lg-6" *ngIf="isSubWidgetOnDashBoard('lead_source') && selectedChartType === ChartType.Pie">
+                    <app-pie-chart-col [title]="titleLS" icon="source" [inputPieChart]="inputPieChartLeadSource"
+                        *ngIf="inputPieChartLeadSource && inputPieChartLeadSource.series.length > 0">
+                    </app-pie-chart-col>
+                </div>
+                <div class="col-lg-6" *ngIf="isSubWidgetOnDashBoard('hear_about_us') && selectedChartType === ChartType.Bar">
+                    <app-bar-chart-col [title]="titleHA" icon="info" [inputBarChart]="inputBarChartHearAboutUs"
+                        *ngIf="inputBarChartHearAboutUs && inputBarChartHearAboutUs.series.length > 0">
+                    </app-bar-chart-col>
+                </div>
+                <div class="col-lg-6" *ngIf="isSubWidgetOnDashBoard('lead_source') && selectedChartType === ChartType.Bar">
+                    <app-bar-chart-col [title]="titleLS" icon="source" [inputBarChart]="inputBarChartLeadSource"
+                        *ngIf="inputBarChartLeadSource && inputBarChartLeadSource.series.length > 0">
+                    </app-bar-chart-col>
+                </div>
+            </div>
+        </app-widget>
+    </div>
+</div>

@@ -1,0 +1,17 @@
+.card {
+  [class*="card-header-"] {
+    .card-icon {
+      border-radius: 12px 0px;
+    }
+  }
+
+  // override core/_cards.scss
+  .card-header-primary .card-icon,
+  .card-header-primary .card-text,
+  .card-header-primary:not(.card-header-icon):not(.card-header-text),
+  &.bg-primary,
+  &.card-rotate.bg-primary .front,
+  &.card-rotate.bg-primary .back {
+    @include background-gradient-primary;
+  }
+}

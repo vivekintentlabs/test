@@ -1,0 +1,16 @@
+<div class="row">
+    <div class="col-12">
+        <label [ngClass]="{'required': formProperty|isRequired}">{{schema.title}}</label>
+        <br>
+        <span *ngIf="schema.description" class="formHelp">{{schema.description}}</span>
+    </div>
+</div>
+<div class="row">
+    <div class="col-12">
+        <mat-slider [attr.name]="name" class="text-widget range-widget w-100" [attr.id]="id" [formControl]="control"
+            [attr.type]="'range'" [max]="schema.maximum" [min]="schema.minimum" [disabled]="schema.readOnly||null"
+            [invert]="false" [step]="null" [thumbLabel]="false" [tickInterval]="null" [vertical]="false">
+        </mat-slider>
+        <input *ngIf="schema.readOnly" [attr.name]="name" type="hidden">
+    </div>
+</div>

@@ -1,0 +1,22 @@
+<div [ngClass]="{'main-content':(!isDashboard)}">
+    <div [ngClass]="{'container-fluid':(!isDashboard)}">
+        <app-widget *ngIf="loaded" [params]="widgetParams" (callBack)="widgetCallBack($event)">
+            <div class="row cards" *ngIf="!isDashboard">
+                <div class="col-lg-6">
+                    <app-pie-chart-col [title]="'Current School Classification'" icon="donut_small" [inputPieChart]="pieChartData">
+                    </app-pie-chart-col>
+                </div>
+                <div class="col-lg-6" *ngIf="barChartStackedData">
+                    <app-bar-chart-stacked [title]="'Current School Status'"  [inputBarChart]="barChartStackedData">
+                    </app-bar-chart-stacked>
+                </div>
+            </div>
+            <div class="row" *ngIf="isSubWidgetOnDashBoard('school_origin') && barChartStackedHorizontalData">
+                <div class="col-lg-12">
+                    <app-bar-chart-stacked-horizontal [title]="title" [offsetY]="offsetY"
+                        [inputBarChart]="barChartStackedHorizontalData"></app-bar-chart-stacked-horizontal>
+                </div>
+            </div>
+        </app-widget>
+    </div>
+</div>

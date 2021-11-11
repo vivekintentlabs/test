@@ -1,0 +1,109 @@
+<form [formGroup]="prospectusesForm" *ngIf="loaded">
+    <div class="row">
+        <div class="col">
+            <div class="card">
+                <div class="card-header card-header-icon card-header-primary">
+                    <div class="card-icon">
+                        <i class="material-icons-outlined">description</i>
+                    </div>
+                    <h4 class="card-title">Information Packs</h4>
+                    <div class="row pt-2">
+                        <div class="col-sm-9">
+                            <div class="row">
+                                <div class="col-md-4">
+                                    <mat-form-field>
+                                        <mat-select placeholder="Year" formControlName="year"
+                                            (selectionChange)="yearChanged($event.value)">
+                                            <mat-option *ngFor="let year of years" [value]="year.year">
+                                                {{year.year}}
+                                            </mat-option>
+                                        </mat-select>
+                                    </mat-form-field>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-sm-3">
+                            <point-view [label]="'Total this Year'" [points]="(totalCount>0) ? totalCount : dash"
+                                [isGreen]="false"></point-view>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-sm-12">
+                            <div class="card">
+                                <div class="card-body">
+                                    <app-bar-chart [inputBarChart]="inputBarChart" [labels]="labels"></app-bar-chart>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-8"></div>
+                        <div class="col-sm-4">
+                            <div class="float-right mx-2">
+                                <mat-form-field>
+                                    <input matInput (keyup)="applyFilter($event.target.value)"
+                                    [value]="tableState.searchText" placeholder="Search results">
+                                </mat-form-field>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="table-responsive">
+                        <table [id]="tableId" mat-table [dataSource]="dataSource" matSort
+                            (matSortChange)="onSortChange($event)">
+
+                            <!-- Date Column -->
+                            <ng-container matColumnDef="createdAt">
+                                <th mat-header-cell *matHeaderCellDef mat-sort-header>Date</th>
+                                <td mat-cell *matCellDef="let element">
+                                    {{element.createdAt | localDate: schoolTimeZone : date}}
+                                </td>
+                            </ng-container>
+
+                            <!-- Contact Column -->
+                            <ng-container matColumnDef="contactName">
+                                <th mat-header-cell *matHeaderCellDef mat-sort-header>Contact</th>
+                                <td mat-cell *matCellDef="let element">{{element.contactName}}</td>
+                            </ng-container>
+
+                            <!-- Requested via Column -->
+                            <ng-container matColumnDef="leadSourceName">
+                                <th mat-header-cell *matHeaderCellDef mat-sort-header>Requested via</th>
+                                <td mat-cell *matCellDef="let element">{{element.leadSourceName}}</td>
+                            </ng-container>
+
+                            <!-- Actions Column -->
+                            <ng-container matColumnDef="actions">
+                                <th mat-header-cell *matHeaderCellDef> <span class="float-right">Actions</span></th>
+                                <td class="td-actions text-right" mat-cell *matCellDef="let element">
+                                    <button *ngIf="!userInfo.isSchoolUser()" mat-raised-button type="button"
+                                        class="btn btn-success btn-link" (click)="goToStudent(element.studentId)"
+                                        matTooltip="Edit" matTooltipPosition="left">
+                                        <i class="material-icons">edit</i>
+                                    </button>
+                                </td>
+                            </ng-container>
+
+                            <!-- No Data -->
+                            <ng-container matColumnDef="noData">
+                                <td [hidden]="!dataSource || (dataSource && dataSource.filteredData && dataSource.filteredData.length > 0)"
+                                    mat-footer-cell *matFooterCellDef colspan="11">
+                                    {{noDataInTable}}
+                                </td>
+                            </ng-container>
+
+                            <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+                            <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+                            <tr mat-footer-row *matFooterRowDef="['noData']" class="text-center"></tr>
+                            <!-- No Data-->
+
+                        </table>
+                        <app-spinner [tableIsLoading]="tableIsLoading"></app-spinner>
+                        <mat-paginator (page)="onPaginatorChange($event)"></mat-paginator>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>

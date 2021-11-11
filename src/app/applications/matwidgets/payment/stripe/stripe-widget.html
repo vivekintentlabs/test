@@ -1,0 +1,32 @@
+<div class="row">
+    <div class="col-md-6">
+        <label *ngIf="schema.title" [ngClass]="{'required': formProperty|isRequired}">
+            {{ schema.title }}
+        </label>
+
+        <div *ngIf="schema.description" class="mt-n2 mb-1">
+            <span class="formHelp">{{ schema.description }}</span>
+        </div>
+
+        <div *ngIf="!formProperty?.value && stripeForm" [formGroup]="stripeForm" class="mt-2 text-center" [id]="id"
+            (change)="onFormChange()">
+            <ng-container *ngIf="allowToPay">
+                <ngx-stripe-card [stripe]="stripe" [options]="cardOptions" (change)="onChange($event)"></ngx-stripe-card>
+                <mat-form-field class="mt-2">
+                    <input matInput placeholder="Receipt Email" formControlName="receipt_email" type="email">
+                </mat-form-field>
+            </ng-container>
+
+            <div *ngIf="errorMsg" role="alert" id="card-errors" class="my-1 text-danger">{{ errorMsg }}</div>
+
+            <button *ngIf="allowToPay" type="button" class="btn btn-warning" (click)="pay()">
+                PAY
+                <ng-container *ngIf="paymentData$ | async as paymentData">
+                    {{paymentData.amount | currency:paymentData.currency:'symbol-narrow'}} {{paymentData.currency}}
+                </ng-container>
+            </button>
+        </div>
+
+        <h4 *ngIf="formProperty?.value" class="text-success">{{ confirmationMsg }}</h4>
+    </div>
+</div>

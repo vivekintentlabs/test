@@ -1,0 +1,13 @@
+<div class="row" (mouseup)="save()">
+    <div class="col">
+        <label class="mr-2" [ngClass]="{'required': formProperty|isRequired}">{{schema.title}}</label>
+        <div>
+            <canvas [ngClass]="{'required-signature': (formProperty|isRequired) && !formProperty.value}" #sigPad width="300" height="150"
+                style="border: 1px solid #000;" (touchstart)="onTouchStart($event)" (mousedown)="onMouseDown($event)"
+                (touchmove)="onTouchMove($event)" (mousemove)="onMouseMove($event)" (touchend)="save()"
+                (mouseup)="save()">
+            </canvas>
+        </div>
+        <button type="button" *ngIf="!schema.readOnly" class="btn btn-delete" (click)="clear()">Clear</button>
+    </div>
+</div>

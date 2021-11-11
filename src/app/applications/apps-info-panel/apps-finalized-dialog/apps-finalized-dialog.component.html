@@ -1,0 +1,24 @@
+<div class="modal-header">
+    <h4 class="modal-title text-left">Application Status</h4>
+    <button type="button" class="close" aria-label="Close" (click)="onCancel()">
+        <span aria-hidden="true">&times;</span>
+    </button>
+</div>
+<div class="modal-body">
+    <div class="row">
+        <div class="col-2 text-center"><i class="material-icons md-48 text-danger">warning</i></div>
+        <div class="col-10">
+            Once the Application status has been set to {{ 'Finalized' | translate }} it cannot be reverted. The Student status will be set to complete and any other relevant changes that made to the application will be synchronized with the Student and Contact(s).
+            <br>
+            <div class="mt-2" *ngIf="studentStatusAppCompleted">Student New Status: {{studentStatusAppCompleted.status}}</div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-8"></div>
+        <div class="col-4">
+            <button mat-raised-button [promiseBtn]="promiseForBtn" (click)="save()" class="btn btn-success pull-right">Save</button>
+            <button type="button" mat-raised-button class="btn btn-cancel mx-1 pull-right"
+                (click)="onCancel()">Cancel</button>
+        </div>
+    </div>
+</div>

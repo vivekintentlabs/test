@@ -1,0 +1,121 @@
+<div [ngSwitch]="isModal">
+    <ng-container *ngSwitchCase="true">
+        <ng-container *ngTemplateOutlet="relatedStudentsTable"></ng-container>
+    </ng-container>
+    <ng-container *ngSwitchCase="false">
+        <div class="card">
+            <div class="card-header card-header-icon card-header-primary">
+                <div class="card-icon">
+                    <i class="material-icons-outlined">people</i>
+                </div>
+                <h4 class="card-title">Related Students/Siblings</h4>
+            </div>
+            <div class="card-body">
+                <ng-container *ngTemplateOutlet="relatedStudentsTable"></ng-container>
+            </div>
+        </div>
+    </ng-container>
+
+    <ng-template #relatedStudentsTable>
+        <div class="table-responsive">
+            <table [id]="tableId" mat-table [dataSource]="dataSource" matSort (matSortChange)="onSortChange($event)">
+                <!-- Checkbox Column -->
+                <ng-container *ngIf="contactId" matColumnDef="select">
+                    <th mat-header-cell *matHeaderCellDef class="pr-3">
+                        <mat-checkbox (change)="$event ? masterToggle() : null" [checked]="selection.hasValue() && isAllSelected()"
+                            [indeterminate]="selection.hasValue() && isPartiallySelected()">
+                        </mat-checkbox>
+                    </th>
+                    <td mat-cell *matCellDef="let row">
+                        <mat-checkbox (click)="$event.stopPropagation()" (change)="$event ? selection.toggle(row) : null"
+                            [checked]="selection.isSelected(row)">
+                        </mat-checkbox>
+                    </td>
+                </ng-container>
+
+                <!-- Name Column -->
+                <ng-container matColumnDef="name">
+                    <th mat-header-cell *matHeaderCellDef mat-sort-header>Name</th>
+                    <td [ngClass]="{'l-cs': (!isModal)}" (click)="editStudent(element.id)" mat-cell *matCellDef="let element">
+                        {{element.name}}</td>
+                </ng-container>
+
+                <!-- Score Column -->
+                <ng-container matColumnDef="score">
+                    <th mat-header-cell *matHeaderCellDef mat-sort-header>Score</th>
+                    <td mat-cell *matCellDef="let element">{{element.score}}</td>
+                </ng-container>
+
+                <!-- Details Year Column -->
+                <ng-container matColumnDef="schoolIntakeYear">
+                    <th mat-header-cell *matHeaderCellDef mat-sort-header>{{'et.intakeYear' | translate}}</th>
+                    <td mat-cell *matCellDef="let element">{{element.schoolIntakeYear}}</td>
+                </ng-container>
+
+                <!-- Year Column -->
+                <ng-container matColumnDef="startingYear">
+                    <th mat-header-cell *matHeaderCellDef mat-sort-header>Year</th>
+                    <td mat-cell *matCellDef="let element"> {{element.startingYear| startingYear: (startingMonth$ | async) : true}} </td>
+                </ng-container>
+
+                <!-- Stage Column -->
+                <ng-container matColumnDef="stageName">
+                    <th mat-header-cell *matHeaderCellDef mat-sort-header>Stage</th>
+                    <td mat-cell *matCellDef="let element">{{element.stageName | translate}}</td>
+                </ng-container>
+
+                <!-- Status Column -->
+                <ng-container matColumnDef="studentStatus">
+                    <th mat-header-cell *matHeaderCellDef mat-sort-header>Status</th>
+                    <td mat-cell *matCellDef="let element">{{element.studentStatus}}</td>
+                </ng-container>
+
+                <!-- Relationship Column -->
+                <ng-container matColumnDef="relationshipName">
+                    <th mat-header-cell *matHeaderCellDef mat-sort-header>Relationship</th>
+                    <td mat-cell *matCellDef="let element">{{element.relationshipName}}</td>
+                </ng-container>
+
+                <!-- Actions Column -->
+                <ng-container *ngIf="!isModal" matColumnDef="actions">
+                    <th mat-header-cell *matHeaderCellDef> <span class="float-right">Actions</span></th>
+                    <td class="td-actions text-right" mat-cell *matCellDef="let element">
+                        <button mat-raised-button *ngIf="contactId" type="button" class="btn btn-danger btn-link unlink"
+                            (click)="unlinkRelationship(element.id)" matTooltip="Remove" matTooltipPosition="left">
+                            <i class="material-icons">close</i>
+                        </button>
+                        <button mat-raised-button type="button" class="btn btn-success btn-link" matTooltip="Edit"
+                            matTooltipPosition="left" (click)="addOrEditStudentModal(element.id)">
+                            <i class="material-icons">edit</i>
+                        </button>
+                    </td>
+                </ng-container>
+
+                <!-- No Data -->
+                <ng-container matColumnDef="noData">
+                    <td [hidden]="!dataSource || (dataSource && dataSource.filteredData && dataSource.filteredData.length > 0)"
+                        mat-footer-cell *matFooterCellDef colspan="11">
+                        {{noDataInTable}}
+                    </td>
+                </ng-container>
+
+                <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+                <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+                <tr mat-footer-row *matFooterRowDef="['noData']" class="text-center"></tr> <!-- No Data-->
+
+            </table>
+        </div>
+        <app-spinner [tableIsLoading]="tableIsLoading"></app-spinner>
+
+        <div class="row">
+            <div class="col-md-12 text-right">
+                <button *ngIf="contactId && selection.selected.length > 1" mat-raised-button class="btn btn-secondary mx-1" (click)="mergeStudents()">
+                    <i class="material-icons">call_merge</i>Merge
+                </button>
+                <button *ngIf="contactId && isModal" mat-raised-button class="btn btn-success" (click)="mergeDone()">Done</button>
+                <button *ngIf="contactId && !isModal" mat-raised-button class="btn btn-primary" (click)="selectStudent()">Add
+                    Student/sibling</button>
+            </div>
+        </div>
+    </ng-template>
+</div>

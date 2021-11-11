@@ -1,0 +1,14 @@
+<div class="row">
+    <div class="col">
+        <mat-form-field>
+            <input matInput [placeholder]="schema.title||schema.placeholder" [formControl]="control" [name]="name"
+                type="number" [readonly]="schema.readOnly||null" [required]="formProperty|isRequired"
+                class="text-widget integer-widget" [attr.id]="id" [attr.minLength]="schema.minLength || null"
+                [attr.maxLength]="schema.maxLength || null" [attr.min]="schema.minimum" [attr.max]="schema.maximum"
+                [attr.disabled]="schema.readOnly||null" [disableControl]="schema.readOnly">
+            <mat-hint *ngIf="schema.description">{{schema.description}}</mat-hint>
+        </mat-form-field>
+
+        <input *ngIf="schema.readOnly" [attr.name]="name" type="hidden" [formControl]="control">
+    </div>
+</div>

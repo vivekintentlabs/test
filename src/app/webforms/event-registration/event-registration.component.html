@@ -1,0 +1,701 @@
+<div id="eventRegistrationForm">
+    <div class="card" *ngIf="isUnderMaintenance">
+        <div class="card-body">
+            <app-maintenance [isUnderMaintenance]="isUnderMaintenance"></app-maintenance>
+        </div>
+    </div>
+    <app-display-form-header-footer [schoolId]="school.id" *ngIf="!isUnderMaintenance">
+        <div class="card" *ngIf="contact1Form && bookingForm && loaded">
+            <div class="card-body col-md-8 mx-auto"
+                    *ngIf="registrableEventCount === 0 && preselectedEventState ===  PreSelectedEventState.no_preselected_event">
+                <div class="alert alert-success alert-with-icon">
+                <span data-notify="message" class="text-center">Thank you for your interest in our school.
+                    <br> At present, we do not have any upcoming events scheduled. However, your enquiry is important.
+                    Please contact us with further details and we will happily follow up.
+                </span>
+                </div>
+            </div>
+            <div class="card-body col-md-8 mx-auto"
+                    *ngIf="preselectedEventState ===  PreSelectedEventState.preselected_registration_disabled">
+                <div class="alert alert-success alert-with-icon">
+                <span data-notify="message" class="text-center">It is not possible to register for this event anymore.
+                </span>
+                </div>
+            </div>
+            <div class="card-body col-md-8 mx-auto"
+                    *ngIf="preselectedEventState ===  PreSelectedEventState.preselected_id_not_found">
+                <div class="alert alert-danger alert-with-icon">
+                <span data-notify="message" class="text-center">This event does not exist or is in the past.
+                </span>
+                </div>
+            </div>
+            <div *ngIf="registrableEventCount > 0">
+                <form [formGroup]="bookingForm" novalidate>
+                    <div class="card-body">
+                        <h4 class="card-title">Event Details</h4>
+                        <p class="card-title" *ngIf="allEvents?.length === 1">
+                            {{(event.schoolTour) ? event.schoolTour?.name + ' - ' : ''}}
+                            {{(isMultiCampusSchool) ? event.campus?.name + ' - ' : ''}}
+                            {{event.date | localeDate: dateDelimiter: school.countryId}} - Start
+                            {{event.time}} {{event.isRegistrationDisabled ? '- Fully Booked' : ''}}
+                        </p>
+                        <div class="row" *ngIf="allEvents?.length > 1">
+                            <div class="col-md-5 event-dropdown-width"
+                                    *ngIf="isMultiCampusSchool && eventCampuses?.length > 1">
+                                <mat-form-field>
+                                    <mat-select [placeholder]="getFieldLabel('eventCampusId', 'eventDetails')"
+                                            formControlName="eventCampusId" required
+                                            (selectionChange)="campusChanged($event.value)">
+                                        <mat-option value="all">All</mat-option>
+                                        <mat-option *ngFor="let campus of eventCampuses" [value]="campus.id">
+                                            {{campus.name}}
+                                        </mat-option>
+                                    </mat-select>
+                                </mat-form-field>
+                            </div>
+                            <div class="col-md-7 event-dropdown-width">
+                                <mat-form-field>
+                                    <mat-select [placeholder]="getFieldLabel('eventId', 'eventDetails')"
+                                            formControlName="eventId" required
+                                            (selectionChange)="eventChanged($event.value)">
+                                        <mat-option value="null">{{noItemSelected}}</mat-option>
+                                        <mat-option *ngFor="let event of events" [value]="event.id"
+                                                [disabled]="event.isRegistrationDisabled">
+                                            {{(event.schoolTour) ? event.schoolTour.name + ' - ' : ''}}
+                                            {{
+                                            (isMultiCampusSchool && eventCampuses.length > 1 && bookingForm.value.eventCampusId == 'all')
+                                                ? event.campus.name + ' - '
+                                                : ''
+                                            }}
+                                            {{event.date | localeDate: dateDelimiter: school.countryId}} - Start
+                                            {{event.time}} {{event.isRegistrationDisabled ? '- Fully Booked' : ''}}
+                                        </mat-option>
+                                    </mat-select>
+                                    <mat-error
+                                            [hidden]="bookingForm.controls.eventId.valid || (bookingForm.controls.eventId.pristine && !submitted)">
+                                        {{ fieldRequired }}
+                                    </mat-error>
+                                </mat-form-field>
+                            </div>
+                        </div>
+                        <div class="row" *ngIf="event && event.isSubToursEnabled">
+                            <div class="col-md-7 event-dropdown-width" *ngIf="event && event.subTours.length > 0">
+                                <app-sub-tour-list [options]="event.subTours" [isOnlineRegistration]="true"
+                                        [placeholder]="getFieldLabel('subTours', 'eventDetails')"
+                                        formControlName="subTours"
+                                        [isRequired]="subtourRequired" [multiple]='event.isMultipleSubtours'>
+                                </app-sub-tour-list>
+                                <mat-error
+                                        [hidden]="bookingForm.controls.subTours.valid || (bookingForm.controls.subTours.pristine && !submitted)">
+                                    {{fieldRequired}}
+                                </mat-error>
+                            </div>
+                        </div>
+                        <div *ngIf="isVisibleDescription" class="row">
+                            <div class="col">
+                                <div class="pre-line">{{event.description}}</div>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+                <form [formGroup]="contact1Form" novalidate>
+                    <div class="card-body">
+                        <h4 class="card-title">Primary Contact Details</h4>
+                        <div class="row">
+                            <div class="col-sm-2" *ngIf="contact1Form.controls.salutationId">
+                                <app-other-list-item formControlName="salutationId"
+                                        [placeholder]="getFieldLabel('salutationId', 'contact')" [list]="salutations"
+                                        [listId]="listId.contact_salutation" [isPublicPage]="true" [reset]="resetAll"
+                                        htmlId="contact1FormSalutationId" [trigger]="triggerSalutation"
+                                        [isRequired]="isRequired(signupForm.fieldSettings.contact1.settings, 'salutationId')"
+                                        (selectionChanged)="updateLists($event)" [school]="school">
+                                </app-other-list-item>
+                            </div>
+                            <div class="col-sm">
+                                <mat-form-field>
+                                    <input matInput [placeholder]="getFieldLabel('firstName', 'contact')" type="text"
+                                            formControlName="firstName" required>
+                                    <mat-error
+                                            [hidden]="contact1Form.controls.firstName.valid || (contact1Form.controls.firstName.pristine && !submitted)">
+                                        First Name should contain at least {{requiredTextFieldMinLength}} and at most
+                                        {{nameMaxLength}} characters.
+                                    </mat-error>
+                                </mat-form-field>
+                            </div>
+                            <div class="col-sm">
+                                <mat-form-field>
+                                    <input matInput [placeholder]="getFieldLabel('lastName', 'contact')" type="text"
+                                            formControlName="lastName" required>
+                                    <mat-error
+                                            [hidden]="contact1Form.controls.lastName.valid || (contact1Form.controls.lastName.pristine && !submitted)">
+                                        Last Name should contain at least {{requiredTextFieldMinLength}} and at most
+                                        {{nameMaxLength}} characters.
+                                    </mat-error>
+                                </mat-form-field>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-sm" *ngIf="contact1Form.controls.genderId">
+                                <mat-form-field>
+                                    <mat-select [placeholder]="getFieldLabel('genderId', 'contact')"
+                                            formControlName="genderId"
+                                            [required]="isRequired(this.signupForm.fieldSettings.contact1.settings, 'genderId')">
+                                        <mat-option *ngFor="let gender of data.genders"
+                                                [value]="gender.id">{{gender.name}}
+                                        </mat-option>
+                                    </mat-select>
+                                </mat-form-field>
+                            </div>
+                            <div class="col-sm">
+                                <app-other-list-item formControlName="relationshipId"
+                                        [placeholder]="getFieldLabel('relationshipId', 'contact')"
+                                        [list]="relationships"
+                                        [listId]="listId.contact_relationship" [isPublicPage]="true" [reset]="resetAll"
+                                        htmlId="contact1FormRelationshipId" [isRequired]="true"
+                                        [trigger]="triggerOtherRelationship" (selectionChanged)="updateLists($event)"
+                                        [school]="school">
+                                </app-other-list-item>
+                            </div>
+                            <div class="col-sm">
+                                <mat-form-field>
+                                    <input matInput [placeholder]="getFieldLabel('email', 'contact')" type="email"
+                                            formControlName="email" required>
+                                    <mat-error
+                                            [hidden]="contact1Form.controls.email.valid || (contact1Form.controls.email.pristine && !submitted)">
+                                        Email format should be
+                                        <i>john@doe.com</i> and contain at most 60 characters.
+                                    </mat-error>
+                                </mat-form-field>
+                            </div>
+                            <div class="col-sm" *ngIf="contact1Form.controls.mobile">
+                                <mat-form-field>
+                                    <input matInput [placeholder]="getFieldLabel('mobile', 'contact')" type="text"
+                                            formControlName="mobile"
+                                            [required]="isRequired(this.signupForm.fieldSettings.contact1.settings, 'mobile')">
+                                    <mat-error
+                                            [hidden]="contact1Form.controls.mobile.valid || (contact1Form.controls.mobile.pristine && !submitted)">
+                                        {{phoneErrorText}}
+                                    </mat-error>
+                                </mat-form-field>
+                            </div>
+                            <div class="col-sm" *ngIf="contact1Form.controls.homePhone">
+                                <mat-form-field>
+                                    <input matInput [placeholder]="getFieldLabel('homePhone', 'contact')" type="text"
+                                            formControlName="homePhone"
+                                            [required]="isRequired(this.signupForm.fieldSettings.contact1.settings, 'homePhone')">
+                                    <mat-error
+                                            [hidden]="contact1Form.controls.homePhone.valid || (contact1Form.controls.homePhone.pristine && !submitted)">
+                                        {{phoneErrorText}}
+                                    </mat-error>
+                                </mat-form-field>
+                            </div>
+                            <div class="col-sm" *ngIf="contact1Form.controls.workPhone">
+                                <mat-form-field>
+                                    <input matInput [placeholder]="getFieldLabel('workPhone', 'contact')" type="text"
+                                            formControlName="workPhone"
+                                            [required]="isRequired(this.signupForm.fieldSettings.contact1.settings, 'workPhone')">
+                                    <mat-error
+                                            [hidden]="contact1Form.controls.workPhone.valid || (contact1Form.controls.workPhone.pristine && !submitted)">
+                                        {{phoneErrorText}}
+                                    </mat-error>
+                                </mat-form-field>
+                            </div>
+                        </div>
+                        <div class="row" *ngIf="contact1Form.controls.alumniId">
+                            <div class="col-sm-4">
+                                <label [ngClass]="{'required': isRequired(signupForm.fieldSettings.contact1.settings, 'alumniId')}">
+                                    {{ getFieldLabel('alumniId', 'contact') }}
+                                </label>
+                                <br>
+                                <app-radio-group id="contact1Form" [options]="alumni"
+                                        [value]="contact1Form.controls.alumniId.value"
+                                        formControlName="alumniId" (changed)="alumniChanged(contact1Form)">
+                                </app-radio-group>
+                            </div>
+                            <ng-container *ngIf="contact1Form.controls.alumniId.value === yesAlumniId">
+                                <div class="col-sm-4">
+                                    <mat-form-field>
+                                        <mat-select [placeholder]="getFieldLabel('graduationYear', 'contact')"
+                                                formControlName="graduationYear">
+                                            <mat-option [value]="null">{{noItemSelected}} </mat-option>
+                                            <mat-option md-select-on-focus
+                                                    *ngFor="let graduationYear of graduationYears; let i = index"
+                                                    [value]="graduationYear">
+                                                {{graduationYear}}
+                                            </mat-option>
+                                        </mat-select>
+                                    </mat-form-field>
+                                </div>
+                                <div class="col-sm-4" *ngIf="contact1Form.controls.nameAtSchool">
+                                    <mat-form-field>
+                                        <input matInput [placeholder]="getFieldLabel('nameAtSchool', 'contact')"
+                                                type="text" formControlName="nameAtSchool">
+                                        <mat-error
+                                                [hidden]="contact1Form.controls.nameAtSchool.valid || contact1Form.controls.nameAtSchool.pristine">
+                                            Name when at School should contain at least {{notRequiredTextFieldMinLength}} and at
+                                            most {{nameMaxLength}}
+                                            characters.
+                                        </mat-error>
+                                    </mat-form-field>
+                                </div>
+                            </ng-container>
+                        </div>
+                        <div class="row align-items-center" *ngIf="contact1Form.controls.personalTourRequested">
+                            <div class="col">
+                                <mat-checkbox formControlName="personalTourRequested" (change)="ptRequestedChanged($event.checked)">
+                                    {{ getFieldLabel('personalTourRequested', 'contact') }}
+                                </mat-checkbox>
+                            </div>
+                            <div class="col-sm-6" *ngIf="contact1Form.controls.ptDate">
+                                <mat-form-field>
+                                    <input matInput [matDatepicker]="ptDate" [min]="currentDate"
+                                            placeholder="Desired Tour Date" formControlName="ptDate" required>
+                                    <mat-datepicker-toggle matSuffix [for]="ptDate"></mat-datepicker-toggle>
+                                    <mat-datepicker startView="month" #ptDate></mat-datepicker>
+                                </mat-form-field>
+                            </div>
+                        </div>
+                        <div class="row" *ngIf="contact1Form.controls.sendProspectus">
+                            <div class="col-sm-12">
+                                <mat-checkbox formControlName="sendProspectus"
+                                    [required]="isRequired(signupForm.fieldSettings.contact1.settings, 'sendProspectus')">
+                                    {{ getFieldLabel('sendProspectus', 'contact') }}
+                                </mat-checkbox>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+
+                <!-- Secondary Contact Details -->
+                <form [formGroup]="contact2Form" novalidate *ngIf="signupForm.fieldSettings.contact2.isIncluded">
+                    <div class="card-body">
+                        <h4 class="card-title">Secondary Contact Details</h4>
+                        <small *ngIf="!contact2Valid" class="text-danger">
+                            Secondary Contact Details section must be filled completely or be empty
+                        </small>
+                        <div class="row">
+                            <div class="col-sm-2" *ngIf="contact2Form.controls.salutationId">
+                                <app-other-list-item formControlName="salutationId"
+                                        [placeholder]="getFieldLabel('salutationId', 'contact')" [list]="salutations"
+                                        [listId]="listId.contact_salutation" [isPublicPage]="true" [reset]="resetAll"
+                                        htmlId="contact2FormSalutationId" [trigger]="triggerSalutation"
+                                        [isRequired]="isRequired(signupForm.fieldSettings.contact2.settings, 'salutationId')"
+                                        (selectionChanged)="updateLists($event); Contact2IsValid()" [school]="school">
+                                </app-other-list-item>
+                            </div>
+                            <div class="col-sm">
+                                <mat-form-field>
+                                    <input matInput [placeholder]="getFieldLabel('firstName', 'contact')" type="text"
+                                            formControlName="firstName" (keyup)="Contact2IsValid()">
+                                    <mat-error
+                                            [hidden]="contact2Form.controls.firstName.valid || (contact2Form.controls.firstName.pristine && !submitted)">
+                                        First Name should contain at least {{requiredTextFieldMinLength}} and at most
+                                        {{nameMaxLength}} characters.
+                                    </mat-error>
+                                </mat-form-field>
+                            </div>
+                            <div class="col-sm">
+                                <mat-form-field>
+                                    <input matInput [placeholder]="getFieldLabel('lastName', 'contact')" type="text"
+                                            formControlName="lastName" (keyup)="Contact2IsValid()">
+                                    <mat-error
+                                            [hidden]="contact2Form.controls.lastName.valid || (contact2Form.controls.lastName.pristine && !submitted)">
+                                        Last Name should contain at least {{requiredTextFieldMinLength}} and at most
+                                        {{nameMaxLength}} characters.
+                                    </mat-error>
+                                </mat-form-field>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-sm" *ngIf="contact2Form.controls.genderId">
+                                <mat-form-field>
+                                    <mat-select [placeholder]="getFieldLabel('genderId', 'contact')"
+                                            (selectionChange)="Contact2IsValid()" formControlName="genderId">
+                                        <mat-option *ngFor="let gender of data.genders"
+                                                [value]="gender.id">{{gender.name}}
+                                        </mat-option>
+                                    </mat-select>
+                                </mat-form-field>
+                            </div>
+                            <div class="col-sm">
+                                <app-other-list-item formControlName="relationshipId"
+                                        [placeholder]="getFieldLabel('relationshipId', 'contact')"
+                                        [list]="relationships"
+                                        [listId]="listId.contact_relationship" [isPublicPage]="true" [reset]="resetAll"
+                                        htmlId="contact2FormRelationshipId" [trigger]="triggerOtherRelationship"
+                                        (selectionChanged)="updateLists($event)" [school]="school">
+                                </app-other-list-item>
+                            </div>
+                            <div class="col-sm">
+                                <mat-form-field>
+                                    <input matInput [placeholder]="getFieldLabel('email', 'contact')" type="email"
+                                            formControlName="email" (keyup)="Contact2IsValid()">
+                                    <mat-error
+                                            [hidden]="contact2Form.controls.email.valid || (contact2Form.controls.email.pristine && !submitted)">
+                                        Email format should be
+                                        <i>john@doe.com</i> and contain at most 60 characters.
+                                    </mat-error>
+                                </mat-form-field>
+                            </div>
+                            <div class="col-sm" *ngIf="contact2Form.controls.mobile">
+                                <mat-form-field>
+                                    <input matInput [placeholder]="getFieldLabel('mobile', 'contact')" type="text"
+                                            formControlName="mobile"
+                                            [required]="isRequired(this.signupForm.fieldSettings.contact2.settings, 'mobile')"
+                                            (keyup)="Contact2IsValid()">
+                                    <mat-error
+                                            [hidden]="contact2Form.controls.mobile.valid || (contact2Form.controls.mobile.pristine && !submitted)">
+                                        {{phoneErrorText}}
+                                    </mat-error>
+                                </mat-form-field>
+                            </div>
+                            <div class="col-sm" *ngIf="contact2Form.controls.homePhone">
+                                <mat-form-field>
+                                    <input matInput [placeholder]="getFieldLabel('homePhone', 'contact')" type="text"
+                                            formControlName="homePhone"
+                                            [required]="isRequired(this.signupForm.fieldSettings.contact2.settings, 'homePhone')">
+                                    <mat-error
+                                            [hidden]="contact2Form.controls.homePhone.valid || (contact2Form.controls.homePhone.pristine && !submitted)">
+                                        {{phoneErrorText}}
+                                    </mat-error>
+                                </mat-form-field>
+                            </div>
+                            <div class="col-sm" *ngIf="contact2Form.controls.workPhone">
+                                <mat-form-field>
+                                    <input matInput [placeholder]="getFieldLabel('workPhone', 'contact')" type="text"
+                                            formControlName="workPhone"
+                                            [required]="isRequired(this.signupForm.fieldSettings.contact2.settings, 'workPhone')">
+                                    <mat-error
+                                            [hidden]="contact2Form.controls.workPhone.valid || (contact2Form.controls.workPhone.pristine && !submitted)">
+                                        {{phoneErrorText}}
+                                    </mat-error>
+                                </mat-form-field>
+                            </div>
+                        </div>
+                        <div class="row" *ngIf="contact2Form.controls.alumniId">
+                            <div class="col-sm-4">
+                                <label [ngClass]="{'required': isRequired(signupForm.fieldSettings.contact2.settings, 'alumniId')}">
+                                    {{ getFieldLabel('alumniId', 'contact') }}
+                                </label>
+                                <br>
+                                <app-radio-group id="contact2Form" [options]="alumni"
+                                        [value]="contact2Form.controls.alumniId.value"
+                                        formControlName="alumniId" (changed)="alumniChanged(contact2Form)">
+                                </app-radio-group>
+                            </div>
+                            <ng-container *ngIf="contact2Form.controls.alumniId.value === yesAlumniId">
+                                <div class="col-sm-4">
+                                    <mat-form-field>
+                                        <mat-select [placeholder]="getFieldLabel('graduationYear', 'contact')"
+                                                formControlName="graduationYear">
+                                            <mat-option [value]="null">{{noItemSelected}} </mat-option>
+                                            <mat-option md-select-on-focus
+                                                    *ngFor="let graduationYear of graduationYears; let i = index"
+                                                    [value]="graduationYear">
+                                                {{graduationYear}}
+                                            </mat-option>
+                                        </mat-select>
+                                    </mat-form-field>
+                                </div>
+                                <div class="col-sm-4" *ngIf="contact2Form.controls.nameAtSchool">
+                                    <mat-form-field>
+                                        <input matInput [placeholder]="getFieldLabel('nameAtSchool', 'contact')"
+                                                type="text" formControlName="nameAtSchool">
+                                        <mat-error
+                                                [hidden]="contact2Form.controls.nameAtSchool.valid || contact2Form.controls.nameAtSchool.pristine">
+                                            Name when at School should contain at least {{notRequiredTextFieldMinLength}} and at
+                                            most
+                                            {{nameMaxLength}}
+                                            characters.
+                                        </mat-error>
+                                    </mat-form-field>
+                                </div>
+                            </ng-container>
+                        </div>
+                        <div class="row" *ngIf="contact2Form.controls.isSpouse">
+                            <div class="col-sm-12">
+                                <mat-checkbox formControlName="isSpouse">
+                                    {{ getFieldLabel('isSpouse', 'contact') }}
+                                </mat-checkbox>
+                            </div>
+                        </div>
+                        <div class="row" *ngIf="contact2Form.controls.sendConfirmationContact2">
+                            <div class="col-sm-12">
+                                <mat-checkbox formControlName="sendConfirmationContact2">
+                                    {{ getFieldLabel('sendConfirmationContact2', 'contact') }}
+                                </mat-checkbox>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+
+                <form [formGroup]="contact1Form" *ngIf="contact1Form.controls.address" novalidate>
+                    <div class="card-body">
+                        <h4 class="card-title">Primary Contact Address</h4>
+                        <div class="row" *ngIf="contact1Form.controls.countryId">
+                            <div class="col-sm-6">
+                                <app-select-search formControlName="countryId" placeholder="Contact Country"
+                                        [list]="data.countries" [isRequired]="isRequiredAddress()"
+                                        (outputData)="onCountryChange($event.value)">
+                                </app-select-search>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-sm">
+                                <mat-form-field class="w-100">
+                                    <input matInput [placeholder]="getFieldLabel('address', 'contact')" type="text"
+                                            formControlName="address" [required]="isRequiredAddress()">
+                                    <mat-error
+                                            [hidden]="contact1Form.controls.address.valid || (contact1Form.controls.address.pristine && !submitted)">
+                                        Contact Address should contain at least {{addressFieldMinLength}} and at most
+                                        {{addressFieldMaxLength}} characters.
+                                    </mat-error>
+                                </mat-form-field>
+                            </div>
+                        </div>
+
+                        <div class="row"
+                                *ngIf="contact1Form.controls.city || contact1Form.controls.administrativeAreaId || contact1Form.controls.sublocality || contact1Form.controls.postCode">
+                            <div class="col-sm" *ngIf="addressOptions.sublocality.isUsed">
+                                <mat-form-field>
+                                    <input matInput [placeholder]="addressOptions.sublocality.label" type="text"
+                                            formControlName="sublocality">
+                                    <mat-error
+                                            [hidden]="contact1Form.controls.sublocality.valid || (contact1Form.controls.sublocality.pristine && !submitted)"
+                                            class="text-danger">
+                                        {{addressOptions.sublocality.label}} should contain at least
+                                        {{addressFieldMinLength}} and at most
+                                        {{citySuburbFieldMaxLength}} characters.
+                                    </mat-error>
+                                </mat-form-field>
+                            </div>
+                            <div class="col-sm" *ngIf="addressOptions.city.isUsed">
+                                <mat-form-field class="w-100">
+                                    <input matInput [placeholder]="addressOptions.city.label" type="text"
+                                            formControlName="city" [required]="isRequiredAddress()">
+                                    <mat-error
+                                            [hidden]="contact1Form.controls.city.valid || (contact1Form.controls.city.pristine && !submitted)"
+                                            class="text-danger">
+                                        {{addressOptions.city.label}} should contain at least {{addressFieldMinLength}} and
+                                        at most
+                                        {{citySuburbFieldMaxLength}} characters.
+                                    </mat-error>
+                                </mat-form-field>
+                            </div>
+                            <div class="col-sm" *ngIf="addressOptions.state.isUsed">
+                                <mat-form-field>
+                                    <mat-select [placeholder]="addressOptions.state.label"
+                                            formControlName="administrativeAreaId">
+                                        <mat-option *ngIf="contact1Form.controls.countryId.value === null"
+                                                [value]="null">
+                                            {{noCountrySelected}}</mat-option>
+                                        <mat-option *ngFor="let administrativeArea of administrativeAreas"
+                                                [value]="administrativeArea.id">{{administrativeArea.name}}</mat-option>
+                                    </mat-select>
+                                </mat-form-field>
+                            </div>
+                            <div class="col-sm" *ngIf="addressOptions.postCode.isUsed">
+                                <mat-form-field class="w-100">
+                                    <input matInput [placeholder]="addressOptions.postCode.label" type="text"
+                                            formControlName="postCode" [required]="isRequiredAddress()">
+                                    <mat-error
+                                            [hidden]="contact1Form.controls.postCode.valid || (contact1Form.controls.postCode.pristine && !submitted)">
+                                        {{addressOptions.postCode.label}} should contain at least {{postCodeMinLength}} and
+                                        at most
+                                        {{postCodeMaxLength}} characters.
+                                    </mat-error>
+                                </mat-form-field>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="clearfix"></div>
+                </form>
+
+                <!-- Students Details Section -->
+                <div class="card-body">
+                    <h4 class="title text-center">Students Details</h4>
+                    <ul class="nav nav-pills nav-pills nav-pills-icons justify-content-center" role="tablist">
+                        <ng-container *ngFor="let s of studentsCount; let i = index">
+                            <li *ngIf="i>0" class="nav-item">
+                                <a href="#student{{i}}" class="nav-link" [class.active]="i === activePill"
+                                        [class.text-danger]="i !== activePill && !students[i].isValid" role="tab"
+                                        data-toggle="tab" (click)="activatePill(i)">
+                                    <i class="material-icons">person_outline</i>
+                                    <span>Student {{i}}</span>
+                                    <span *ngIf="i===1"> *</span>
+                                </a>
+                            </li>
+                        </ng-container>
+                    </ul>
+                    <div class="tab-content tab-space tab-subcategories">
+                        <ng-container *ngFor="let s of studentsCount; let i = index">
+                            <div *ngIf="i>0" class="tab-pane {{(i == activePill) ? 'active' : '' }}" id="student{{i}}">
+                                <div class="card">
+                                    <div class="card-header">
+                                        <h4 class="card-title">
+                                            Student {{i}}
+                                            <span class="text-danger" *ngIf="i===1">*</span>
+                                            <span *ngIf="i>1">(Optional)</span>
+                                        </h4>
+                                    </div>
+                                    <div class="card-body p-0">
+                                        <app-add-student-cmp [yearLevelList]="yearLevelList" [data]="data"
+                                                [studNumber]="i"
+                                                [reset]="resetAll" [required]="(i==1)?true:false"
+                                                [submitted]="submitted"
+                                                [triggerOtherReligion]="triggerOtherReligion"
+                                                [triggerOtherCurrentSchool]="triggerOtherCurrentSchool"
+                                                [triggerOtherSpecialNeeds]="triggerOtherSpecialNeeds"
+                                                (isValid)="validStudent($event)"
+                                                (newCurrentSchool)="onCurrentSchoolChange($event)"
+                                                (listItemChanged)=updateLists($event)
+                                                (currentSchoolChanged)=updateLists($event)>
+                                        </app-add-student-cmp>
+                                    </div>
+                                </div>
+                            </div>
+                        </ng-container>
+                    </div>
+                </div>
+
+                <div class="card-body">
+                    <form [formGroup]="bookingForm" novalidate>
+                        <div class="row">
+                            <div class="col-lg-4 pr-0 radio-lable" *ngIf="bookingForm.controls.isFirstVisit">
+                                <div class="row col-sm pr-0">
+                                    <label class="col-form-label text-left"
+                                            [ngClass]="{'required': isRequired(signupForm.fieldSettings.general.settings, 'isFirstVisit')}">
+                                        {{getFieldLabel('isFirstVisit', 'general')}}
+                                    </label>
+                                    <div class="ml-2">
+                                        <div class="form-check form-check-inline">
+                                            <label class="form-check-label">
+                                                <input class="form-check-input" type="radio" [value]="true"
+                                                        formControlName="isFirstVisit">Yes
+                                                <span class="circle">
+                                                <span class="check"></span>
+                                            </span>
+                                            </label>
+                                        </div>
+                                        <div class="form-check form-check-inline">
+                                            <label class="form-check-label">
+                                                <input class="form-check-input" type="radio" [value]="false"
+                                                        formControlName="isFirstVisit">No
+                                                <span class="circle">
+                                                <span class="check"></span>
+                                            </span>
+                                            </label>
+                                        </div>
+                                    </div>
+                                </div>
+                                <mat-error class="mat-error-radio"
+                                        [hidden]="bookingForm.controls.isFirstVisit.valid || (bookingForm.controls.isFirstVisit.pristine && !submitted)">
+                                    {{fieldRequired}}
+                                </mat-error>
+                            </div>
+                            <div class="col-md-6 col-lg-4" *ngIf="bookingForm.controls.siblingsId">
+                                <label [ngClass]="{'required': isRequired(signupForm.fieldSettings.general.settings, 'siblingsId')}">
+                                    {{ getFieldLabel('siblingsId', 'general') }}
+                                </label>
+                                <br>
+                                <app-radio-group [options]="siblings" [value]="bookingForm.controls.siblingsId.value"
+                                        formControlName="siblingsId">
+                                </app-radio-group>
+                            </div>
+                            <div class="col-md-6 col-lg-4 " *ngIf="bookingForm.controls.hearAboutUsId">
+                                <app-other-list-item formControlName="hearAboutUsId"
+                                        [placeholder]="getFieldLabel('hearAboutUsId', 'general')"
+                                        [list]="hearAboutUsItems"
+                                        [listId]="listId.hear_about_us" [isPublicPage]="true" [reset]="resetAll"
+                                        htmlId="studentEditFormHearAboutUsId" [trigger]="triggerOtherHearAboutUs"
+                                        [isRequired]="isRequired(signupForm.fieldSettings.general.settings, 'hearAboutUsId')"
+                                        (selectionChanged)="updateLists($event)" [school]="school">
+                                </app-other-list-item>
+                            </div>
+                            <div class="col-md-6 col-lg-4 ">
+                                <mat-form-field class="w-100">
+                                    <input matInput [placeholder]="getFieldLabel('totalAttendees', 'general')"
+                                            type="text"
+                                            formControlName="totalAttendees" required>
+                                    <mat-error
+                                            [hidden]="bookingForm.controls.totalAttendees.valid || (bookingForm.controls.totalAttendees.pristine && !submitted)">
+                                        This field is numeric.
+                                    </mat-error>
+                                </mat-form-field>
+                            </div>
+                        </div>
+                        <div class="row" *ngIf="bookingForm.controls.message">
+                            <div class="col-sm-12">
+                                <mat-form-field>
+                                <textarea matInput maxlength="messageMaxLength" mat-autosize matAutosizeMaxRows="3"
+                                        [placeholder]="getFieldLabel('message', 'general')" formControlName="message"
+                                        [required]="isRequired(signupForm.fieldSettings.general.settings, 'message')">
+                                </textarea>
+                                    <mat-hint class="text-warning" *ngIf="showHint(bookingForm.controls.message)">
+                                        Max length is {{messageMaxLength}} characters
+                                    </mat-hint>
+                                </mat-form-field>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="card-body" *ngIf="shouldDisplayConduct">
+                    <div class="row">
+                        <div class="col-sm-12">
+                            <div class="row">
+                                <div class="col-sm-12">
+                                    <h4 class="card-title">{{conductTitle}}
+                                        <span class="text-danger">*</span>
+                                    </h4>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-2 col-md-1" style="z-index:1">
+                                    <div class="togglebutton">
+                                        <label>
+                                            <input type="checkbox" [checked]="trigger" (click)="changeTrigger()">
+                                            <span class="toggle"></span>
+                                        </label>
+                                    </div>
+                                </div>
+                                <div class="col-10 col-md-11">
+                                    <div [innerHTML]="conductText"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card-footer">
+                    <div class="w-100">
+                        <div class="row">
+                            <div class="col-sm-8 d-none d-sm-block" [innerHTML]="grecptchaTermsHtml"></div>
+                            <div class="col-sm-4" id="mobile-centered">
+                                <button type="button" class="btn btn-success" [promiseBtn]="promiseForBtn"
+                                        (click)="onSubmit((this.shouldDisplayConduct && !this.trigger), this.conductTitle)">Submit
+                                </button>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-sm-12">
+                                <div id="copyrightForForm">
+                                    <a href="{{brand.homeUrl}}" target="_blank"
+                                            class="d-flex justify-content-center align-items-center text-black-50">
+                                        <div class="form-logo" [innerHTML]="loadedLogo"></div>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row d-sm-none">
+                            <div class="col-sm text-center" [innerHTML]="grecptchaTermsHtml"></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="clearfix"></div>
+            </div>
+        </div>
+    </app-display-form-header-footer>
+</div>

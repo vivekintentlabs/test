@@ -1,0 +1,63 @@
+<ng-container *ngIf="exportMapping">
+    <div class="modal-header">
+        <h4 class="modal-title text-left">{{exportMapping.transferMethod === externalApi ? 'Data Transfer'
+            : 'Export Records'}}</h4>
+        <button type="button" class="close" aria-label="Close" (click)="onCancel()">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+
+    <div class="modal-body">
+        <div class="row" [hidden]="!exportMapping.canAddPassword">
+            <div class="col-12">{{constants.partnerSecurityInfo}} </div>
+            <div class="col-12">
+                <mat-form-field>
+                    <input matInput minlength="4" maxlength="20" placeholder="Password"
+                        [pattern]="constants.partnerPasswordPattern" [(ngModel)]="filePassword" #password="ngModel" (keyup)="password.control.markAsTouched()">
+                    <mat-hint [align]="end">{{password?.value?.length}} / 20</mat-hint>
+                    <mat-error [hidden]="password.valid || (password.pristine)">
+                        {{constants.partnerPasswordNotValid}}
+                    </mat-error>
+                </mat-form-field>
+            </div>
+        </div>
+
+        <ng-container *ngIf="exportMapping.type === apply">
+            <div class="row" [ngClass]="{'pt-2':(exportMapping.canAddPassword)}"
+                *ngIf="selectedInProgressApplicationsCount > 0; else textDesc">
+                <div class="col-12">
+                    {{selectedInProgressApplicationsCount}} out of {{visibleSelectedCount}} will not be exported because
+                    they are “In Progress”. Do you wish to continue exporting
+                    {{visibleSelectedCount-selectedInProgressApplicationsCount}} records?
+                </div>
+            </div>
+        </ng-container>
+
+        <div class="row pt-3" *ngIf="exportMapping.transferMethod === externalApi; else fileFormat">
+            <div class="col-12">
+                You will receive an email notification once transfer is complete.
+            </div>
+        </div>
+
+        <div class="mb-2 pull-right">
+            <button type="button" mat-raised-button class="btn btn-cancel" (click)="onCancel()">Cancel</button>
+            <button mat-raised-button [disabled]="!password.valid" (click)="export()"
+                class="btn btn-success">Continue</button>
+        </div>
+    </div>
+</ng-container>
+<ng-template #textDesc>
+    <div class="row pt-3">
+        <div class="col-12">
+            {{visibleSelectedCount}} records will be marked and exported.
+        </div>
+    </div>
+</ng-template>
+
+<ng-template #fileFormat>
+    <div class="row pt-3">
+        <div class="col-12">
+            File format: {{managementSystem.name}} {{managementSystem.export2Xml ? '(XML)' : ''}}
+        </div>
+    </div>
+</ng-template>

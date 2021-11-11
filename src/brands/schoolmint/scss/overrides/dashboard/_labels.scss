@@ -1,0 +1,6 @@
+.select-count {
+  &::before {
+    margin-right: $table-stats-gap - 4px;
+    content: "/";
+  }
+}

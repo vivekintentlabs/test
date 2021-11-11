@@ -1,0 +1,15 @@
+.preloader-block {
+    height: 250px;
+    display: flex;
+    position: absolute;
+}
+
+.editor-block {
+    margin: 0 auto;
+    position: relative;
+}
+
+#et-tinymce-editor {
+    min-height: 300px;
+    background: #fff;
+}

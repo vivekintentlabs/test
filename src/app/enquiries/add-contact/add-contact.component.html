@@ -1,0 +1,46 @@
+<div class="main-content">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="card">
+                    <div class="row">
+                        <div class="col-8">
+                            <div class="card-header card-header-icon card-header-primary pt-1">
+                                <div class="card-icon">
+                                    <i class="material-icons-outlined">person</i>
+                                </div>
+                                <h4 class="card-title">
+                                    {{title}}
+                                </h4>
+                            </div>
+                        </div>
+                        <div class="col-4 pr-5" *ngIf="contact">
+                            <div class="card mt-3 mb-0 mr-2 pl-4 light-grey">
+                                Date Created {{contact.createdAt | localDate: timeZone : dateTime}}<br>
+                                Last Updated {{contact.updatedAt | localDate: timeZone : dateTime}}
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <app-edit-contact [contactId]="contactId" [isModal]="false" (contactData)="contactData($event)"
+                            (infoForParent)="infoFromChild($event)" [hideRelationship]="true">
+                        </app-edit-contact>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-12">
+                <app-related-students-cmp *ngIf="contactId" [contactId]="contactId" [timeZone]='timeZone' [currentContact]="contact" (emitTrigger)="refreshRelatedContactComponent($event)"></app-related-students-cmp>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-12">
+                <app-related-contacts-cmp *ngIf="contactId" [contactId]="contactId" [trigger]="trigger"
+                    [showAddContactButton]="false" [showAddressData]="true" [hideRelationship]="true"></app-related-contacts-cmp>
+                <app-activity-logs *ngIf="contact && contactId && students.length > 0" [shouldShowActionButtons]="true" [contact]="contact"
+                    [triggerStudentChanged]="trigger"></app-activity-logs>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,31 @@
+@import '~scss/theme/core/variables/spacing';
+
+:host(.short), :host-context(.point-view-short) {
+    .point {
+        .count-block {
+            padding: 5px 0px 0px 0px;
+        }
+
+        p, h1 {
+            margin: 0px;
+        }
+    }
+}
+
+.point {
+    margin: 5px 0;
+
+    .count-block {
+        min-width: 100px;
+        padding: $spacer $spacer;
+    }
+
+    .mat-spinner {
+        margin: 0 auto;
+        position: absolute;
+        left: 0;
+        right: 0;
+        bottom: 50%;
+        top: 50%;
+    }
+}

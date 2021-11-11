@@ -1,0 +1,11 @@
+<div *ngFor="let fieldset of formProperty.schema.fieldsets; let i = index">
+    <p *ngIf="fieldset.title">
+        {{fieldset.title}}
+    </p>
+    <div *ngIf="fieldset.description">{{fieldset.description}}</div>
+    <div class="row">
+        <div class="col" *ngFor="let fieldId of fieldset.fields">
+            <sf-form-element [formProperty]="getProperty(fieldId)"></sf-form-element>
+        </div>
+    </div>
+</div>

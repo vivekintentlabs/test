@@ -1,0 +1,26 @@
+.top-button {
+    margin: 10px 0px -15px 5px;
+}
+
+@media (min-width: 992px) and (max-width:1200px) {
+    .col-4,
+    .col-10 {
+        padding-right: 0px !important;
+    }
+}
+
+dt {
+    font-size: 0.9em;
+}
+
+.clickable {
+    cursor: pointer;
+}
+
+.font-1-5em {
+    font-size: 1.5em;
+}
+
+.fw-5 th {
+    font-weight: 500;
+}

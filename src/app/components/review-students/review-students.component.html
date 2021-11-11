@@ -1,0 +1,10 @@
+<div class="modal-header">
+    <h4 class="modal-title text-left">Review Students</h4>
+    <button type="button" class="close" aria-label="Close" (click)="onDone()">
+        <span aria-hidden="true">&times;</span>
+    </button>
+</div>
+<h5 class="modal-title text-left pl-4">Select each student you wish to merge</h5>
+<div class="modal-body">
+    <app-related-students-cmp *ngIf="id" [contactId]="id" [isModal]="true" (userOutput)=mergeStudents($event)></app-related-students-cmp>
+</div>

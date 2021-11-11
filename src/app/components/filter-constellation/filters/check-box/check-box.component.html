@@ -1,0 +1,12 @@
+<div class="d-flex">
+    <div class="flex-grow-1">
+        <mat-checkbox [(ngModel)]="fieldConfig.value" [ngModelOptions]="{standalone: true}" (change)="onChange()">
+            {{fieldConfig.name | translate}}
+        </mat-checkbox>
+    </div>
+
+    <mat-icon *ngIf="!fieldConfig.mandatory" matSuffix class="remove-filter mt-2" matTooltip="Remove Filter" matTooltipPosition="above"
+        (click)="removeFilter()">
+        <i class="material-icons">highlight_off</i>
+    </mat-icon>
+</div>

@@ -1,0 +1,123 @@
+<div class="card">
+    <div class="card-header card-header-icon card-header-primary">
+        <div class="card-icon">
+            <i class="material-icons-outlined">list</i>
+        </div>
+        <h4 class="card-title text-left">Campus List</h4>
+    </div>
+    <div class="card-body">
+        <div class="row">
+            <div class="col-sm-8"></div>
+            <div class="col-sm-4">
+                <div class="float-right mx-2">
+                    <mat-form-field>
+                        <input matInput (keyup)="applyFilter($event.target.value)" [value]="tableState.searchText"
+                            placeholder="Search results">
+                    </mat-form-field>
+                </div>
+            </div>
+        </div>
+        <div class="table-responsive">
+            <mat-table [id]="tableId" [dataSource]="dataSource" cdkDropList [cdkDropListData]="campuses" (cdkDropListDropped)="sequenceChanged($event)">
+
+                <!-- Sequence Column -->
+                <ng-container matColumnDef="sequence">
+                    <mat-header-cell *matHeaderCellDef></mat-header-cell>
+                    <mat-cell class="grey" *matCellDef="let element">
+                        <i class="material-icons" cdkDragHandle style="pointer-events:all;">drag_indicator</i>
+                    </mat-cell>
+                </ng-container>
+
+                <!-- CampusName Column -->
+                <ng-container matColumnDef="name">
+                    <mat-header-cell *matHeaderCellDef>Campus Name</mat-header-cell>
+                    <mat-cell *matCellDef="let element">{{element.name}}</mat-cell>
+                </ng-container>
+
+                <!-- SynCoden Column -->
+                <ng-container matColumnDef="synCode">
+                    <mat-header-cell *matHeaderCellDef>{{synCodeTitle}}</mat-header-cell>
+                    <mat-cell *matCellDef="let element">{{element.synCode}}</mat-cell>
+                </ng-container>
+
+                <!-- Address Column -->
+                <ng-container matColumnDef="address">
+                    <mat-header-cell *matHeaderCellDef>Address</mat-header-cell>
+                    <mat-cell *matCellDef="let element">{{element.address}}</mat-cell>
+                </ng-container>
+
+                <!-- Location Column -->
+                <ng-container matColumnDef="location">
+                    <mat-header-cell *matHeaderCellDef>Location</mat-header-cell>
+                    <mat-cell *matCellDef="let element">{{element | address}}</mat-cell>
+                </ng-container>
+
+                <!-- Actions Column -->
+                <ng-container matColumnDef="actions">
+                    <mat-header-cell class="flex-right" *matHeaderCellDef> <span>Actions</span></mat-header-cell>
+                    <mat-cell class="td-actions flex-right" *matCellDef="let element" style="pointer-events:all;">
+                        <button mat-raised-button type="button" class="btn btn-success btn-link" matTooltip="Edit"
+                            matTooltipPosition="left" (click)="editCampus(element.id)">
+                            <i class="material-icons">edit</i>
+                        </button>
+                        <button mat-raised-button type="button" class="btn btn-danger btn-link" matTooltip="Delete"
+                            matTooltipPosition="left" (click)="onDeleteCampus(element.id)"
+                            *ngIf="element.campusType !== 'main' && userInfo.isSysAdmin()">
+                            <i class="material-icons">delete_outline</i>
+                        </button>
+                    </mat-cell>
+                </ng-container>
+
+                <!-- No Data -->
+                <ng-container matColumnDef="noData">
+                    <mat-footer-cell [hidden]="!dataSource || (dataSource && dataSource.filteredData && dataSource.filteredData.length > 0)"
+                        *matFooterCellDef colspan="5">
+                        {{noDataInTable}}
+                    </mat-footer-cell>
+                </ng-container>
+
+                <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+                <mat-row *matRowDef="let row; columns: displayedColumns;" style="pointer-events: none;" cdkDrag></mat-row>
+                <mat-footer-row *matFooterRowDef="['noData']" [hidden]="!dataSource || (dataSource && dataSource.filteredData && dataSource.filteredData.length > 0)" class="text-center"></mat-footer-row> <!-- No Data-->
+
+            </mat-table>
+            <app-spinner [tableIsLoading]="tableIsLoading"></app-spinner>
+            <mat-paginator (page)="onPaginatorChange($event)"></mat-paginator>
+        </div>
+
+
+        <div class="row">
+            <div class="col-md-12 text-right">
+                <button class="btn btn-primary" (click)="addCampus()">
+                    <i class="material-icons">playlist_add</i> Add Campus</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="destinationCampusModal" role="dialog" aria-labelledby="destinationCampusModalLabel">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title text-left" id="destinationCampusModalLabel">Choose Destination Campus</h4>
+                    <button type="button" class="close" aria-label="Close" (click)="onCancelDestinationCampusModal()">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <mat-form-field>
+                        <mat-select placeholder="Select Campus" [(ngModel)]="destinationCampusId" required>
+                            <ng-container *ngFor="let campus of campusesExceptOneToBeDeleted">
+                                <mat-option [value]="campus.id">{{campus.name}}</mat-option>
+                            </ng-container>
+                        </mat-select>
+                    </mat-form-field>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" mat-raised-button class="btn btn-cancel mx-1"
+                        (click)="onCancelDestinationCampusModal()">Cancel</button>
+                    <button type="button" mat-raised-button class="btn btn-success"
+                        (click)="assignStudentsToCampus()">Save</button>
+                </div>
+            </div>
+        </div>
+    </div>

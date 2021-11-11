@@ -1,0 +1,35 @@
+{
+  "hosting": {
+    "target": "et-spa",
+    "public": "angular2",
+    "ignore": [
+      "firebase.json",
+      "**/.*",
+      "**/node_modules/**"
+    ],
+    "headers": [
+      {
+        "source": "**/api/noAuth/widget/**",
+        "headers": [
+          {
+            "key": "Access-Control-Allow-Origin",
+            "value": "*"
+          }
+        ]
+      }
+    ],
+    "redirects": [
+      {
+        "source": "/api/:path*",
+        "destination": "$API_URL/api/:path",
+        "type": 301
+      }
+    ],
+    "rewrites": [
+      {
+        "source": "**",
+        "destination": "/index.html"
+      }
+    ]
+  }
+}

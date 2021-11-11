@@ -1,0 +1,69 @@
+<label [ngClass]="{'required' : formProperty.schema.minItems > 0}">
+    {{(schema.minItems || 0) + ' File(s) required'}} {{formProperty.schema.maxItems ? 'and maximum ' +
+    formProperty.schema.maxItems + ' files' : ''}}
+</label>
+<div class="table-responsive">
+    <table class="table" *ngIf="formProperty?.properties?.length > 0">
+        <tr>
+            <th>File name</th>
+            <th>File size</th>
+            <ng-container *ngIf="showDocInfo">
+                <th>Date & Time Uploaded</th>
+                <th *ngIf="!schema.readOnly">Notes</th>
+                <th>User</th>
+                <th>Status</th>
+            </ng-container>
+            <th *ngIf="!(isSchoolContact && schema.readOnly)">Action</th>
+        </tr>
+        <tr *ngFor="let property of formProperty.properties">
+            <td>{{property.value.name}}</td>
+            <td>{{property.value.sizeInBytes | filesize}}</td>
+            <ng-container *ngIf="showDocInfo">
+                <td>{{property.value.dateTimeUpload | localeDate: dateDelimiterTime}}</td>
+                <td *ngIf="!schema.readOnly">{{property.value.notes}}</td>
+                <td>{{property.value.user}}</td>
+                <td>{{property.value.status}}</td>
+            </ng-container>
+            <td class="td-actions" *ngIf="!(isSchoolContact && schema.readOnly)">
+                <button *ngIf="showDocInfo && !schema.readOnly" mat-raised-button type="button"
+                    class="btn btn-success btn-link" matTooltip="Edit" matTooltipPosition="left"
+                    (click)="editDocument(property)">
+                    <i class="material-icons">create</i>
+                </button>
+                <button *ngIf="showDocInfo" mat-raised-button type="button" class="btn btn-default btn-link"
+                    [matTooltip]="'Download \n\n' + constants.virusWarning" matTooltipPosition="left"
+                    matTooltipClass="pre-line" (click)="downloadAppFile(property)">
+                    <i class="material-icons">get_app</i>
+                </button>
+                <button *ngIf="!schema.readOnly" mat-raised-button type="button" class="btn btn-danger btn-link"
+                    matTooltip="Delete" matTooltipPosition="left" (click)="removeAppFile(property)">
+                    <i class="material-icons">delete_outline</i>
+                </button>
+            </td>
+        </tr>
+    </table>
+</div>
+<br>
+<div class="row" *ngIf="!schema.readOnly">
+    <div class="col-md-6">
+        <div ngfDrop multiple="1" selectable="1" [(files)]="files" [maxSize]="appConstants.maxAppFileSize"
+            class="well my-drop-zone" [accept]="appConstants.allowedAppModuleFileExtentions.join(', ')"
+            (filesChange)="fileChangeEvent($event)" (lastInvalidsChange)="lastInvalidsChange($event)"
+            [class.invalid-drag]="baseDropValid===false" [class.valid-drag]="baseDropValid"
+            [class.required-files]="formProperty?.properties?.length < formProperty?.schema?.minItems"
+            [(validDrag)]="baseDropValid">
+            <span class="material-icons">
+                cloud_upload
+            </span>
+            <p>
+                Drop files here or Upload files
+                <span class="material-icons md-18"
+                    matTooltip="Max file size: {{(appConstants.maxAppFileSize | filesize) + br + shortInfo}}"
+                    matTooltipClass="pre-line">info_outline</span>
+            </p>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <p [hidden]="!uploading">Uploading... </p>
+    </div>
+</div>

@@ -1,0 +1,9 @@
+::ng-deep body {
+    background: #fff !important;
+    .try-again-btn {
+        mat-icon {
+            position: relative;
+            top: 2px !important;
+        }
+    }
+}

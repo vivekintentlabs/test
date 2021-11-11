@@ -1,0 +1,14 @@
+<div class="card">
+    <div class="card-header card-header-icon card-header-primary">
+        <div class="card-icon">
+            <i class="material-icons-outlined">{{ icon }}</i>
+        </div>
+        <h4 class="card-title">{{ title }}</h4>
+    </div>
+    <div class="card-body">
+        <app-chart-wrapper>
+            <app-demographic-column-chart [hidden]="isStackedColumnChart != true"></app-demographic-column-chart>
+            <app-demographic-pie-chart [hidden]="isStackedColumnChart != false"></app-demographic-pie-chart>
+        </app-chart-wrapper>
+    </div>
+</div>

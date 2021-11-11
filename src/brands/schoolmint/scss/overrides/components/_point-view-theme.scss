@@ -1,0 +1,26 @@
+@include point-view-color($gradient-secondary, $white);
+@include point-view-roundness(16px);
+
+// Breaking abstraction by directly styling the point view instead of using the
+// exposed point-view-theme.
+// First, this is because we change way too many typography settings and don't
+// have a theming system, so I don't want to create another mixin that takes a
+// lot of arguments.
+// Second, we don't do it for the regular theme, so just keep the abstraction
+// violation isolated here. If and when we adopt a theming system like Angular
+// Material (https://material.angular.io/guide/typography#define-a-level), then
+// we could probably add it to the point-view-theme.
+.point {
+  p {
+    text-transform: uppercase;
+    margin-bottom: 0;
+    letter-spacing: $spacer / 12.8;
+    font-size: $font-size-small;
+    font-weight: $font-weight-bold;
+  }
+
+  h1 {
+    font-weight: $font-weight-bold;
+    margin: 0;
+  }
+}

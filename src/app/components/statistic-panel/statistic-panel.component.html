@@ -1,0 +1,31 @@
+<div class="card text-center statistic-panel">
+    <div class="card-body count-block">
+        <div class="row">
+            <div class="col point-col" style="padding-right: 7px;">
+                <p>{{ label }}</p>
+                <h1 style="height: 60px; font-size: 45px;">{{ points }}</h1>
+            </div>
+            <div class="col">
+                <div class="col chart-col">
+                    <app-pie-chart-table [pieChartData]="pieChartData" [classNames]="classNames"></app-pie-chart-table>
+                </div>
+                <div class="col table-col">
+                    <table class="table">
+                        <tbody>
+                            <ng-container *ngFor="let row of data">
+                                <tr [ngClass]="row.color">
+                                    <td [ngClass]="row.color+'-gradient'" class="w65"></td>
+                                    <td class="ng-star-inserted">{{row.count + ' ' + row.name}}</td>
+                                    <td class="ng-star-inserted">
+                                        <mat-checkbox [checked]="filters[row.name]" (change)="filterChanged(row.name, $event.checked)">
+                                        </mat-checkbox>
+                                    </td>
+                                </tr>
+                            </ng-container>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

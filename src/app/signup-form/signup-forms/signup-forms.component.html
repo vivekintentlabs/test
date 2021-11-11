@@ -1,0 +1,146 @@
+<div class="main-content">
+    <div class="container-fluid">
+        <div class="card">
+            <div class="card-header card-header-icon card-header-primary">
+                <div class="card-icon">
+                    <i class="material-icons">assignment</i>
+                </div>
+                <h4 class="card-title">Signup Forms</h4>
+            </div>
+
+            <div class="card-body">
+                <div class="toolbar">
+                    <!--        Here you can write extra buttons/actions for the toolbar              -->
+                </div>
+
+                <div class="table-responsive">
+                    <table id="signupFormTable" class="table">
+                        <thead>
+                            <tr>
+                                <th>{{ headerRow[0] }}</th>
+                                <th *ngIf="userInfo.isSysAdmin()">{{ headerRow[1] }}</th>
+                                <th>{{ headerRow[2] }}</th>
+                                <th class="text-right">{{ headerRow[3] }}</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <ng-container *ngIf="signupForms && (signupForms.length > 0)">
+                                <ng-container *ngFor="let item of signupForms">
+                                    <tr>
+                                        <td>{{item.name}}</td>
+                                        <td *ngIf="userInfo.isSysAdmin()">{{item.display}}</td>
+                                        <td>{{item.submission}}</td>
+                                        <td class="td-actions text-right">
+                                            <button mat-raised-button type="button" class="btn btn-info btn-link"
+                                                matTooltip="Preview" matTooltipPosition="left"
+                                                (click)="previewSignupFrom(item)">
+                                                <i class="material-icons">open_in_new</i>
+                                            </button>
+                                            <button mat-raised-button type="button" class="btn btn-success btn-link"
+                                                matTooltip="Edit" matTooltipPosition="left"
+                                                (click)="editSignupFrom(item.id)">
+                                                <i class="material-icons">edit</i>
+                                            </button>
+                                        </td>
+                                    </tr>
+                                </ng-container>
+                            </ng-container>
+                            <tr *ngIf="signupForms && !(signupForms.length > 0)">
+                                <td colspan="4" class="text-center">No data added yet!</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <app-setup-form-header-footer #SetupFormHeaderFooterComponent></app-setup-form-header-footer>
+
+        <form [formGroup]="formGroup" novalidate (ngSubmit)="onSubmit()" *ngIf="formGroup">
+            <div class="card">
+                <div class="card-header card-header-icon card-header-primary">
+                    <div class="card-icon">
+                        <i class="material-icons">assignment</i>
+                    </div>
+                    <h4 class="card-title">Code of Conduct</h4>
+                </div>
+
+                <div class="card-body">
+                    <mat-form-field>
+                        <input matInput placeholder="Title Text:" type="text" formControlName="title" required>
+                        <mat-error *ngIf="!formGroup.controls.title.valid">
+                            Title Text should contain at least {{requiredTextFieldMinLength}} and at most {{nameMaxLength}} characters.
+                        </mat-error>
+                    </mat-form-field>
+                    <div class="toolbar">
+                        <h4>
+                            Enter in text, which can contain HTML code, that will appear on sign up forms for visitors
+                            to accept in order to complete
+                            a form submission.
+                        </h4>
+                    </div>
+                    <textarea id="sendProspectus" formControlName="text"></textarea>
+                    <button type="submit" class="btn btn-success pull-right"
+                        [disabled]="!formGroup.valid || formGroup.pristine" [promiseBtn]="promiseForBtn">
+                        Save
+                    </button>
+                    <button type="button" class="btn btn-secondary pull-right" (click)="onCancel()"
+                        [disabled]="formGroup.pristine">
+                        Reset
+                    </button>
+                </div>
+            </div>
+        </form>
+
+        <div class="modal fade" id="helpConductModal" tabindex="-1" role="dialog" aria-labelledby="helpModalLabel">
+            <div class="modal-dialog modal-lg" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h4 class="modal-title">Instructions</h4>
+                    </div>
+                    <div class="modal-body">
+                        <div class="row">
+                            <div class="col-sm-12">
+                                instructions on how to insert valid HTML
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-success pull-right" data-dismiss="modal">Ok</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="modal fade" id="previewConductModal" tabindex="-1" role="dialog"
+            aria-labelledby="previewModalLabel">
+            <div class="modal-dialog modal-lg" role="document">
+                <div class="modal-content">
+                    <div class="modal-body">
+                        <div class="row">
+                            <div class="col-md-12">
+                                <h4>
+                                    <strong>{{ (formGroup) ? formGroup.controls.title.value : ''}}</strong>
+                                </h4>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-2">
+                                <div class="togglebutton">
+                                    <label>
+                                        <input type="checkbox">
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="col-md-10">
+                                <div [innerHTML]="text"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-success pull-right" data-dismiss="modal">Ok</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

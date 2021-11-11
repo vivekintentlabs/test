@@ -1,0 +1,25 @@
+<input *ngIf="this.schema.widget.id==='hidden'; else notHiddenFieldBlock" [attr.name]="name" type="hidden"
+    [formControl]="control">
+
+<ng-template #notHiddenFieldBlock>
+    <div class="row">
+        <div class="col">
+            <mat-form-field class="w-100">
+                <mat-label>{{schema.title||schema.placeholder}}</mat-label>
+                <mat-chip-list [required]="formProperty|isRequired" [formControl]="control" #chipList aria-label="item selection">
+                    <mat-chip *ngFor="let item of items" [removable]="removable" (removed)="remove(item)"
+                        [disabled]="schema.readOnly">
+                        {{item}}
+                        <mat-icon matChipRemove *ngIf="removable">cancel</mat-icon>
+                    </mat-chip>
+                    <input placeholder="New Item..." [matChipInputFor]="chipList"
+                        [matChipInputSeparatorKeyCodes]="separatorKeysCodes" [matChipInputAddOnBlur]="addOnBlur"
+                        [disabled]="schema.readOnly" [name]="name" [id]="id"
+                        [attr.maxLength]="schema.maxLength||null" [attr.minLength]="schema.minLength||null" type="string"
+                        (matChipInputTokenEnd)="add($event)">
+                </mat-chip-list>
+                <mat-hint *ngIf="schema.description">{{schema.description}}</mat-hint>
+            </mat-form-field>
+        </div>
+    </div>
+</ng-template>

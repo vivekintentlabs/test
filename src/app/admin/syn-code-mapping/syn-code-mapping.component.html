@@ -1,0 +1,100 @@
+<div class="main-content">
+    <div class="container-fluid">
+        <form [formGroup]="typeForm" *ngIf="loaded">
+            <div class="card">
+                <div class="card-header card-header-icon card-header-primary">
+                    <div class="card-icon">
+                        <i class="material-icons-outlined">language</i>
+                    </div>
+                    <h4 class="card-title">Standard Lists</h4>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-sm-3">
+                            <mat-form-field>
+                                <mat-select placeholder="Type" formControlName="type"
+                                    (selectionChange)="typeChanged($event.value)">
+                                    <mat-option *ngFor="let type of types" [value]="type.id">{{type.name}}</mat-option>
+                                </mat-select>
+                            </mat-form-field>
+                        </div>
+                        <div class="col-sm-3" *ngIf="typeForm.controls.type.value === stateListId">
+                            <mat-form-field>
+                                <mat-select placeholder="Country" formControlName="countryId"
+                                    (selectionChange)="countryChanged()">
+                                    <mat-option *ngFor="let c of countriesWithAdministrativeAreas" [value]="c.id">
+                                        {{c.name}}</mat-option>
+                                </mat-select>
+                            </mat-form-field>
+                        </div>
+                        <div class="col-sm-3 ml-auto">
+                            <mat-form-field>
+                                <input matInput [disabled]="!dataSource" [value]="filterValue"
+                                    (keyup)="applyFilter($event.target.value)" placeholder="Search">
+                            </mat-form-field>
+                        </div>
+                    </div>
+                    <div class="bodycontainer table-responsive">
+                        <table mat-table [dataSource]="dataSource" class="w-100">
+
+                            <ng-container matColumnDef="name">
+                                <th mat-header-cell *matHeaderCellDef>Name</th>
+                                <td mat-cell *matCellDef="let row"> {{row.name}} </td>
+                            </ng-container>
+
+                            <ng-container matColumnDef="synCode">
+                                <th mat-header-cell *matHeaderCellDef>{{synCodeTitle}}</th>
+                                <td mat-cell *matCellDef="let row"> {{row.synCode}} </td>
+                            </ng-container>
+
+                            <ng-container matColumnDef="action">
+                                <th mat-header-cell *matHeaderCellDef class="text-right">Action</th>
+                                <td mat-cell *matCellDef="let row" class="td-actions text-right">
+                                    <button mat-raised-button type="button" class="btn btn-success btn-link text-right"
+                                        matTooltip="Edit" matTooltipPosition="left" (click)="editSynCode(row)">
+                                        <i class="material-icons">edit</i>
+                                    </button>
+                                </td>
+                            </ng-container>
+
+                            <tr mat-header-row *matHeaderRowDef="displayedColumns; sticky: true"></tr>
+                            <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+<div class="modal fade" id="synCodeMappingModal" role="dialog" aria-labelledby="synCodeMappingLabel">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title text-left" id="synCodeMappingLabel">Edit - SynCode</h4>
+                <button type="button" class="close" aria-label="Close" (click)="onCancel()">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <form [formGroup]="synCodeMappingForm" novalidate class="m-0" *ngIf="synCodeMappingForm">
+                <div class="modal-body">
+                    <input type="text" hidden formControlName="id" readonly>
+                    <mat-form-field>
+                        <input matInput [placeholder]="synCodeTitle" type="text" formControlName="synCode" required>
+                        <mat-error
+                            *ngIf="!(synCodeMappingForm.controls.synCode.valid || synCodeMappingForm.controls.synCode.pristine)">
+                            {{synCodeTitle}} is required and should be no more than {{synCodeMaxLength}} characters.
+                        </mat-error>
+                    </mat-form-field>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" mat-raised-button class="btn btn-cancel mx-1"
+                        (click)="onCancel()">Cancel</button>
+                    <button type="button" mat-raised-button class="btn btn-success" [promiseBtn]="promiseForBtn"
+                        [disabled]="!synCodeMappingForm.valid || synCodeMappingForm.pristine"
+                        (click)="saveSynCodeMapping()">Save
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

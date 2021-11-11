@@ -1,0 +1,98 @@
+<form [formGroup]="emailSignatureForm" novalidate (ngSubmit)="onSubmit()" *ngIf="emailSignatureForm">
+    <div class="row">
+        <div class="col-md-12">
+            <div class="card">
+                <div class="card-header card-header-icon card-header-primary">
+                    <div class="card-icon">
+                        <i class="material-icons">edit</i>
+                    </div>
+                    <h4 class="card-title">Email Signature</h4>
+                </div>
+
+                <div class="card-body">
+                    <div class="toolbar">
+                        <h4>
+                            {{brand.name}} can send emails automatically when a user registers for an event or requests
+                            an information pack.
+                            <br /><br /> Please specify which user these will come from:
+                        </h4>
+                    </div>
+                    <div class="row">
+                        <div class="col-6">
+                            <mat-form-field>
+                                <mat-select required placeholder="Select User" formControlName="userId"
+                                    (selectionChange)="onChange($event.value)">
+                                    <mat-option [value]="null">{{noItemSelected}} </mat-option>
+                                    <mat-option *ngFor="let user of users" [value]="user.id">
+                                        {{user.lastName}}, {{user.firstName}}
+                                    </mat-option>
+                                </mat-select>
+                            </mat-form-field>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-6">
+                            <div class="togglebutton mb-2">
+                                <label class="t-label">
+                                    Include school logo in your signature? &nbsp;&nbsp;
+                                    <input type="checkbox" formControlName="includeLogo">
+                                    <span class="toggle" matTooltip="{{ (urlLogo) ? '' : 'A logo needs to be uploaded in order to enable this feature. Please go to the Edit School screen to add your school logo.' }}"
+                                        matTooltipPosition="above"></span>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-6">
+                            <mat-form-field>
+                                <mat-select required placeholder="Select Logo Size" formControlName="imgDisplayWidthId"
+                                    (selectionChange)="logoSizeChange($event.value)">
+                                    <mat-option *ngFor="let item of imgDisplayWidths" [value]="item.id">
+                                        {{item.name}}
+                                    </mat-option>
+                                </mat-select>
+                            </mat-form-field>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-12">
+                            <label class="t-label">Logo location:&nbsp;&nbsp;</label>
+                            <div class="form-check form-check-radio form-check-inline" *ngFor="let item of locations">
+                                <label class="form-check-label">
+                                    <input class="form-check-input" type="radio" [value]=item formControlName="locationLogo">{{item}}
+                                    <span class="circle">
+                                        <span class="check"></span>
+                                    </span>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="toolbar">
+                        <h4>
+                            Set your desired style and any additional content such as address, phone etc. you want to
+                            include in your email signature.
+                        </h4>
+                    </div>
+                    <div class="row mt-3">
+                        <div class="col-md-12">
+                            <mat-input-container>
+                                <textarea id="emailSignature" matInput formControlName="signature"></textarea>
+                                <mat-error *ngIf="emailSignatureForm.controls.signature.invalid">
+                                    The signature is too long.
+                                </mat-error>
+                            </mat-input-container>
+                        </div>
+                    </div>
+                    <button type="submit" class="btn btn-success pull-right"
+                        [disabled]="!emailSignatureForm.valid || emailSignatureForm.pristine" [promiseBtn]="promiseForBtn">
+                        Save Signature
+                    </button>
+                    <button mat-raised-button type="button" class="btn btn-secondary" 
+                    matTooltip="Save & Send Test Email" matTooltipPosition="left" (click)="saveAndSendTestEmailSignature()">
+                        <i class="material-icons">mail</i> Save & Send Test Email
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>

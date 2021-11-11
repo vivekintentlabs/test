@@ -1,0 +1,12 @@
+<div class="progress-statuses" *ngFor="let isValidForm of [isValidForm$ | async]">
+    <button *ngFor="let appState of appStates" class="btn btn-lg" type="button"
+        [disabled]="!appState.allowed || (!isValidForm && appState.name === finalized)"
+        [class.btn-success]="appState.visited" [class.visited]="appState.visited" [class.unvisited]="!appState.visited"
+        [class.is-loading]="appState.loading" (click)="updateAppStatus(appState)">
+        <span [matTooltip]="appState?.msg || ''"
+            [matTooltipDisabled]="!appState.allowed || (isValidForm && appState.name === finalized)">
+            {{appState.name | translate}}
+        </span>
+        <span class="spinner-border spinner-border-sm ml-2"></span>
+    </button>
+</div>

@@ -1,0 +1,12 @@
+<div class="row">
+    <div class="col">
+        <mat-form-field>
+            <textarea matInput mat-autosize [attr.rows]="schema.rows||null" [placeholder]="schema.title||schema.placeholder" [formControl]="control" [name]="name"
+                [attr.id]="id" type="text" class="text-widget textarea-widget" [attr.maxLength]="schema.maxLength||null"
+                [attr.minLength]="schema.minLength||null" [readonly]="schema.readOnly" [required]="formProperty|isRequiredImpure"
+                [attr.disabled]="schema.readOnly||null" [disableControl]="schema.readOnly">
+            </textarea>
+            <mat-hint *ngIf="schema.description">{{schema.description}}</mat-hint>
+        </mat-form-field>
+    </div>
+</div>

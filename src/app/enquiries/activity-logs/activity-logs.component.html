@@ -1,0 +1,137 @@
+<div class="row">
+    <div class="col-md-12">
+        <div class="card">
+            <div class="card-header card-header-icon card-header-primary">
+                <div class="card-icon">
+                    <i class="material-icons-outlined">assignment</i>
+                </div>
+                <h4 class="card-title">Activity Logs</h4>
+            </div>
+
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-sm-8"></div>
+                    <div class="col-sm-4">
+                        <div class="float-right mx-2">
+                            <mat-form-field>
+                                <input matInput [disabled]="!dataSource" (keyup)="applyFilter($event.target.value)"
+                                    placeholder="Search results" [value]="tableState.searchText">
+                            </mat-form-field>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="table-responsive">
+                    <table [id]="tableId" mat-table [dataSource]="dataSource" matSort matSortActive="date"
+                        matSortDirection="desc" (matSortChange)="onSortChange($event)">
+
+                        <!-- Date Column -->
+                        <ng-container matColumnDef="date">
+                            <th mat-header-cell *matHeaderCellDef mat-sort-header>Date</th>
+                            <td mat-cell *matCellDef="let element">{{element.date | localDate: timeZoneId : 'date'}}</td>
+                        </ng-container>
+
+                        <!-- Activity Column -->
+                        <ng-container matColumnDef="name">
+                            <th mat-header-cell *matHeaderCellDef mat-sort-header>Activity</th>
+                            <td mat-cell *matCellDef="let element">{{element.name}}</td>
+                        </ng-container>
+
+                        <!-- Details Column -->
+                        <ng-container matColumnDef="notes">
+                            <th mat-header-cell *matHeaderCellDef mat-sort-header>Details</th>
+                            <td mat-cell *matCellDef="let element">{{element.notes}}</td>
+                        </ng-container>
+
+                        <!-- Message Column -->
+                        <ng-container matColumnDef="message">
+                            <th mat-header-cell *matHeaderCellDef mat-sort-header>Message</th>
+                            <td mat-cell [ngClass]="{'l-cs': element.message && element.message != '-'}"
+                                (click)="showMessage(element)" *matCellDef="let element">
+                                {{element.message && element.message.length > 15 ? element.message.substring(0,14) + '...' : element.message}}
+                            </td>
+                        </ng-container>
+
+                        <!-- User Column -->
+                        <ng-container matColumnDef="user">
+                            <th mat-header-cell *matHeaderCellDef mat-sort-header>User</th>
+                            <td mat-cell *matCellDef="let element">{{element.user}}</td>
+                        </ng-container>
+
+                        <!-- Code of Conduct Agreed Column -->
+                        <ng-container matColumnDef="agreed">
+                            <th mat-header-cell *matHeaderCellDef mat-sort-header>Code of Conduct Agreed</th>
+                            <td mat-cell *matCellDef="let element">
+                                {{element.agreed == 1 ? 'Yes' : element.agreed == -1 ? '-' : 'No'}}</td>
+                        </ng-container>
+
+                        <!-- Attended Column -->
+                        <ng-container matColumnDef="attended">
+                            <th mat-header-cell *matHeaderCellDef mat-sort-header>Attended</th>
+                            <td mat-cell *matCellDef="let element">{{element.attended}}</td>
+                        </ng-container>
+
+
+                        <!-- Actions Column -->
+                        <ng-container matColumnDef="actions">
+                            <th mat-header-cell *matHeaderCellDef> <span class="float-right">Actions</span></th>
+                            <td class="td-actions text-right" mat-cell *matCellDef="let element">
+                                <button mat-raised-button type="button" class="btn btn-success btn-link"
+                                    matTooltip="Edit" matTooltipPosition="left" (click)="editActivityLog(element)">
+                                    <i class="material-icons">edit</i>
+                                </button>
+                                <button mat-raised-button type="button" class="btn btn-danger btn-link"
+                                    matTooltip="Delete" matTooltipPosition="left" (click)="deleteActivityLog(element)">
+                                    <i class="material-icons">delete_outline</i>
+                                </button>
+                            </td>
+                        </ng-container>
+
+                        <!-- No Data -->
+                        <ng-container matColumnDef="noData">
+                            <td [hidden]="!dataSource || (dataSource && dataSource.filteredData && dataSource.filteredData.length > 0)"
+                                mat-footer-cell *matFooterCellDef colspan="11">
+                                {{noDataInTable}}
+                            </td>
+                        </ng-container>
+
+                        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+                        <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+                        <tr mat-footer-row *matFooterRowDef="['noData']" class="text-center"></tr> <!-- No Data-->
+
+                    </table>
+                </div>
+                <app-spinner [tableIsLoading]="tableIsLoading"></app-spinner>
+                <mat-paginator (page)="onPaginatorChange($event)"></mat-paginator>
+
+                <div class="row" *ngIf="shouldShowActionButtons">
+                    <div class="col-md-12 text-right">
+                        <button mat-raised-button class="btn btn-primary" type="button"
+                            (click)="attendAnPersonalTour()">
+                            <i class="material-icons">playlist_add</i>REGISTER FOR A PERSONAL TOUR</button>
+                        <button mat-raised-button class="btn btn-primary" type="button" (click)="attendAnEvent()"
+                            [disabled]="futureEvents.length<1">
+                            <i class="material-icons">playlist_add</i> REGISTER FOR AN EVENT</button>
+                        <button mat-raised-button class="btn btn-primary" type="button" (click)="addActivityLog()">
+                            <i class="material-icons">playlist_add</i>ADD AN ACTIVITY</button>
+                    </div>
+                </div>
+            </div>
+            <!-- end content-->
+        </div>
+        <!--  end card  -->
+    </div>
+    <!-- end col-md-12 -->
+</div>
+<!-- end row -->
+
+<!-- Modal -->
+<app-show-message *ngIf="showCurrentMessage" [triggershowMessage]="triggershowMessage" [message]="message">
+</app-show-message>
+
+<app-add-activity-log *ngIf="student || students" [editableStudentId]="editableStudentId" [actionEdit]="actionEdit"
+    [studentIds]="studentIds" [students]="students" [activityLogId]="activityLogId" [triggerAL]="triggerAL"
+    [activityIdSendProspectus]="activityIdSendProspectus"
+    [activityIdRecordOfConversation]="activityIdRecordOfConversation" [schoolProspectus]="schoolProspectus"
+    (updatedActivityLog)="activityLogUpdateDataCallback($event)">
+</app-add-activity-log>

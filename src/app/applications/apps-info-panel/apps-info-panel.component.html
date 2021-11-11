@@ -1,0 +1,95 @@
+<div *ngIf="applicationStatus" class="row info-panel">
+    <div class="col-md-3" *ngIf="studentData$ | async as studentData">
+        <h4><strong>Student: {{studentData.firstName}} {{studentData.lastName}}</strong></h4>
+        <p>Starting Year: {{studentData.startingYear}}</p>
+        <p>{{'et.intakeYearLevel' | translate}}: {{studentData.intakeYearLevel}}</p>
+        <p>Student Status: {{studentStatus}}</p>
+    </div>
+    <div class="col-md-3">
+        <h4><strong>Application Information</strong></h4>
+        <p>Application ID: {{ docId }}</p>
+        <ng-container *ngIf="dateSubmitted">
+            <p>
+                <a target="_blank" rel="tooltip" title="Preview Submitted Application" href="{{appPreviewUrl}}" class="l-cs">
+                    Date Submitted: {{dateSubmitted._seconds * 1000 | localDate: school.timeZoneId : dateFormat}}
+                </a>
+            </p>
+        </ng-container>
+        <p *ngIf="appUpdatedAt$ | async as appUpdatedAt">
+            <a target="_blank" rel="tooltip" title="Preview Updated Application" href="{{appPreviewUrl}}?type=active" class="l-cs">
+                Last Updated: {{appUpdatedAt._seconds * 1000 | localDate: school.timeZoneId : dateFormat}}
+            </a>
+        </p>
+        <p *ngIf="exportDate">
+            <span class="badge badge-success">EXPORTED</span> {{exportDate | localeDate: dateDelimiter}}
+        </p>
+        <p *ngIf="!exportDate">
+            <span class="badge badge-danger">NOT EXPORTED</span>
+        </p>
+    </div>
+    <div class="col-md-3">
+        <h4><strong>Doc Checklist</strong></h4>
+        <ul class="fa-ul multi-column" *ngIf="docUploads$ | async as docUploads">
+            <ng-container *ngFor="let docUpload of docUploads; let i = index">
+                <li [matTooltip]="docUpload.tooltip" matTooltipPosition="left">
+                    <div>
+                        <span class="fa-li">
+                            <span class="material-icons {{docUpload.uiState}}" aria-hidden="true">
+                                {{ docUpload.uiState === 'notverified' ? 'panorama_fish_eye' : 'circle'}}
+                            </span>
+                            <!-- <span class="visually-hidden">{{docUpload.tooltip}}</span> commented until bootstrap5 update -->
+                        </span>
+                        {{docUpload.name}}
+                    </div>
+                </li>
+            </ng-container>
+        </ul>
+    </div>
+    <div class="col-md-3">
+        <h4><strong>Fee Responsibility</strong></h4>
+        <ng-container *ngIf="formattedFeeResponsibilities$ | async as formattedFeeResponsibilities">
+            <p *ngFor="let formattedFeeResponsibility of formattedFeeResponsibilities">{{formattedFeeResponsibility}}</p>
+        </ng-container>
+        <ng-container *ngIf="paymentStatus$ | async as paymentStatus">
+            <ng-container *ngIf="paymentData$ | async as paymentData">
+                <h4><strong>Payment</strong></h4>
+                <ul class="fa-ul">
+                    <li [matTooltip]="'Payment Type: ' + paymentStatus.paymentType" matTooltipPosition="left">
+                        <div>
+                            <span class="fa-li">
+                                <span class="material-icons" aria-hidden="true">
+                                    {{ paymentStatus.paymentType === paymentType.payLater ? 'account_circle' : 'public' }}
+                                </span>
+                                <!-- <span class="visually-hidden">Payment Type: {{paymentStatus.paymentType}}</span> commented until bootstrap5 update -->
+                            </span>
+                            {{ paymentStatus.paymentMethod }}
+                        </div>
+                    </li>
+
+                    <li [matTooltip]="paymentStatus.tooltip" matTooltipPosition="left">
+                        <div>
+                            <span class="fa-li">
+                                <span class="material-icons" [ngClass]="{verified: paymentStatus.id === liCode.payment_verified}"
+                                    aria-hidden="true">{{paymentStatus.id === liCode.payment_verified ? 'circle' : 'panorama_fish_eye'}}
+                                </span>
+                                <!-- <span class="visually-hidden">{{paymentStatus.tooltip}}</span> commented until bootstrap5 update -->
+                            </span>
+                            <p>
+                                Amount: {{ paymentData.amount | currency:paymentData.currency:'symbol-narrow' }}
+                            </p>
+                            <p *ngIf="paymentData.stripe?.paymentIntent?.receipt_number">
+                                Receipt: {{ paymentData.stripe.paymentIntent.receipt_number }}
+                            </p>
+                            <p *ngIf="paymentData.transactionId">
+                                Payment ID: {{ paymentData.transactionId }}
+                                
+                            </p>
+                        </div>
+                    </li>
+                </ul>
+            </ng-container>
+        </ng-container>
+    </div>
+</div>
+
+<apps-progress-status *ngIf="applicationStatus" [appStatus]="applicationStatus" [docId]="docId" [formId]="formId"></apps-progress-status>

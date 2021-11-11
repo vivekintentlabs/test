@@ -1,0 +1,18 @@
+<mat-form-field>
+    <input
+        matInput
+        [matDatepicker]="picker"
+        [id]="id"
+        [name]="name"
+        [formControl]="control"
+        [required]="formProperty|isRequired"
+        [max]="schema.maxDate"
+        [placeholder]="schema.title||schema.placeholder"
+        [disabled]="schema.readOnly"
+        readonly
+        (click)="picker.open()"
+        (dateChange)="onDateChange($event.value)">
+    <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+    <mat-datepicker startView="multi-year" #picker> </mat-datepicker>
+    <mat-hint *ngIf="schema.description">{{schema.description}}</mat-hint>
+</mat-form-field>

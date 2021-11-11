@@ -1,0 +1,23 @@
+steps:
+- name: 'node:${_NODE_VERSION}'
+  entrypoint: npm
+  args: [ 'ci', '--unsafe-perm' ]
+- name: 'node:${_NODE_VERSION}'
+  entrypoint: npm
+  args: ['run', 'build:${_BUILD_TARGET}']
+- name: "gcr.io/${PROJECT_ID}/envsubst"
+  entrypoint: 'bash'
+  args: ['-c', 'envsubst < firebase.maintenance.json > firebase.json']
+- name: "gcr.io/${PROJECT_ID}/firebase"
+  args: ['--project=${PROJECT_ID}', 'target:clear', 'hosting', 'et-spa']
+- name: "gcr.io/${PROJECT_ID}/firebase"
+  args: ['--project=${PROJECT_ID}', 'target:apply', 'hosting', 'et-spa', '${_FIREBASE_HOSTING_SITE}']
+- name: "gcr.io/${PROJECT_ID}/firebase"
+  args: ['deploy', '--project=${PROJECT_ID}', '--only', 'hosting:et-spa', '-m', '$_DEPLOY_COMMENT : Commit $SHORT_SHA : Build $BUILD_ID']
+
+timeout: "2400s"
+
+substitutions:
+  _NODE_VERSION: lts
+  _FIREBASE_HOSTING_SITE: ${PROJECT_ID}
+  _DEPLOY_COMMENT: 'Maintenance Page'

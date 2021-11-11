@@ -1,0 +1,38 @@
+<ng-container *ngIf="!multiple && options">
+    <label *ngIf="placeholder" class="w-100 {{ isRequired ? 'required' : '' }}">{{placeholder}}</label>
+    <div class="form-check form-check-radio mt-0 " *ngFor="let option of options">
+        <label class="form-check-label"
+            [attr.style]="(option.isRegistrationDisabled ? 'color: #bdbdbd !important;' : '') | safeStyle">
+            <input class="form-check-input" type="radio" [disabled]="option.isRegistrationDisabled"
+                [checked]="_value ? option.id === _value.id : false" [value]="option" [required]="isRequired"
+                (change)="subtourChanged(option)">
+            {{option.name}} - Start {{option.startTime | time: 'short'}}
+            {{option.isRegistrationDisabled ? '- Fully Booked' : ''}}
+            <span class="circle">
+                <span class="check"></span>
+            </span>
+        </label>
+    </div>
+
+    <div class="form-check form-check-radio mt-0" [hidden]="isOnlineRegistration && isRequired">
+        <label class="form-check-label">
+            <input class="form-check-input" type="radio" [checked]="_value === null" value="null"
+                (change)="subtourChanged(null)">None
+            <span class="circle">
+                <span class="check"></span>
+            </span>
+        </label>
+    </div>
+</ng-container>
+
+<ng-container *ngIf="multiple && options">
+    <label *ngIf="placeholder" class="w-100 {{ isRequired ? 'required' : '' }}">{{placeholder}}</label>
+    <div class="form-check mt-0" [ngClass]="{'mt-3': options.length === 1 && !isOnlineRegistration}"
+        *ngFor="let option of options">
+        <mat-checkbox [disabled]="option.isRegistrationDisabled" [(ngModel)]="option.checked" (change)="onToggle($event)"
+            [attr.style]="(option.isRegistrationDisabled ? 'color: #bdbdbd !important;' : '') | safeStyle">
+            {{option.name}} - Start {{option.startTime | time: 'short'}}
+            {{option.isRegistrationDisabled ? '- Fully Booked' : ''}}
+        </mat-checkbox>
+    </div>
+</ng-container>

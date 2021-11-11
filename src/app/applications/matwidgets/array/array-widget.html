@@ -1,0 +1,47 @@
+<mat-card class="widget mb-3">
+    <legend *ngIf="schema.title" class="h3 text-dark">{{schema.title}}</legend>
+    <div *ngIf="schema.description">{{schema.description}}</div>
+    <ng-container *ngFor="let error of control.errors">
+        <label *ngIf="error.code === 'CUSTOM_VALIDATOR'" class="text-danger w-100">{{error.message}}</label>
+    </ng-container>
+    <mat-card-content class="mt-2">
+        <div class="row">
+            <div class="col-12">
+                <mat-accordion [multi]="true">
+                    <mat-expansion-panel *ngFor="let property of formProperty.properties; let i = index"
+                        [expanded]="i === step || schema.readOnly"
+                        (opened)="property.isOpen = true"
+                        (closed)="property.isOpen = false">
+                        <mat-expansion-panel-header>
+                            <mat-panel-title>
+                                {{(i + 1) | ordinal}} {{property.schema.title}}
+                            </mat-panel-title>
+                            <mat-panel-description *ngIf="schema.widget.panelDescriptionFields && !property.isOpen">
+                                <span *ngFor="let field of schema.widget.panelDescriptionFields" class="mr-1">
+                                    {{ property.value[field] }}
+                                </span>
+                                <span *ngIf="!property.valid" class="red-text">
+                                    (Missing Fields)
+                                </span>
+                            </mat-panel-description>
+                        </mat-expansion-panel-header>
+                        <sf-form-element [formProperty]="property"></sf-form-element>
+                        <mat-action-row *ngIf="i>=(schema.minItems||0) && !schema.readOnly">
+                            <button mat-stroked-button color="warn" class="array-remove-button"
+                                (click)="removeItem(property)" [disabled]="isRemoveButtonDisabled()">
+                                <mat-icon>clear</mat-icon>Remove
+                            </button>
+                        </mat-action-row>
+                    </mat-expansion-panel>
+                </mat-accordion>
+            </div>
+        </div>
+    </mat-card-content>
+
+    <mat-card-actions class="text-right p-2" *ngIf="!schema.readOnly">
+        <button mat-stroked-button color="primary" class="array-add-button" (click)="addItem()"
+            [disabled]="isAddButtonDisabled()" *ngIf="!isAddButtonDisabled()">
+            <mat-icon>add</mat-icon>Add
+        </button>
+    </mat-card-actions>
+</mat-card>

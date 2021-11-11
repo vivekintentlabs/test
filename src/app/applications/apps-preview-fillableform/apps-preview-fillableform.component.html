@@ -1,0 +1,27 @@
+<div class="main-content">
+    <div class="container-fluid">
+        <div class="card">
+            <div class="card-header card-header-icon card-header-primary">
+                <div class="card-icon">
+                    <i class="material-icons">assignment</i>
+                </div>
+                <h4 class="card-title">Preview Application</h4>
+            </div>
+            <div class="card-body">
+                <div class="row my-2">
+                    <div class="col-12">
+                        <button class="btn btn-secondary" mat-raised-button type="button" [disabled]="!appForm"
+                            (click)="sendEmail()">Send Email
+                        </button>
+                    </div>
+                </div>
+                <div *ngIf="!appForm" class="w-100">
+                    <mat-spinner class="mx-auto" [diameter]="45"></mat-spinner>
+                </div>
+                <sf-form *ngIf="appForm" [schema]="appForm.form" [(ngModel)]="appForm.model"
+                    [validators]="customValidators" [bindings]="customBindings">
+                </sf-form>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,29 @@
+<li class="nav-item dropdown" *ngIf="!isMobileMenu() && (userInfo.isSysAdmin()) && schools != null && schools.length>0">
+    <mat-form-field id="schoolswitchli">
+        <mat-select placeholder="selected school" [value]="school.id" (selectionChange)="schoolChanged($event.value)">
+            <mat-option *ngFor="let mySchool of schools" [value]="mySchool.id">
+                {{ mySchool.name }}
+            </mat-option>
+        </mat-select>
+    </mat-form-field>
+</li>
+
+<div *ngIf="isMobileMenu()">
+    <ul class="nav" *ngIf="(userInfo.isSysAdmin()) && schools != null && schools.length>0">
+        <li routerLinkActive="active" class="nav-item">
+            <a data-toggle="collapse" href="#schoolSelector2" class="nav-link">
+                <!-- <i class="material-icons">notifications</i> -->
+                <p>{{ school.name }}
+                    <b class="caret"></b>
+                </p>
+            </a>
+            <div id="schoolSelector2" class="collapse">
+                <ul class="nav">
+                    <li *ngFor="let mySchool of schools" class="nav-item">
+                        <a (click)="schoolChanged(mySchool.id)" class="nav-link">{{ mySchool.name }}</a>
+                    </li>
+                </ul>
+            </div>
+        </li>
+    </ul>
+</div>

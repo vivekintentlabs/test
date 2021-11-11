@@ -1,0 +1,36 @@
+.mat-button.btn,.mat-raised-button.btn,.mat-raised-button.btn:not([class*=mat-elevation-z]),
+.btn {
+  font-size: 11px;
+  font-weight: $font-weight-ultra-bold;
+
+  &.btn-secondary {
+    @include button-ghost-variant($btn-secondary-color, $addBorder: true);
+  }
+
+  // All ghost buttons
+  &.btn-secondary,
+  &.btn-cancel,
+  &.btn-outline,
+  &.btn-outline-primary,
+  &.btn-outline-secondary,
+  &.btn-outline-info,
+  &.btn-outline-success,
+  &.btn-outline-warning,
+  &.btn-outline-danger {
+    font-weight: $font-weight-extra-bold;
+  }
+
+  &.btn-link:not(.btn-view-link) {
+    border-style: solid;
+    border-width: 1px;
+    border-color: $brand-neutral-border-color;
+    border-radius: $border-radius-base;
+    &:hover, &:focus, &:active, &:focus:active {
+      border-color: $brand-neutral-border-color;
+    }
+    i {
+      color: $icon-color-on-light;
+      font-size: 18px;
+    }
+  }
+}

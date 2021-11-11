@@ -1,0 +1,15 @@
+$brand-neutral:                     $salt-box !default;
+$brand-neutral-border-color:        rgba($brand-neutral, .5) !default;
+
+$bg-light:                          $grey-200 !default;
+
+$btn-view-link-color:               $brand-warning !default;
+$btn-reset-color:                   $white !default;
+$btn-reset-bg:                      $brand-warning !default;
+$btn-reset-border-color:            $brand-warning !default;
+$btn-delete-color:                  $white !default;
+$btn-delete-bg:                     $brand-danger !default;
+$btn-delete-border-color:           $brand-danger !default;
+$btn-cancel-color:                  $brand-neutral !default;
+$btn-cancel-border-color:           $brand-neutral-border-color !default;
+$filter-box-bg:                     $concrete !default;

@@ -1,0 +1,57 @@
+<div class="container-fluid" *ngIf="commService.isModuleActive">
+    <div class="card">
+        <div class="card-header card-header-icon card-header-primary" data-background-color="purple">
+            <div class="card-icon">
+                <i class="material-icons-outlined">mail</i>
+            </div>
+            <h4 class="card-title">Comms Templates</h4>
+        </div>
+
+        <div class="card-body">
+            <div *ngIf="emailTemplates" class="table-responsive">
+                <table class="table table-no-bordered table-hover">
+                    <thead>
+                        <tr>
+                            <th class="w-75">{{ 'Subject' }}</th>
+                            <th class="w-auto">{{ 'Activated' }}</th>
+                            <th class="w-auto text-right pr-3">{{ 'Actions' }}</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr *ngFor="let item of emailTemplates">
+                            <td class="w-25">{{item.subject}}</td>
+                            <td>
+                                <mat-checkbox [checked]="item.activated" (change)="activate($event.checked, item.id)">
+                                </mat-checkbox>
+                            </td>
+                            <td class="td-actions text-right">
+                                <button mat-raised-button type="button" class="btn btn-light btn-link" matTooltip="Duplicate Template" matTooltipPosition="left" (click)="copy(item)">
+                                    <i class="material-icons">file_copy</i>
+                                </button>
+                                <button mat-raised-button type="button" class="btn btn-primary btn-link" matTooltip="Send a Test Email" matTooltipPosition="left"
+                                    (click)="showSendTestEmail(item)">
+                                    <i class="material-icons">mail_outline</i>
+                                </button>
+                                <button mat-raised-button type="button" class="btn btn-success btn-link" matTooltip="Edit" matTooltipPosition="left"
+                                    (click)="edit(item.id)">
+                                    <i class="material-icons">edit</i>
+                                </button>
+                                <button mat-raised-button type="button" class="btn btn-danger btn-link" matTooltip="Delete" matTooltipPosition="left"
+                                    (click)="remove(item.id)">
+                                    <i class="material-icons">delete_outline</i>
+                                </button>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="row">
+                <div class="col-md-12 text-right">
+                    <button type="button" class="btn btn-primary pull-right" (click)="onCreate()">
+                        <i class="material-icons">playlist_add</i> Add New
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,28 @@
+// Bootstrap brand color customization
+$brand-primary:              $primary-teal !default;
+$brand-info:                 $link-blue !default;
+$brand-success:              $greenish !default;
+$brand-warning:              $pumpkin!default;
+$brand-danger:               $pastel-red !default;
+$brand-neutral:              $greyblue !default;
+$brand-neutral-border-color: $duck-egg-blue !default;
+// $brand-rose:                 $pink-500 !default;
+// $brand-inverse:              $black-color !default;
+
+$gradient-secondary:         linear-gradient(to right, $dark-cyan, $teal-blue);
+
+$logo-color:                 $fun-blue !default;
+$link-color:                 $link-blue !default;
+$text-primary:               $marine !default;
+$bg-light:                   $pale-grey !default;
+
+// Custom brand colors
+$icon-color-on-dark:         $bluegrey !default;
+$icon-color-on-light:        $faded-blue !default;
+$icon-color:                 $icon-color-on-light !default;
+
+$btn-view-link-color:        $link-color !default;
+$btn-reset-color:            $faded-blue !default;
+$btn-reset-bg:               $white !default;
+$btn-reset-border-color:     $white !default;
+$filter-box-bg:              $white !default;

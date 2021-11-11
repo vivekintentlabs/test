@@ -1,0 +1,20 @@
+.font-1-5em {
+    font-size: 1.5em;
+}
+.clickable {
+    cursor: pointer;
+}
+:host ::ng-deep { 
+    app-email-chips > form {
+        margin-bottom: 0;
+        .mat-chip-list-wrapper .mat-standard-chip {
+            margin: 0 4px 6px;
+        }
+    }
+    .mat-form-field-appearance-legacy .mat-form-field-wrapper {
+        padding-bottom: 0.85em;
+    }
+    .mat-form-field-infix {
+        padding: .4em 0;
+    }
+}

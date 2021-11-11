@@ -1,0 +1,22 @@
+<div id="customSkinMap" class="map"></div>
+<div class="card-body">
+    <div class="row">
+        <div class="col">
+            <label class="col-form-label">
+                <h6>Legend</h6>
+            </label>
+            <div class="d-flex flex-wrap">
+                <div class="d-inherit pr-2" *ngFor="let legend of selectedYearLevels; let i = index">
+                    <button *ngIf="isClickableLegend" mat-raised-button
+                        class="btn btn-legend btn-round btn-sm legend-chart pt-2" (click)="onClickLegend(legend.id)">
+                        <i class="fa fa-map-marker fa-1x mr-1 mtn-2" aria-hidden="true" [ngClass]="outputColors[i]"></i>
+                        {{legend.name}}
+                    </button>
+                    <div class="unClickableLegend" *ngIf="!isClickableLegend">
+                        <i class="fa fa-circle mr-1 mt-10" [ngClass]="outputColors[i]"></i>{{legend.name}}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

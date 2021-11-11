@@ -1,0 +1,28 @@
+@import "~scss/theme/core/variables";
+
+#prospectusRequestForm {
+    background: $white;
+    &>.card {
+        margin: 0;
+        box-shadow: none;
+        .card-footer {
+            #copyrightForForm {
+                a {
+                    font-weight: normal;
+                }
+            }
+        }
+    }
+}
+
+@media (max-width: 576px) {
+    #mobile-centered {
+        text-align: center;
+        margin-bottom: 10px; 
+    }
+}
+@media (min-width: 577px) {
+    #mobile-centered {
+        text-align: right;
+    }
+}

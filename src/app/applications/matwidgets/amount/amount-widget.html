@@ -1,0 +1,8 @@
+<div class="row mb-3 mt-3">
+    <div class="col-12">
+        {{schema.description}}
+        <ng-container *ngIf="paymentData$ | async as paymentData">
+            {{paymentData.amount | currency:paymentData.currency:'symbol-narrow'}} {{paymentData.currency}}
+        </ng-container>
+    </div>
+</div>

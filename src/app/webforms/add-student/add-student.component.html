@@ -1,0 +1,224 @@
+<div *ngIf="studentForm && loaded">
+    <form id="schudentForm{{studNumber}}" [formGroup]="studentForm" novalidate>
+        <div class="card-body">
+            <div class="row">
+                <div class="col-sm-6">
+                    <mat-form-field>
+                        <input matInput [placeholder]="getFieldLabel('firstName', 'student')" type="text" formControlName="firstName" required>
+                        <mat-error [hidden]="studentForm.controls.firstName.valid || (studentForm.controls.firstName.pristine && !submitted)">
+                            First Name should contain at least {{requiredTextFieldMinLength}} and at most {{nameMaxLength}} characters.
+                        </mat-error>
+                    </mat-form-field>
+                </div>
+                <div class="col-sm-6">
+                    <mat-form-field>
+                        <input matInput [placeholder]="getFieldLabel('lastName', 'student')" type="text" formControlName="lastName" required>
+                        <mat-error [hidden]="studentForm.controls.lastName.valid || (studentForm.controls.lastName.pristine && !submitted)">
+                            Last Name should contain at least {{requiredTextFieldMinLength}} and at most {{nameMaxLength}} characters.
+                        </mat-error>
+                    </mat-form-field>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-sm-6" *ngIf="studentForm.controls.dateOfBirth">
+                    <mat-form-field>
+                        <input matInput [matDatepicker]="dateOfBirth" [max]="maxDate" [placeholder]="getFieldLabel('dateOfBirth', 'student')"
+                            formControlName="dateOfBirth" [required]="isRequired(data.fieldSettings, 'dateOfBirth')">
+                        <mat-datepicker-toggle matSuffix [for]="dateOfBirth"></mat-datepicker-toggle>
+                        <mat-datepicker [startView]="studentForm.controls.dateOfBirth.value ? 'month' : 'multi-year'" #dateOfBirth></mat-datepicker>
+                    </mat-form-field>
+                </div>
+                <div class="col-sm-6" *ngIf="studentForm.controls.genderId">
+                    <div class="row col-sm">
+                        <label class="col-form-label" [ngClass]="{'required': isRequired(data.fieldSettings, 'genderId')}">
+                            {{getFieldLabel('genderId', 'student')}}
+                        </label>
+                        <div class="col-sm">
+                            <div class="form-check form-check-inline" *ngFor="let gender of genders">
+                                <label class="form-check-label">
+                                    <input class="form-check-input" type="radio" [value]="gender.id" formControlName="genderId">{{gender.name}}
+                                    <span class="circle">
+                                        <span class="check"></span>
+                                    </span>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                    <mat-error class="mat-error-radio" [hidden]="studentForm.controls.genderId.valid || (studentForm.controls.genderId.pristine && !submitted)">
+                        {{fieldRequired}}
+                    </mat-error>
+                </div>
+
+                <div class="col-sm-6" *ngIf="studentForm.controls.religionId">
+                    <app-other-list-item formControlName="religionId"
+                        [placeholder]="getFieldLabel('religionId', 'student')" [list]="religions" [reset]="reset"
+                        [listId]="listId.religion" [isPublicPage]="true" [isRequired]="isRequired(data.fieldSettings, 'religionId')"
+                        htmlId="studentForm{{studNumber}}ReligionId" [trigger]="triggerOtherReligion"
+                        (selectionChanged)="listItemChanged.emit($event)" [school]="school" allowSearchOption="true">
+                    </app-other-list-item>
+                </div>
+
+                <div class="col-sm-6" *ngIf="campuses && campuses.length > 2">
+                    <mat-form-field>
+                        <mat-select [placeholder]="getFieldLabel('campusId', 'student')" formControlName="campusId"
+                            (selectionChange)="campusChanged($event.value)" required>
+                            <mat-option *ngFor="let item of campuses" [value]="item.id">
+                                {{item.name}}
+                            </mat-option>
+                        </mat-select>
+                    </mat-form-field>
+                </div>
+                <div class="col-sm-6" *ngIf="school.hasInternationals && studentForm.controls.isInternational">
+                    <div class="row col-sm">
+                        <label class="col-form-label text-align-left"
+                            [ngClass]="{'required': isRequired(data.fieldSettings, 'isInternational')}">
+                            {{getFieldLabel('isInternational', 'student')}}
+                        </label>
+                        <div class="col-sm">
+                            <div class="form-check form-check-inline">
+                                <label class="form-check-label">
+                                    <input class="form-check-input" type="radio" [value]="true" formControlName="isInternational">Yes
+                                    <span class="circle">
+                                        <span class="check"></span>
+                                    </span>
+                                </label>
+                            </div>
+                            <div class="form-check form-check-inline">
+                                <label class="form-check-label">
+                                    <input class="form-check-input" type="radio" [value]="false" formControlName="isInternational">No
+                                    <span class="circle">
+                                        <span class="check"></span>
+                                    </span>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-sm-6" *ngIf="school.hasInternationals && studentForm.controls.countryOfOriginId">
+                    <app-select-search formControlName="countryOfOriginId" [placeholder]="getFieldLabel('countryOfOriginId', 'student')"
+                        [list]="countries" [isRequired]="isRequired(data.fieldSettings, 'countryOfOriginId')" >
+                    </app-select-search>
+                </div>
+
+                <div class="col-sm-6" *ngIf="school.isBoardingEnabled && studentForm.controls.boardingTypeId">
+                    <mat-form-field>
+                        <mat-select [placeholder]="getFieldLabel('boardingTypeId', 'student')" formControlName="boardingTypeId" [required]="isRequired(data.fieldSettings, 'boardingTypeId')">
+                            <mat-option *ngFor="let boardingType of boardingTypes" [value]="boardingType.id">
+                                {{boardingType.name}}
+                            </mat-option>
+                        </mat-select>
+                    </mat-form-field>
+                </div>
+
+                <div class="col-sm-6" *ngIf="studentForm.controls.startingYear">
+                    <mat-form-field>
+                        <mat-select [placeholder]="getFieldLabel('startingYear', 'student')" formControlName="startingYear" [required]="isRequired(data.fieldSettings, 'startingYear')">
+                            <mat-option [value]="null">{{noItemSelected}} </mat-option>
+                            <mat-option *ngFor="let startingYear of startingYears" [value]="startingYear">
+                                {{startingYear| startingYear: school.startingMonth}}
+                            </mat-option>
+                        </mat-select>
+                    </mat-form-field>
+                </div>
+                <div class="col-sm-6" *ngIf="studentForm.controls.schoolIntakeYearId">
+                    <mat-form-field>
+                        <mat-select [placeholder]="getFieldLabel('schoolIntakeYearId', 'student')" formControlName="schoolIntakeYearId"
+                            [required]="isRequired(data.fieldSettings, 'schoolIntakeYearId')">
+                            <mat-option [value]="null">{{noItemSelected}} </mat-option>
+                            <mat-option *ngFor="let intakeYearLevel of intakeYearLevels" [value]="intakeYearLevel.id">
+                                {{intakeYearLevel.name}}
+                            </mat-option>
+                        </mat-select>
+                    </mat-form-field>
+                </div>
+
+                <div class="col-sm-6" *ngIf="studentForm.controls.submittedApplication">
+                    <mat-form-field>
+                        <mat-select [placeholder]="getFieldLabel('submittedApplication', 'student')" formControlName="submittedApplication"
+                            [required]="isRequired(data.fieldSettings, 'submittedApplication')">
+                            <mat-option [value]="null">{{noItemSelected}}</mat-option>
+                            <ng-container *ngFor="let option of submittedApplicationOptions">
+                                <mat-option [value]="option">{{option}}</mat-option>
+                            </ng-container>
+                        </mat-select>
+                    </mat-form-field>
+                </div>
+
+                <div class="col-sm-6" *ngIf="studentForm.controls.currentSchoolId">
+                    <app-other-current-school formControlName="currentSchoolId"
+                        [placeholder]="getFieldLabel('currentSchoolId', 'student')" [list]="currentSchools"
+                        [isPublicPage]="true" [isRequired]="isRequired(data.fieldSettings, 'currentSchoolId')" [reset]="reset"
+                        htmlId="studentForm{{studNumber}}CurrentSchoolId" [trigger]="triggerOtherCurrentSchool"
+                        [school]="school" (selectionChanged)="currentSchoolChanged.emit($event)" [allowSearchOption]="true">
+                    </app-other-current-school>
+                </div>
+                <div class="col-sm-6" *ngIf="studentForm.controls.currentSchoolYearId">
+                    <mat-form-field>
+                        <mat-select [placeholder]="getFieldLabel('currentSchoolYearId', 'student')" formControlName="currentSchoolYearId"
+                            [required]="isRequired(data.fieldSettings, 'currentSchoolYearId')">
+                            <mat-option [value]="null">{{noItemSelected}} </mat-option>
+                            <mat-option *ngFor="let currentSchoolYear of currentSchoolYears" [value]="currentSchoolYear.id">
+                                {{currentSchoolYear.name}}
+                            </mat-option>
+                        </mat-select>
+                    </mat-form-field>
+                </div>
+
+                <div class="col-sm-6" *ngIf="studentForm.controls.hasSpecialNeeds">
+                    <div class="row">
+                        <div class="col-sm-12">
+                            <label [ngClass]="{'required': isRequired(data.fieldSettings, 'hasSpecialNeeds')}">{{getFieldLabel('hasSpecialNeeds', 'student')}}</label>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-12">
+                            <div class="form-check form-check-radio form-check-inline mt-0">
+                                <label class="form-check-label">
+                                    <input class="form-check-input" type="radio" value="true" formControlName="hasSpecialNeeds"
+                                        (click)="onSpecialNeedsChange($event.target.value)"> Yes
+                                    <span class="circle">
+                                        <span class="check"></span>
+                                    </span>
+                                </label>
+                            </div>
+                            <div class="form-check form-check-radio form-check-inline mt-0">
+                                <label class="form-check-label">
+                                    <input class="form-check-input" type="radio" value="false" formControlName="hasSpecialNeeds"
+                                        (click)="onSpecialNeedsChange($event.target.value)"> No
+                                    <span class="circle">
+                                        <span class="check"></span>
+                                    </span>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-sm-6" *ngIf="studentForm.controls.specialNeedsReason">
+                    <app-other-list-item formControlName="specialNeedsReason"
+                        [placeholder]="getFieldLabel('specialNeedsReason', 'student')" [list]="specialNeeds" [reset]="reset"
+                        [listId]="listId.special_need" [isPublicPage]="true" [isRequired]="isRequired(data.fieldSettings, 'specialNeedsReason')"
+                        htmlId="studentForm{{studNumber}}specialNeedsReason" [trigger]="triggerOtherSpecialNeeds"
+                        (selectionChanged)="listItemChanged.emit($event)" [school]="school" allowSearchOption="true" [multiple]="true">
+                    </app-other-list-item>
+                </div>
+
+                <div class="col-12" *ngIf="studentForm.controls.otherInterests">
+                    <label class="col-form-label" [ngClass]="{'required': isRequired(data.fieldSettings, 'otherInterests')}">
+                        {{getFieldLabel('otherInterests', 'student')}}
+                    </label>
+
+                    <app-checkbox-group [options]="otherInterests" columnWidth="4" formControlName="otherInterests">
+                    </app-checkbox-group>
+
+                    <mat-error class="mat-error-radio"
+                        [hidden]="studentForm.controls.otherInterests.valid || (studentForm.controls.otherInterests.pristine && !submitted)">
+                        {{fieldRequired}}
+                    </mat-error>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>

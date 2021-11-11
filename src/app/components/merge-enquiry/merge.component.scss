@@ -1,0 +1,17 @@
+.h-scroll-modal {
+    overflow-x: auto;
+    max-width: 1140px;
+}
+
+.bold {
+    font-weight: bold;
+}
+
+.readonly {
+    white-space: pre-line;
+    color: #555 !important;
+}
+
+th .form-check, td .form-check {
+    margin:0 !important;
+}

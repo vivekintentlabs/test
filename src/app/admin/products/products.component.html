@@ -1,0 +1,72 @@
+<div class="main-content">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="card">
+                    <div class="card-header card-header-icon card-header-primary">
+                        <div class="card-icon">
+                            <i class="material-icons">list</i>
+                        </div>
+                        <h4 class="card-title">Products</h4>
+                    </div>
+                    <div class="card-body">
+                        <div class="toolbar"></div>
+
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="table-responsive">
+                                    <table class="table table-no-bordered table-hover">
+                                        <thead>
+                                            <tr>
+                                                <th>{{ '#' }}</th>
+                                                <th>{{ 'Country' }}</th>
+                                                <th>{{ 'Description' }}</th>
+                                                <th>{{ 'Low Value' }}</th>
+                                                <th>{{ 'Upper Value' }}</th>
+                                                <th>{{ 'Monthly Rate' }}</th>
+                                                <th>{{ 'Currency' }}</th>
+                                                <th>{{ 'Est. Fee' }}</th>
+                                                <th>{{ 'Additional Campus Fee' }}</th>
+                                                <th class="text-right">{{ 'Actions' }}</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr *ngFor="let item of products">
+                                                <td>{{item.id}}</td>
+                                                <td>{{item.country}}</td>
+                                                <td>{{item.description}}</td>
+                                                <td>{{item.tierRangeLowerValue}}</td>
+                                                <td>{{item.tierRangeUpperValue}}</td>
+                                                <td>{{item.monthlyRate}}</td>
+                                                <td>{{item.currency}}</td>
+                                                <td>{{item.establishmentFee}}</td>
+                                                <td>{{item.additionalCampusFee}}</td>
+                                                <td class="td-actions text-right">
+                                                    <button mat-raised-button type="button" class="btn btn-success btn-link" matTooltip="Edit" matTooltipPosition="left"
+                                                        (click)="edit(item)">
+                                                        <i class="material-icons">edit</i>
+                                                    </button>
+                                                    <button mat-raised-button type="button" class="btn btn-danger btn-link" matTooltip="Remove" matTooltipPosition="left"
+                                                        (click)="remove(item.id)">
+                                                        <i class="material-icons">close</i>
+                                                    </button>
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-12 text-right">
+                                <button type="button" class="btn btn-primary pull-right" (click)="addItem()">
+                                    <i class="material-icons">playlist_add</i> Add New
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

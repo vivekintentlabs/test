@@ -1,0 +1,8 @@
+<div class="page-spinner-modal" *ngIf="show">
+    <div id="spinner-block">
+        <mat-spinner class="mx-auto" [diameter]="size"></mat-spinner>
+        <div *ngIf="text" class="text-white text-center my-3">
+           {{text}}
+        </div>
+    </div>
+</div>

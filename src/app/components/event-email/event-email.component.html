@@ -1,0 +1,90 @@
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-md-12">
+            <div class="card">
+                <div class="card-header card-header-icon card-header-primary">
+                    <div class="card-icon">
+                        <i class="material-icons-outlined">mail</i>
+                    </div>
+                    <h4 class="card-title">{{titleEmail}} Email</h4>
+                </div>
+
+                <div class="card-body">
+                    <div class="toolbar">
+                        <div class="row">
+                            <div class="col-md-12">
+                                <h4 *ngIf="type === 'event'">Each of the emails below will be sent automatically at the specified schedule, but only after a user submits the {{titleEmail}}.
+                                    Each email can be edited and tailored. NOTE when activated, emails will only be sent if the date of event has not passed.</h4>
+                                <h4 *ngIf="type === 'personal_tour'">Each of the emails below will be sent automatically at the specified schedule, but only after a user has been added to a Personal Tour.
+                                    Each email can be edited and tailored. Emails will only be sent if they are activated.</h4>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="table-responsive">
+                                <table class="table table-no-bordered table-hover">
+                                    <thead>
+                                        <tr>
+                                            <th>
+                                                <mat-checkbox [checked]="isAllSelected()" (change)="selectAll($event.checked)">
+                                                </mat-checkbox>
+                                            </th>
+                                            <th>{{ 'Subject' }}</th>
+                                            <th>{{ 'When' }}</th>
+                                            <th>{{ 'To' }}</th>
+                                            <th>{{ 'Activated' }}</th>
+                                            <th class="text-right pr-3">{{ 'Actions' }}</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr *ngFor="let item of emails">
+                                            <td class="w25">
+                                                <mat-checkbox (change)="select(item.id, $event.checked)" [(ngModel)]="item.check">
+                                                </mat-checkbox>
+                                            </td>
+                                            <td class="w-25">{{item.subject}}</td>
+                                            <td class="w-25">{{item.sentString}}</td>
+                                            <td class="w-25">{{item.to}}</td>
+                                            <td>
+                                                <mat-checkbox [checked]="item.activated" (change)="activate($event.checked, item)">
+                                                </mat-checkbox>
+                                            </td>
+                                            <td class="td-actions text-right">
+                                                <button mat-raised-button type="button" class="btn btn-primary btn-link" matTooltip="Send a Test Email" matTooltipPosition="left"
+                                                    (click)="showSendTestEmail(item)">
+                                                    <i class="material-icons">mail_outline</i>
+                                                </button>
+                                                <button mat-raised-button type="button" class="btn btn-success btn-link" matTooltip="Edit" matTooltipPosition="left"
+                                                    (click)="edit(item)">
+                                                    <i class="material-icons">edit</i>
+                                                </button>
+                                                <button mat-raised-button type="button" class="btn btn-danger btn-link" matTooltip="Delete" matTooltipPosition="left"
+                                                    (click)="remove(item.id)">
+                                                    <i class="material-icons">delete_outline</i>
+                                                </button>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12 text-right">
+                            <button type="button" class="btn btn-primary pull-right" (click)="addItem()">
+                                <i class="material-icons">playlist_add</i> Add New
+                            </button>
+                            <button *ngIf="deleteIds.length > 0" type="button" class="btn btn-delete pull-right" (click)="removeAll()">Delete Selected Item(s)</button>
+                        </div>
+                    </div>
+                    <app-edit-email (emailChanged)="getData()" [email]="email" [id]="id" [title]="title" [type]="type"
+                        [titleEmail]="titleEmail" [eventTypeName]="eventTypeName" [hasTwoCampus]="hasTwoCampus" [insertSubjectEmail]="insertSubjectEmail"
+                        [insertMessageEmail]="insertMessageEmail" [campusTimezoneId]="campusTimezoneId">
+                </app-edit-email>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

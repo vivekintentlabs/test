@@ -1,0 +1,19 @@
+// Set variables to override defaults
+@import "abstracts/variables";
+@import "abstracts/mixins";
+
+// Base styles
+@import "main.scss";
+
+// SchoolMint overrides
+@import "overrides/core/misc";
+@import "overrides/dashboard/cards";
+@import "overrides/dashboard/sidebar-and-main-panel";
+@import "overrides/dashboard/pages";
+@import "overrides/dashboard/navbar";
+@import "overrides/dashboard/buttons";
+@import "overrides/dashboard/labels";
+@import "overrides/dashboard/tables";
+@import "overrides/dashboard/filter-box";
+
+@import "overrides/components/point-view-theme";

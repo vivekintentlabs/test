@@ -1,0 +1,7 @@
+<div class="card text-center point">
+    <div [ngClass]="{'green': isGreen, 'yellow': isYellow, 'red': isRed }" class="card-body count-block">
+        <p>{{ label }}</p>
+        <mat-spinner *ngIf="isSpinner" [diameter]="27"></mat-spinner>
+        <h1 [class.invisible]="isSpinner">{{ points }}</h1>
+    </div>
+</div>

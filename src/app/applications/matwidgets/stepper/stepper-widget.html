@@ -1,0 +1,27 @@
+<mat-horizontal-stepper [linear]="false" #stepper [selectedIndex]="selectedIndex" (selectionChange)="onChange($event)">
+    <ng-container *ngFor="let fieldset of formProperty.schema.fieldsets; let i=index">
+        <mat-step [stepDisable]="fieldset.id == 'payment' ? isPaymentStepDisabled : null" [index]="i"
+            errorMessage="Missing required fields">
+            <ng-template matStepLabel *ngIf="fieldset.title">{{fieldset.title}}</ng-template>
+            <div *ngIf="fieldset.description">{{fieldset.description}}</div>
+            <div class="row">
+                <div class="col" *ngFor="let fieldId of fieldset.fields">
+                    <sf-form-element [formProperty]="getProperty(fieldId)"></sf-form-element>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col">
+                    <button mat-button class="btn btn-success" matStepperPrevious *ngIf="stepper.selectedIndex > 0">Back
+                    </button>
+                    <button [disabled]="isPaymentStepDisabled && (stepper.selectedIndex === stepper.steps?.length - 2)"
+                        mat-button class="btn btn-success" matStepperNext
+                        *ngIf="stepper.selectedIndex < stepper.steps?.length - 1">Next
+                    </button>
+                </div>
+            </div>
+        </mat-step>
+    </ng-container>
+    <ng-template matStepperIcon="error" let-index="index">
+        <mat-icon>error</mat-icon>
+    </ng-template>
+</mat-horizontal-stepper>

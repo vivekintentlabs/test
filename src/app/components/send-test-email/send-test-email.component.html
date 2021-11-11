@@ -1,0 +1,27 @@
+<div class="modal-header">
+    <h4 class="modal-title text-left">Send a Test Email</h4>
+    <button type="button" class="close" (click)="onCancel()" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+    </button>
+</div>
+<form [formGroup]="sendTestEmailForm" class="mb-0" *ngIf="sendTestEmailForm">
+    <div class="modal-body">
+        <h5 class="modal-title text-left">Enter an email to send your test message to.</h5>
+        <mat-form-field>
+            <input matInput required placeholder="Email" type="email" formControlName="email">
+            <mat-error
+                [hidden]="sendTestEmailForm.controls.email.valid || sendTestEmailForm.controls.email.pristine">
+                Email format should be
+                <i>john@doe.com</i> and contain at most 60 characters.
+            </mat-error>
+        </mat-form-field>
+    </div>
+    <div class="modal-footer">
+        <button type="button" mat-raised-button class="btn btn-cancel mx-1"
+            (click)="onCancel()">Cancel</button>
+        <button type="button" mat-raised-button class="btn btn-success"
+            [disabled]="!sendTestEmailForm.valid || sendTestEmailForm.pristine"
+            (click)="sendTestEmail()">Send Test
+        </button>
+    </div>
+</form>

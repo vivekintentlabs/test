@@ -1,0 +1,169 @@
+<div class="main-content">
+    <div class="container-fluid">
+        <div class="card">
+            <div class="card-header card-header-icon card-header-primary">
+                <div class="card-icon">
+                    <i class="material-icons-outlined">assignment</i>
+                </div>
+                <h4 class="card-title">Applications List</h4>
+            </div>
+
+            <div class="card-body">
+                <div class="toolbar">
+                    <div class="row">
+                        <div class="col-md-4 table-stats">
+                            <div>{{dataSource ? dataSource.data.length + ' Application(s)' : ''}}</div>
+                            <span *ngIf="visibleSelectedCount > 0" class="select-count" style="cursor: default">
+                                {{visibleSelectedCount}} Selected
+                            </span>
+                        </div>
+                        <div class="col-3" hidden>
+                            <mat-form-field>
+                                <mat-select placeholder="App Form" [(ngModel)]="formId">
+                                    <ng-container *ngFor="let formTemplate of formTemplates">
+                                        <mat-option [value]="formTemplate.applicationId">{{formTemplate.name}}</mat-option>
+                                    </ng-container>
+                                </mat-select>
+                            </mat-form-field>
+                        </div>
+                        <div class="col-md-8 text-right">
+                            <div class="mx-1 d-inline-block">
+                                <mat-form-field>
+                                    <input matInput [value]="tableState.searchText" placeholder="Search"
+                                        (keyup)="applyFilter($event.target.value)">
+                                </mat-form-field>
+                            </div>
+                            <button *ngIf="visibleSelectedCount > 0 && userInfo.isSchoolAdminOrHigher()" type="button" class="btn btn-delete"
+                                (click)="deleteSelected()">Delete Selected</button>
+                            <div class="mx-1 d-inline-block" [matTooltipDisabled]="visibleSelectedCount > 0"
+                                matTooltip="Please select at least 1 application">
+                                <button [disabled]="visibleSelectedCount === 0" class="btn btn-primary" data-toggle="dropdown"
+                                    aria-expanded="true">
+                                    <i class="material-icons">more_horiz</i>
+                                </button>
+                                <div class="dropdown-menu">
+                                    <div *ngIf="exportMapping" [matTooltip]="tooltipText" matTooltipPosition="left" [matTooltipDisabled]="selectedNotInProgressApplicationIds.length > 0">
+                                        <option [disabled]="selectedNotInProgressApplicationIds.length === 0"
+                                            class="dropdown-item" (click)="export()">
+                                            Export Records
+                                        </option>
+                                    </div>
+                                    <div [matTooltip]="tooltipText" matTooltipPosition="left" [matTooltipDisabled]="selectedNotInProgressApplicationIds.length > 0">
+                                        <option [disabled]="selectedNotInProgressApplicationIds.length === 0" class="dropdown-item" (click)="download()">
+                                            Download Documents
+                                        </option>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="table-responsive">
+                    <table [id]="tableId" mat-table matSortActive="updatedAt" matSortDirection="desc" [dataSource]="dataSource" matSort (matSortChange)="onSortChange($event)">
+
+                        <ng-container matColumnDef="select">
+                            <th mat-header-cell *matHeaderCellDef class="pr-3">
+                                <mat-checkbox (change)="$event ? masterToggle() : null; onChecked()"
+                                    [checked]="selection.hasValue() && isAllSelected()"
+                                    [indeterminate]="selection.hasValue() && isPartiallySelected()">
+                                </mat-checkbox>
+                            </th>
+                            <td mat-cell *matCellDef="let row">
+                                <mat-checkbox (click)="$event.stopPropagation()" (change)="$event ? selection.toggle(row) : null; onChecked();"
+                                    [checked]="selection.isSelected(row)">
+                                </mat-checkbox>
+                            </td>
+                        </ng-container>
+                         <!-- isExported Column -->
+                         <ng-container matColumnDef="exportInfo">
+                            <th mat-header-cell *matHeaderCellDef mat-sort-header>
+                                <i [matTooltip]="'Exported'" matTooltipPosition="right"
+                                    class="material-icons">save_alt</i>
+                            </th>
+                            <td mat-cell *matCellDef="let element">
+                                <i *ngIf="element.exportDate" [matTooltip]="'Exported on ' + element.exportDate"
+                                    matTooltipPosition="right" class="material-icons text-success">save_alt</i>
+                            </td>
+                        </ng-container>
+                        <ng-container matColumnDef="updatedAt">
+                            <th mat-header-cell *matHeaderCellDef mat-sort-header>Last Updated</th>
+                            <td mat-cell *matCellDef="let element">{{element.updatedAt._seconds * 1000 | localDate: school.timeZoneId}}</td>
+                        </ng-container>
+                        <ng-container matColumnDef="studentName">
+                            <th mat-header-cell *matHeaderCellDef mat-sort-header>Student Name</th>
+                            <td mat-cell *matCellDef="let element">{{element.studentName}}</td>
+                        </ng-container>
+                        <ng-container matColumnDef="startingYear">
+                            <th mat-header-cell *matHeaderCellDef mat-sort-header>Starting Year</th>
+                            <td mat-cell *matCellDef="let element">{{element.startingYear}}</td>
+                        </ng-container>
+                        <ng-container matColumnDef="intakeYearLevel">
+                            <th mat-header-cell *matHeaderCellDef mat-sort-header>{{'et.year' | translate}}</th>
+                            <td mat-cell *matCellDef="let element">{{element.intakeYearLevel}}</td>
+                        </ng-container>
+                        <ng-container matColumnDef="applicationStatus">
+                            <th mat-header-cell *matHeaderCellDef mat-sort-header>Application Status</th>
+                            <td mat-cell *matCellDef="let element">{{element.applicationStatus | translate}}</td>
+                        </ng-container>
+                        <ng-container matColumnDef="submittedAt">
+                            <th mat-header-cell *matHeaderCellDef mat-sort-header>Submitted at</th>
+                            <td mat-cell *matCellDef="let element">{{element.submittedAt ? (element.submittedAt._seconds * 1000 | localDate: school.timeZoneId) : '-'}}</td>
+                        </ng-container>
+                        <ng-container matColumnDef="contactName">
+                            <th mat-header-cell *matHeaderCellDef mat-sort-header>Contact Name</th>
+                            <td mat-cell *matCellDef="let element">{{element.contactName}}</td>
+                        </ng-container>
+                        <ng-container matColumnDef="mobilePhone">
+                            <th mat-header-cell *matHeaderCellDef mat-sort-header>Mobile Phone</th>
+                            <td mat-cell *matCellDef="let element">{{element.mobilePhone}}</td>
+                        </ng-container>
+                        <ng-container *ngIf="userInfo.isSysAdmin()" matColumnDef="applicationId">
+                            <th mat-header-cell *matHeaderCellDef mat-sort-header>Application Id</th>
+                            <td mat-cell *matCellDef="let element">{{element.applicationId}}</td>
+                        </ng-container>
+                        <ng-container matColumnDef="actions">
+                            <th class="text-right" mat-header-cell *matHeaderCellDef>Actions</th>
+                            <td class="text-right td-actions" mat-cell *matCellDef="let row">
+                                <button mat-raised-button type="button" class="btn btn-default btn-link"
+                                    matTooltip="Preview Application" matTooltipPosition="left"
+                                    *ngIf="row.applicationStatus === statusInProgress" (click)="preview(row)">
+                                    <i class="material-icons">visibility</i>
+                                </button>
+                                <button mat-raised-button type="button" class="btn btn-success btn-link"
+                                    matTooltip="Edit" matTooltipPosition="left"
+                                    *ngIf="row.applicationStatus !== statusInProgress" (click)="edit(row)">
+                                    <i class="material-icons">edit</i>
+                                </button>
+                                <button *ngIf="userInfo.isSchoolAdminOrHigher()" mat-raised-button type="button" class="btn btn-danger btn-link"
+                                    matTooltip="Delete" matTooltipPosition="left" (click)="delete(row)">
+                                    <i class="material-icons">delete_outline</i>
+                                </button>
+                                <ng-template [ngIf]="row.isUpdatedApp" [ngIfThen]="thenBlock" [ngIfElse]="elseBlock"></ng-template>
+                                <ng-template #thenBlock>
+                                    <button mat-raised-button type="button"
+                                    class="btn btn-link btn-info" matTooltip="Preview updated application"
+                                    matTooltipPosition="left" (click)="openUpdatedApp(row.applicationId)">
+                                        <i class="material-icons">open_in_new</i>
+                                    </button>
+                                </ng-template>
+                                <ng-template #elseBlock>
+                                    <span matTooltip="This application has not been modified" matTooltipPosition="left">
+                                        <button mat-raised-button type="button"
+                                        class="btn btn-link" disabled>
+                                            <i class="material-icons">open_in_new</i>
+                                        </button>
+                                    </span>
+                                </ng-template>
+                            </td>
+                        </ng-container>
+
+                        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+                        <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+                    </table>
+
+                    <mat-paginator (page)="onPaginatorChange($event)"></mat-paginator>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

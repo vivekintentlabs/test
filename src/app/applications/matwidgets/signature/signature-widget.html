@@ -1,0 +1,31 @@
+<mat-card>
+    <legend *ngIf="schema.title" class="h3 text-dark">{{schema.title}}</legend>
+    <div *ngIf="schema.description">{{schema.description}}</div>
+    <ng-container *ngFor="let error of control.errors">
+        <label *ngIf="error.code === 'CUSTOM_VALIDATOR'" class="text-danger w-100">{{error.message}}</label>
+    </ng-container>
+    <mat-card-content class="mt-2" *ngFor="let property of formProperty.properties; let i = index">
+        <div class="row">
+            <div class="col-12" *ngIf="parentGuardians?.value[i] as parentGuardian">
+                <mat-card-title *ngIf="parentGuardian.firstName && parentGuardian.lastName">
+                    Parent/Guardian: {{parentGuardian.firstName}} {{parentGuardian.lastName}}
+                </mat-card-title>
+
+                <ng-container *ngIf="parentGuardian.li_relationshipToStudent">
+                    <h5 class="m-0">Relationship:
+                        {{getDescription(parentGuardian.li_relationshipToStudent, relationshipTypes)}}
+                    </h5>
+                </ng-container>
+
+                <ng-container *ngIf="parentGuardian.li_feeResponsibility">
+                    <h5 class="m-0 mb-1">Fee Responsibility:
+                        {{getDescription(parentGuardian.li_feeResponsibility, feeResponsibilities)}}
+                    </h5>
+                </ng-container>
+
+                <sf-form-element [formProperty]="property"></sf-form-element>
+            </div>
+        </div>
+    </mat-card-content>
+
+</mat-card>

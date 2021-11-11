@@ -1,0 +1,39 @@
+@import '~scss/theme/core/variables';
+@import '~scss/extensions/core/variables';
+
+
+.info-panel {
+    border-radius: $border-radius-large;
+    background: $panel-bg;
+    padding-top: 10px;
+    margin: 10px 0;
+    p {
+        margin-bottom: 4px;
+    }
+}
+
+ul.fa-ul {
+    &.multi-column {
+        column-gap: 25px;
+        column-width: 8em;
+    }
+    li div {
+        position: relative;
+        display: inline-block;
+        margin-bottom: 3px;
+        overflow-wrap: anywhere;
+        span.fa-li span {
+            font-size: 20px;
+            color: $navbar-color;
+            &.verified {
+                color: $brand-success;
+            }
+            &.pending {
+                color: $brand-warning;
+            }
+            &.invalid {
+                color: $brand-danger;
+            }
+        }
+    }
+}

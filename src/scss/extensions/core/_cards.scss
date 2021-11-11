@@ -1,0 +1,50 @@
+.card {
+  margin-bottom: 0;
+  margin-top: $card-spacer-y;
+  .card-header {
+    &.card-header-icon,
+    &.card-header-text {
+      i {
+        width: 31px;
+        height: 31px;
+        line-height: 31px;
+        font-size: 18px;
+      }
+      .card-title {
+        margin-top: 20px;
+        color: $black-color;
+      }
+      h4 {
+        font-weight: $font-weight-default;
+      }
+    }
+  }
+  [class*="card-header-"] {
+    margin: 0px 16px 0;
+    .card-icon {
+      padding: 0px;
+      margin-top: 16px;
+      margin-right: 9px;
+    }
+  }
+}
+
+.cards {
+  margin-right: -($card-spacer-x/2);
+  margin-left: -($card-spacer-x/2);
+  &.row {
+    // Set bootstrap gutters to match card spacing
+    > [class*="col-"] {
+      padding-right: $card-spacer-x/2;
+      padding-left: $card-spacer-x/2;
+    }
+    .card {
+      margin-right: 0;
+      margin-left: 0;
+    }
+  }
+  .card {
+    margin-right: $card-spacer-x/2;
+    margin-left: $card-spacer-x/2;
+  }
+}

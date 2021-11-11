@@ -1,0 +1,47 @@
+<div class="card">
+    <div class="card-header card-header-icon card-header-primary">
+        <div class="card-icon">
+            <i class="material-icons-outlined">event</i>
+        </div>
+        <h4 class="card-title">Event Status</h4>
+    </div>
+    <div class="card-body">
+        <div class="row">
+            <div class="col-md">
+                <div class="is-focused">
+                    <mat-form-field>
+                        <mat-select placeholder="Select Event" [(value)]="selected" (selectionChange)="onChange()">
+                            <mat-option *ngFor="let event of events" [value]="event.id">
+                                {{(event.schoolTour)?event.schoolTour.name + ' - ':''}}
+                                {{(showCampusName)?event.campus.name + ' - ':''}}
+                                {{event.date | localeDate: longDate}} - Start
+                                {{event.time}} {{event.isRegistrationDisabled ? '- Fully Booked' : ''}}
+                            </mat-option>
+                        </mat-select>
+                    </mat-form-field>
+                </div>
+            </div>
+            <div *ngIf="!event" class="col-md">
+                <h4>No Data Available</h4>
+            </div>
+        </div>
+        <div class="row text-center cards">
+            <div class="col-md-4 col-sm-4">
+                <point-view [label]="'Students'" [points]="(event.studentsCount>0)?event.studentsCount:dash"
+                    *ngIf="event"></point-view>
+                <point-view [label]="'Students'" [points]="dash" *ngIf="!event"></point-view>
+            </div>
+            <div class="col-md-4 col-sm-4">
+                <point-view [label]="'Families'" [points]="(event.families)?event.families:dash" *ngIf="event">
+                </point-view>
+                <point-view [label]="'Families'" [points]="dash" *ngIf="!event"></point-view>
+            </div>
+            <div class="col-md-4 col-sm-4">
+                <point-view [label]="'RSVP'" [points]="(event.attending)?event.attending:dash" *ngIf="event">
+                </point-view>
+                <point-view [label]="'RSVP'" [points]="dash" *ngIf="!event"></point-view>
+            </div>
+        </div>
+    </div>
+    <app-view-details-footer *ngIf="event && !userInfo.isSchoolUser()" [url]="url" [filter]="filter"></app-view-details-footer>
+</div>

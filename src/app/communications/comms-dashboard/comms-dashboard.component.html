@@ -1,0 +1,9 @@
+<div class="main-content">
+    <div class="container-fluid" *ngIf="commService.isModuleActive">
+        <comms-stats></comms-stats>
+        <comms-draft-messages #draftMsgs (showTestEmailModal)="emailDialog.showTestEmailModal($event)"></comms-draft-messages>
+        <comms-scheduled-messages (onDataEvent)="draftMsgs.onDataEvent()" (showTestEmailModal)="emailDialog.showTestEmailModal($event)"></comms-scheduled-messages>
+        <comms-sent-messages (onDataEvent)="draftMsgs.onDataEvent()"></comms-sent-messages>
+        <comms-test-email-dialog #emailDialog></comms-test-email-dialog>
+    </div>
+</div>

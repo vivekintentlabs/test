@@ -1,0 +1,141 @@
+<div class="main-content">
+    <div class="container-fluid">
+        <div class="card">
+            <div class="card-header card-header-icon card-header-primary">
+                <div class="card-icon">
+                    <i class="material-icons-outlined">list</i>
+                </div>
+                <h4 class="card-title float-left">{{'et.year' | translate}} Levels</h4>
+            </div>
+            <div class="card-body">
+                <p>
+                    Specify the {{'et.year' | translate | lowercase}} levels at your school
+                </p>
+                <div class="row">
+                    <mat-form-field class="col-sm-3" *ngIf="campuses && campuses.length > 1">
+                        <mat-select placeholder="Campus(es)" [(value)]="specificCampusId"
+                            (selectionChange)="campusChanged($event.value)">
+                            <mat-option *ngFor="let campus of campuses" [value]="campus.id">
+                                {{campus.name}}
+                            </mat-option>
+                        </mat-select>
+                    </mat-form-field>
+                </div>
+                <div class="table-responsive">
+                    <table class="table table-no-bordered table-hover" *ngIf="yearLevels">
+                        <thead>
+                            <tr>
+                                <th>School {{'et.year' | translate}} Levels</th>
+                                <th *ngIf="userInfo">{{synCodeTitle}}</th>
+                                <th class="text-right">Actions</th>
+                                <th class="t-divider">Options for {{'et.currentSchoolYear' | translate}}</th>
+                                <th>Available School {{'et.year' | translate}} Levels</th>
+                                <th>Core School {{'et.year' | translate}} Levels</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr *ngFor="let yearLevel of yearLevels; let i = index">
+                                <td>{{yearLevel.name}}</td>
+                                <td>{{yearLevel.synCode}}</td>
+                                <td class="td-actions text-right">
+                                    <button [disabled]="i === 0" mat-raised-button type="button"
+                                        class="btn btn-info btn-link" matTooltip="Up" matTooltipPosition="left"
+                                        (click)="changeSequence(yearLevel.id, yearLevel.sequence, true)">
+                                        <i class="material-icons">arrow_upward</i>
+                                    </button>
+                                    <button [disabled]="(yearLevels.length-1) === i" mat-raised-button type="button"
+                                        class="btn btn-info btn-link" matTooltip="Down" matTooltipPosition="left"
+                                        (click)="changeSequence(yearLevel.id, yearLevel.sequence, false)">
+                                        <i class="material-icons">arrow_downward</i>
+                                    </button>
+                                    <button mat-raised-button type="button" class="btn btn-success btn-link"
+                                        matTooltip="Edit" matTooltipPosition="left" (click)="edit(yearLevel)">
+                                        <i class="material-icons">edit</i>
+                                    </button>
+                                    <button mat-raised-button type="button" class="btn btn-danger btn-link"
+                                        matTooltip="Delete" matTooltipPosition="left" (click)="remove(yearLevel)">
+                                        <i class="material-icons">delete_outline</i>
+                                    </button>
+                                </td>
+                                <td class="t-divider">
+                                    <ng-container *ngFor="let item of yearLevel.campusYearLevels">
+                                        <div *ngIf="item.campusId === specificCampusId">
+                                            <mat-checkbox [checked]="item.isCurrent" (change)="updateCampusYearLevel($event.checked, item, 'isCurrent')">
+                                            </mat-checkbox>
+                                        </div>
+                                    </ng-container>
+                                </td>
+                                <td>
+                                    <ng-container *ngFor="let item of yearLevel.campusYearLevels">
+                                        <div *ngIf="item.campusId === specificCampusId">
+                                            <mat-checkbox [checked]="item.isAvailable" (change)="updateCampusYearLevel($event.checked, item, 'isAvailable')">
+                                            </mat-checkbox>
+                                        </div>
+                                    </ng-container>
+                                </td>
+                                <td>
+                                    <ng-container *ngFor="let item of yearLevel.campusYearLevels">
+                                        <div *ngIf="item.campusId === specificCampusId">
+                                            <mat-checkbox [checked]="item.isCore" (change)="updateCampusYearLevel($event.checked, item, 'isCore')">
+                                            </mat-checkbox>
+                                        </div>
+                                    </ng-container>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="row">
+                    <div class="col-md-12 text-right">
+                        <button type="button" class="btn btn-primary" (click)="addItem()">
+                            <i class="material-icons">playlist_add</i> Add New
+                        </button>
+                    </div>
+                </div>
+                <div class="modal fade" id="yearLevelModal" tabindex="-1" role="dialog"
+                    aria-labelledby="yearLevelModalLabel">
+                    <div class="modal-dialog modal-lg" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h4 class="modal-title text-left">{{ isNew ? 'Add' : 'Edit' }} - {{'et.year' | translate}} Level</h4>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <form [formGroup]="yearLevelForm" novalidate *ngIf="yearLevelForm">
+                                <div class="modal-body">
+                                    <mat-form-field>
+                                        <input matInput placeholder="Name" type="text" formControlName="name" required>
+                                        <mat-error
+                                            [hidden]="yearLevelForm.controls.name.valid || yearLevelForm.controls.name.pristine">
+                                            This field is required and should contain at least
+                                            {{requiredTextFieldMinLength}} and at most {{nameMaxLength}}
+                                            characters.
+                                        </mat-error>
+                                    </mat-form-field>
+                                    <mat-form-field>
+                                        <input matInput [placeholder]="synCodeTitle" type="text"
+                                            formControlName="synCode">
+                                        <mat-error
+                                            [hidden]="yearLevelForm.controls.synCode.valid || yearLevelForm.controls.synCode.pristine">
+                                            {{synCodeTitle}} should be no more than {{synCodeMaxLength}} characters.
+                                        </mat-error>
+                                    </mat-form-field>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" mat-raised-button class="btn btn-cancel mx-1"
+                                        data-dismiss="modal">Cancel
+                                    </button>
+                                    <button type="button" mat-raised-button class="btn btn-success"
+                                        [disabled]="!yearLevelForm.valid || yearLevelForm.pristine"
+                                        [promiseBtn]="promiseForBtn" (click)="onSubmit()">Save
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

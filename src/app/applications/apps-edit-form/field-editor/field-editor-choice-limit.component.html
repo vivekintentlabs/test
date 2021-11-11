@@ -1,0 +1,46 @@
+<section class="mb-3"
+    *ngIf="fieldSchema.type === 'array' && (fieldSchema.templateMetaData.isMinItemsModifiable || fieldSchema.templateMetaData.isMaxItemsModifiable) ">
+    <h4>Choice limit</h4>
+    <ng-container *ngIf="fieldSchema.templateMetaData.isMinItemsModifiable">
+        <mat-label>Minimum items<ng-container *ngIf="fieldSchema.minItems > 0">: {{fieldSchema.minItems}}
+            </ng-container>
+        </mat-label>
+        <div class="d-flex" [ngClass]="{'mt-3':minItemsToggle}">
+            <div class="mt-10">
+                <mat-slide-toggle color="primary" matTooltip="Turn on to specify minimum items"
+                    [(ngModel)]="minItemsToggle" [checked]="minItemsToggle"
+                    (change)="choiceLimitChanged(minItemsToggle, 'minItems')"></mat-slide-toggle>
+            </div>
+            <div class="d-flex flex-grow-1 ml-3">
+                <ng-container *ngIf="minItemsToggle">
+                    <p class="pt-2 pr-2">1</p>
+                    <mat-slider class="choice-limit w-100" color="primary" tickInterval="1" thumbLabel="true" min="1"
+                        [max]="fieldSchema.items.oneOf?.length || maxAppFilesToUpload" step="1"
+                        [(ngModel)]="fieldSchema.minItems" (input)="minItemsChanged($event.value)"></mat-slider>
+                    <p class="pt-2">{{fieldSchema.items.oneOf?.length || maxAppFilesToUpload}}</p>
+                </ng-container>
+            </div>
+        </div>
+    </ng-container>
+    <ng-container *ngIf="fieldSchema.templateMetaData.isMaxItemsModifiable">
+        <mat-label>
+            Maximum items<ng-container *ngIf="fieldSchema.maxItems">: {{fieldSchema.maxItems}}</ng-container>
+        </mat-label>
+        <div class="d-flex" [ngClass]="{'mt-3':maxItemsToggle}">
+            <div class="mt-10">
+                <mat-slide-toggle color="primary" matTooltip="Turn on to specify maximum items"
+                    [(ngModel)]="maxItemsToggle" [checked]="maxItemsToggle"
+                    (change)="choiceLimitChanged(maxItemsToggle, 'maxItems')"></mat-slide-toggle>
+            </div>
+            <div class="d-flex flex-grow-1 ml-3">
+                <ng-container *ngIf="maxItemsToggle">
+                    <p class="pt-2 pr-2">{{fieldSchema.minItems}}</p>
+                    <mat-slider class="choice-limit w-100" color="primary" tickInterval="1" thumbLabel="true"
+                        [min]="fieldSchema.minItems" [max]="fieldSchema.items.oneOf?.length || maxAppFilesToUpload"
+                        step="1" [(ngModel)]="fieldSchema.maxItems"></mat-slider>
+                    <p class="pt-2">{{fieldSchema.items.oneOf?.length || maxAppFilesToUpload}}</p>
+                </ng-container>
+            </div>
+        </div>
+    </ng-container>
+</section>

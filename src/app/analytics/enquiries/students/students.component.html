@@ -1,0 +1,74 @@
+<form [formGroup]="enquiriesStudentForm" novalidate *ngIf="loaded">
+    <div class="row" *ngIf="isSubWidgetOnDashBoard('enquiries_by_month')">
+        <div class="col">
+            <div class="card">
+                <div class="card-header card-header-icon card-header-primary">
+                    <div class="card-icon">
+                        <i class="material-icons">show_chart</i>
+                    </div>
+                    <h4 class="card-title">{{ 'et.enquiries' | translate }} by Month</h4>
+                    <div class="row pt-2">
+                        <div class="col-sm-9">
+                            <div class="row">
+                                <div class="col-md-4">
+                                    <mat-form-field>
+                                        <mat-select formControlName="year" placeholder="Year"
+                                            (selectionChange)="yearChanged($event.value)">
+                                            <mat-option *ngFor="let y of years" [value]="y">{{y}}</mat-option>
+                                        </mat-select>
+                                    </mat-form-field>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-sm-3" *ngIf="inputBarChartSum">
+                            <point-view [label]="'Total Student ' + ('et.enquiry' | translate)"
+                                [points]="(inputBarChartSum) ? inputBarChartSum : dash"></point-view>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-body" *ngIf="inputBarChartSum">
+                    <app-bar-chart-stacked [title]="" [inputBarChart]="inputBarChart" [titleAxisY]="'Students'">
+                    </app-bar-chart-stacked>
+                </div>
+                <div class="card-body mb-5" *ngIf="!inputBarChartSum">
+                    <div class="middle">
+                        <h2>No Data</h2>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row" *ngIf="isSubWidgetOnDashBoard('ranking_score')">
+        <div class="col">
+            <div class="card">
+                <div class="card-header card-header-icon card-header-primary">
+                    <div class="card-icon">
+                        <i class="material-icons-outlined">speed</i>
+                    </div>
+                    <h4 class="card-title">Ranking Score</h4>
+                    <div class="row pt-2">
+                        <div class="col-sm-12">
+                            <div class="row">
+                                <div class="col-md-3">
+                                    <mat-form-field>
+                                        <mat-select formControlName="startingYear" placeholder="Starting Year"
+                                            (selectionChange)="startingYearChanged($event.value)">
+                                            <ng-container *ngFor="let y of startingYears">
+                                                <mat-option *ngIf="y" [value]="y">{{y| startingYear: (startingMonth$ | async)}}
+                                                </mat-option>
+                                            </ng-container>
+                                        </mat-select>
+                                    </mat-form-field>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-body" *ngIf="inputLineChart">
+                    <app-line-chart [inputLineChart]="inputLineChart" [titleAxisY]="'Students'"
+                        [titleAxisX]="'Ranking Score'"></app-line-chart>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
