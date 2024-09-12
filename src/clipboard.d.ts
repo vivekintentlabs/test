@@ -17,3 +17,7 @@ declare var ClipboardItem: {
   prototype: ClipboardItem
   new(objects: Record<string, Blob>): ClipboardItem
 }
+declare var ClipboardItem: {
+  prototype: ClipboardItem
+  new(objects: Record<string, Blob>): ClipboardItem
+}
